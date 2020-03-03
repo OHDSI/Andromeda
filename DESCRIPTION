@@ -1,0 +1,24 @@
+Package: Andromeda
+Type: Package
+Title: AsynchroNous Disk-based Representation of MassivE DAta
+Version: 0.0.1
+Date: 2020-03-03
+Authors@R: c(
+  person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut", "cre"))
+  )
+Maintainer: Martijn Schuemie <schuemie@ohdsi.org>
+Description:  A replacement for ff for storing large data objects.
+License: Apache License 2.0
+VignetteBuilder: knitr
+URL: https://github.com/OHDSI/Andromeda
+BugReports: https://github.com/OHDSI/Andromeda/issues
+Imports:
+  RSQLite,
+  zip
+Suggests:
+  testthat,
+  knitr,
+  rmarkdown
+LazyData: false
+RoxygenNote: 7.0.2
+Encoding: UTF-8
