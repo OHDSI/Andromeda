@@ -3,7 +3,11 @@
 \docType{class}
 \name{Andromeda-class}
 \alias{Andromeda-class}
+\alias{show,Andromeda-method}
 \title{Andromeda class.}
+\usage{
+\S4method{show}{Andromeda}(object)
+}
 \description{
 Andromeda class.
 }

@@ -1,4 +1,5 @@
 library(dplyr)
+library(Andromeda)
 
 # Create an empty object:
 andromeda <- Andromeda()
@@ -16,6 +17,7 @@ andromeda$cars %>% collect()
 
 andromeda$cars %>% count() %>% collect()
 
+attr(andromeda, "metaData") <- list(x = 1)
 
 # Save to disk:
 saveAndromeda(andromeda, "c:/temp/test.andromeda", maintainConnection = TRUE)
@@ -30,4 +32,36 @@ names(andromeda) # Error
 # We can load the object at a later point in time:
 andromeda2 <- loadAndromeda("c:/temp/test.andromeda")
 names(andromeda2)
+attr(andromeda, "metaData")
+
+# Batching ----------------------------------------
+library(dplyr)
+library(Andromeda)
+andromeda <- Andromeda()
+andromeda$cars <- cars
+
+doSomething <- function(batch) {
+  print(nrow(batch))
+}
+collectBatched(andromeda$cars, doSomething)
+
+andromeda$cars2 <- andromeda$cars
+andromeda$iris <- iris
+andromeda$cars2 <- andromeda$iris
+
+# Append ---------------------------------------------
+andromeda$cars %>% count() %>% collect()
+
+appendToTable(andromeda$cars, andromeda$cars2)
+
+andromeda$cars %>% count() %>% collect()
+
+appendToTable(andromeda$cars, cars)
+
+andromeda$cars %>% count() %>% collect()
+
+
+
+
+
 

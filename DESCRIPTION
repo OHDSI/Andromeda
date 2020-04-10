@@ -16,7 +16,8 @@ Imports:
   RSQLite,
   zip,
   dplyr,
-  methods
+  methods,
+  dbplyr
 Suggests:
   testthat,
   knitr,

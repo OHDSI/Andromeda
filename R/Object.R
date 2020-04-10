@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 #' Andromeda class.
 #'
 #' @keywords internal
@@ -22,37 +21,68 @@
 #' @import RSQLite
 setClass("Andromeda", contains = "SQLiteConnection")
 
-
-
 #' Create an Andromeda object
 #'
 #' @export
 Andromeda <- function() {
-  # new("Andromeda")
   andromeda <- RSQLite::dbConnect(RSQLite::SQLite(), tempfile(fileext = ".sqlite"))
   class(andromeda) <- "Andromeda"
   return(andromeda)
 }
 
+# show()
+#' @export
+#' @rdname Andromeda-class
+setMethod("show", "Andromeda", function(object) {
+  writeLines("# Andromeda object")
+  writeLines(paste("# Physical location: ", object@dbname))
+  writeLines("")
+  writeLines("Tables:")
+  for (name in  RSQLite::dbListTables(object)) {
+    writeLines(paste0("- ", name, " (", paste(RSQLite::dbListFields(object, name), collapse = ", "), ")"))
+  }
+  invisible(NULL)
+})
+
+
 #' @export
 "$.Andromeda" <- function(x, i){
-  dplyr::tbl(x, i)
+  if (RSQLite::dbExistsTable(x, i)) {
+    return(dplyr::tbl(x, i))
+  } else {
+    return(NULL)
+  }
 }
 
 #' @export
 "$<-.Andromeda" <- function(x, i, value){
-  RSQLite::dbWriteTable(conn = x,
-                        name = i,
-                        value = value,
-                        overwrite = TRUE,
-                        append = FALSE)
+  if (inherits(value, "data.frame")) {
+    RSQLite::dbWriteTable(conn = x,
+                          name = i,
+                          value = value,
+                          overwrite = TRUE,
+                          append = FALSE)
+  } else if (inherits(value, "tbl_Andromeda")) {
+    if (RSQLite::dbExistsTable(x, i)) {
+      RSQLite::dbRemoveTable(x, i)
+    }
+    doBatchedAppend <- function(batch) {
+      RSQLite::dbWriteTable(conn = x,
+                            name = i,
+                            value = batch,
+                            overwrite = FALSE,
+                            append = TRUE)
+    }
+    collectBatched(value, doBatchedAppend)
+  }
   x
 }
-  
+
+# names()
 #' @export
-names.Andromeda <- function(x) {
+setMethod("names", "Andromeda", function(x) {  
   RSQLite::dbListTables(x)
-}
+})
 
 #TODO : add "names<-.Andromeda"
 
@@ -73,5 +103,7 @@ length.Andromeda <- function(x){
 #' 
 #' @export
 is.Andomeda <- function(x) {
-   inherits(x, "Andromeda") 
+  inherits(x, "Andromeda") 
 }
+
+

@@ -28,16 +28,27 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
   if (!overwrite && file.exists(fileName)) {
     stop("File ", fileName, " already exists, and overwrite = FALSE") 
   }
+  # Need to save any user-defined attributes as well:
+  attributes <- attributes(andromeda)
+  for (name in slotNames(andromeda)) {
+    attributes[[name]] <- NULL 
+  }
+  attributes[["class"]] <- NULL  
+  
+  attributesFileName <- tempfile(fileext = ".rds")
+  saveRDS(attributes, attributesFileName)
+  
   if (maintainConnection) {
     # Can't zip while connected, so make copy:
     tempFileName <- tempfile(fileext = ".sqlite")
     RSQLite::sqliteCopyDatabase(andromeda, tempFileName)
-    zip::zipr(fileName, tempFileName)
+    zip::zipr(fileName, c(attributesFileName, tempFileName))
     unlink(tempFileName)
   } else {
     RSQLite::dbDisconnect(andromeda)
-    zip::zipr(fileName, andromeda@dbname)
+    zip::zipr(fileName, c(attributesFileName, andromeda@dbname))
   }
+  unlink(attributesFileName)
 }
 
 #' Load Andromeda from file
@@ -46,14 +57,20 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
 #'
 #' @export
 loadAndromeda <- function(fileName) {
-  fileNameInZip <- zip::zip_list(fileName)
+  fileNamesInZip <- zip::zip_list(fileName)$filename
+  sqliteFilenameInZip <- fileNamesInZip[grepl(".sqlite$", fileNamesInZip)]
+  rdsFilenameInZip <- fileNamesInZip[grepl(".rds$", fileNamesInZip)]
   tempDir <- tempfile()
   dir.create(tempDir)
   zip::unzip(fileName, exdir = tempDir)
   newFileName <- tempfile(fileext = ".sqlite")
-  file.rename(file.path(tempDir, fileNameInZip$filename), newFileName)
+  file.rename(file.path(tempDir, sqliteFilenameInZip), newFileName)
+  attributes <- readRDS(file.path(tempDir, rdsFilenameInZip))
   unlink(tempDir)
   andromeda <- RSQLite::dbConnect(RSQLite::SQLite(), newFileName)
+  for (name in names(attributes)) {
+    attr(andromeda, name) <- attributes[[name]]
+  }
   class(andromeda) <- "Andromeda"
   return(andromeda)
 }
