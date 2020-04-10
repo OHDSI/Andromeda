@@ -4,7 +4,7 @@ Andromeda
 Introduction
 ============
 
-AsynchroNous Disk-based Representation of MassivE DAta: An R package aimed at replacing ff for storing large data objects.
+AsynchroNous Disk-based Representation of MassivE DAta: An R package for storing large data objects.
 
 Features
 ========
@@ -34,7 +34,7 @@ devtools::install_github("ohdsi/Andromeda")
 
 User Documentation
 ==================
-* Package manual: [SqlRender manual](https://ohdsi.github.io/Andromeda/reference/index.html) 
+* Package manual: [Andromeda manual](https://ohdsi.github.io/Andromeda/reference/index.html) 
 
 Support
 =======

@@ -33,3 +33,45 @@ Andromeda <- function() {
   class(andromeda) <- "Andromeda"
   return(andromeda)
 }
+
+#' @export
+"$.Andromeda" <- function(x, i){
+  dplyr::tbl(x, i)
+}
+
+#' @export
+"$<-.Andromeda" <- function(x, i, value){
+  RSQLite::dbWriteTable(conn = x,
+                        name = i,
+                        value = value,
+                        overwrite = TRUE,
+                        append = FALSE)
+  x
+}
+  
+#' @export
+names.Andromeda <- function(x) {
+  RSQLite::dbListTables(x)
+}
+
+#TODO : add "names<-.Andromeda"
+
+#' @export
+length.Andromeda <- function(x){
+  length(names(x))
+}
+
+#' Check whether an object is an Andromeda object
+#' 
+#' @param x The object to check.
+#' 
+#' @details 
+#' Checks whether an object is an Andromeda object.
+#' 
+#' @return 
+#' A logical value.
+#' 
+#' @export
+is.Andomeda <- function(x) {
+   inherits(x, "Andromeda") 
+}

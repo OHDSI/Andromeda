@@ -14,9 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Andromeda
-#'
-#' @docType package
-#' @name Andromeda
-NULL
+#' @keywords internal
+#' @aliases NULL Andromeda-package
+"_PACKAGE"
 
