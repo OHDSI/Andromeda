@@ -22,15 +22,15 @@
 #'
 #' @export
 collectBatched <- function(tbl, fun, batchSize = 10000) {
-  if (!inherits(tbl, "tbl_Andromeda")) 
+  if (!inherits(tbl, "tbl_dbi")) 
     stop("First argument must be an Andromeda table") 
   if (!is.function(fun)) 
     stop("Second argument must be a function")
   
-  # Open a new read-only connection. Can't read and write at the same time using the same connection
-  connection <- RSQLite::dbConnect(RSQLite::SQLite(), tbl$src$con@dbname, flags = RSQLite::SQLITE_RO)
-  on.exit(RSQLite::dbDisconnect(connection))
-
+  # # Open a new read-only connection. Can't read and write at the same time using the same connection
+  # connection <- RSQLite::dbConnect(RSQLite::SQLite(), tbl$src$con@dbname, flags = RSQLite::SQLITE_RO)
+  # on.exit(RSQLite::dbDisconnect(connection))
+  connection <- tbl$src$con
   sql <-  dbplyr::sql_render(tbl, connection)
   result <- RSQLite::dbSendQuery(connection, sql)
   tryCatch({
@@ -51,7 +51,7 @@ collectBatched <- function(tbl, fun, batchSize = 10000) {
 #'
 #' @export
 appendToTable <- function(tbl, data) {
-  if (!inherits(tbl, "tbl_Andromeda")) 
+  if (!inherits(tbl, "tbl_dbi")) 
     stop("First argument must be an Andromeda table") 
   if (!inherits(tbl$ops, "op_base_remote") )
     stop("First argument must be a base table (cannot be a query result)")
@@ -65,7 +65,8 @@ appendToTable <- function(tbl, data) {
                           value = data,
                           overwrite = FALSE,
                           append = TRUE)
-  } else if (inherits(data, "tbl_Andromeda")) {
+  } else if (inherits(data, "tbl_dbi")) {
+
     doBatchedAppend <- function(batch) {
       RSQLite::dbWriteTable(conn = connection,
                             name = tableName,
@@ -73,6 +74,15 @@ appendToTable <- function(tbl, data) {
                             overwrite = FALSE,
                             append = TRUE)
     }
+    if (isTRUE(all.equal(tbl$src$con, data$src$con))) {
+      # Cannot read and write to the same database at the same time. 
+      # Create a copy in a temp Andromeda first
+      #TODO: use a INSERT INTO TABLE instead
+      tempAndromeda <- Andromeda()
+      tempAndromeda$table <- data
+      on.exit(RSQLite::dbDisconnect(tempAndromeda))
+      data <- tempAndromeda$table
+    } 
     collectBatched(data, doBatchedAppend)
   }
   invisible(NULL)

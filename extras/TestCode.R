@@ -60,8 +60,18 @@ appendToTable(andromeda$cars, cars)
 
 andromeda$cars %>% count() %>% collect()
 
+andromeda <- Andromeda()
+andromeda$cars <- cars
+andromeda2 <- Andromeda()
+andromeda2$cars <- cars
+
+andromeda$cars %>% count() %>% collect()
+appendToTable(andromeda$cars, andromeda2$cars)
+andromeda$cars %>% count() %>% collect()
 
 
+
+all.equal(andromeda$cars$src$con, andromeda$cars2$src$con)
 
 
 

@@ -44,7 +44,6 @@ setMethod("show", "Andromeda", function(object) {
   invisible(NULL)
 })
 
-
 #' @export
 "$.Andromeda" <- function(x, i){
   if (RSQLite::dbExistsTable(x, i)) {
@@ -62,7 +61,7 @@ setMethod("show", "Andromeda", function(object) {
                           value = value,
                           overwrite = TRUE,
                           append = FALSE)
-  } else if (inherits(value, "tbl_Andromeda")) {
+  } else if (inherits(value, "tbl_dbi")) {
     if (RSQLite::dbExistsTable(x, i)) {
       RSQLite::dbRemoveTable(x, i)
     }
@@ -73,6 +72,15 @@ setMethod("show", "Andromeda", function(object) {
                             overwrite = FALSE,
                             append = TRUE)
     }
+    if (isTRUE(all.equal(x, value$src$con))) {
+      # Cannot read and write to the same database at the same time. 
+      # Create a copy in a temp Andromeda first
+      #TODO: probably should do some CREATE TABLE AS instead.
+      tempAndromeda <- Andromeda()
+      tempAndromeda$table <- value
+      on.exit(RSQLite::dbDisconnect(tempAndromeda))
+      value <- tempAndromeda$table
+    } 
     collectBatched(value, doBatchedAppend)
   }
   x
