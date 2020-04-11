@@ -2,10 +2,11 @@
 
 S3method("$",Andromeda)
 S3method("$<-",Andromeda)
+S3method(close,Andromeda)
 S3method(length,Andromeda)
 export(Andromeda)
 export(appendToTable)
-export(collectBatched)
+export(batchApply)
 export(is.Andomeda)
 export(loadAndromeda)
 export(saveAndromeda)

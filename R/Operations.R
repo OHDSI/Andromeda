@@ -14,14 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Collect in batches
+#' Apply a function to batches of data in an Andromeda table
 #'
 #' @param tbl       An Andromeda table.
-#' @param fun       A function that takes a single data frame as argument.
+#' @param fun       A function where the first argument is a data frame.
 #' @param batchSize Number of rows to fetch at a time.
+#' 
+#' @details 
+#' This function is similar to the \code{lapply} function, in that it applies a 
+#' function to sets of data. In this case, the data is batches of data from an
+#' Andromeda table. Each batch will be presented to the function as a data frame.
 #'
 #' @export
-collectBatched <- function(tbl, fun, batchSize = 10000) {
+batchApply <- function(tbl, fun, ..., batchSize = 10000) {
   if (!inherits(tbl, "tbl_dbi")) 
     stop("First argument must be an Andromeda table") 
   if (!is.function(fun)) 
@@ -33,15 +38,17 @@ collectBatched <- function(tbl, fun, batchSize = 10000) {
   connection <- tbl$src$con
   sql <-  dbplyr::sql_render(tbl, connection)
   result <- RSQLite::dbSendQuery(connection, sql)
+  output <- list()
   tryCatch({
     while (!RSQLite::dbHasCompleted(result)) {
       batch <- RSQLite::dbFetch(result, n = batchSize)
-      fun(batch)
+      # TODO: support ...
+      output[[length(output) + 1]] <- fun(batch)
     }
   }, finally = {
     RSQLite::dbClearResult(result)
   })
-  invisible(NULL)
+  invisible(output)
 }
 
 #' Append to an Andromeda table
@@ -83,7 +90,7 @@ appendToTable <- function(tbl, data) {
       on.exit(RSQLite::dbDisconnect(tempAndromeda))
       data <- tempAndromeda$table
     } 
-    collectBatched(data, doBatchedAppend)
+    batchApply(data, doBatchedAppend)
   }
   invisible(NULL)
 }
