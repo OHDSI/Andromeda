@@ -29,7 +29,14 @@ test_that("Tables from tables", {
   cars3 <- andromeda$cars3 %>% collect()
   expect_equivalent(cars3, cars %>% filter(speed > 10))
   
+  andromeda2 <- Andromeda()
+  andromeda2$cars <- cars
+  andromeda$cars4 <- andromeda2$cars
+  cars4 <- andromeda$cars4 %>% collect()
+  expect_equivalent(cars4, cars)
+  
   close(andromeda)
+  close(andromeda2)
 })
 
 test_that("Dropping tables", {

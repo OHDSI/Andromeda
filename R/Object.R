@@ -25,6 +25,7 @@ setClass("Andromeda", contains = "SQLiteConnection")
 #'
 #' @export
 Andromeda <- function() {
+  # TODO: Add option to select filename (als temp folder as option) ####
   andromeda <- RSQLite::dbConnect(RSQLite::SQLite(), tempfile(fileext = ".sqlite"))
   class(andromeda) <- "Andromeda"
   return(andromeda)
@@ -67,23 +68,20 @@ setMethod("show", "Andromeda", function(object) {
     if (RSQLite::dbExistsTable(x, i)) {
       RSQLite::dbRemoveTable(x, i)
     }
-    doBatchedAppend <- function(batch) {
-      RSQLite::dbWriteTable(conn = x,
-                            name = i,
-                            value = batch,
-                            overwrite = FALSE,
-                            append = TRUE)
+    if (isTRUE(all.equal(x, dbplyr::remote_con(value)))) {
+      sql <-  dbplyr::sql_render(value, x)
+      sql <- sprintf("CREATE TABLE %s AS %s", i, sql)
+      RSQLite::dbExecute(x, sql)
+    } else {
+      doBatchedAppend <- function(batch) {
+        RSQLite::dbWriteTable(conn = x,
+                              name = i,
+                              value = batch,
+                              overwrite = FALSE,
+                              append = TRUE)
+      }
+      batchApply(value, doBatchedAppend)
     }
-    if (isTRUE(all.equal(x, value$src$con))) {
-      # Cannot read and write to the same database at the same time. 
-      # Create a copy in a temp Andromeda first
-      #TODO: probably should do some CREATE TABLE AS instead. ####
-      tempAndromeda <- Andromeda()
-      tempAndromeda$table <- value
-      on.exit(RSQLite::dbDisconnect(tempAndromeda))
-      value <- tempAndromeda$table
-    } 
-    batchApply(value, doBatchedAppend)
   }
   x
 }

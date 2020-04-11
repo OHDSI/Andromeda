@@ -18,6 +18,7 @@
 #'
 #' @param tbl       An Andromeda table.
 #' @param fun       A function where the first argument is a data frame.
+#' @param ...       Additional parameters passed to fun.
 #' @param batchSize Number of rows to fetch at a time.
 #' 
 #' @details 
@@ -32,18 +33,14 @@ batchApply <- function(tbl, fun, ..., batchSize = 10000) {
   if (!is.function(fun)) 
     stop("Second argument must be a function")
   
-  # # Open a new read-only connection. Can't read and write at the same time using the same connection
-  # connection <- RSQLite::dbConnect(RSQLite::SQLite(), tbl$src$con@dbname, flags = RSQLite::SQLITE_RO)
-  # on.exit(RSQLite::dbDisconnect(connection))
-  connection <- tbl$src$con
+  connection <- dbplyr::remote_con(tbl)
   sql <-  dbplyr::sql_render(tbl, connection)
   result <- RSQLite::dbSendQuery(connection, sql)
   output <- list()
   tryCatch({
     while (!RSQLite::dbHasCompleted(result)) {
       batch <- RSQLite::dbFetch(result, n = batchSize)
-      # TODO: support ...
-      output[[length(output) + 1]] <- fun(batch)
+      output[[length(output) + 1]] <- do.call(fun, append(list(batch), list(...)))
     }
   }, finally = {
     RSQLite::dbClearResult(result)
@@ -63,8 +60,8 @@ appendToTable <- function(tbl, data) {
   if (!inherits(tbl$ops, "op_base_remote") )
     stop("First argument must be a base table (cannot be a query result)")
   
-  connection <- tbl$src$con
-  tableName <- tbl$ops$x
+  connection <- dbplyr::remote_con(tbl)
+  tableName <- dbplyr::remote_name(tbl)
   if (inherits(data, "data.frame")) {
     
     RSQLite::dbWriteTable(conn = connection,
@@ -73,24 +70,20 @@ appendToTable <- function(tbl, data) {
                           overwrite = FALSE,
                           append = TRUE)
   } else if (inherits(data, "tbl_dbi")) {
-
-    doBatchedAppend <- function(batch) {
-      RSQLite::dbWriteTable(conn = connection,
-                            name = tableName,
-                            value = batch,
-                            overwrite = FALSE,
-                            append = TRUE)
+    if (isTRUE(all.equal(connection, dbplyr::remote_con(data)))) {
+      sql <-  dbplyr::sql_render(data, connection)
+      sql <- sprintf("INSERT INTO %s %s", tableName, sql)
+      RSQLite::dbExecute(connection, sql)
+    } else {
+      doBatchedAppend <- function(batch) {
+        RSQLite::dbWriteTable(conn = connection,
+                              name = tableName,
+                              value = batch,
+                              overwrite = FALSE,
+                              append = TRUE)
+      }
+      batchApply(data, doBatchedAppend)
     }
-    if (isTRUE(all.equal(tbl$src$con, data$src$con))) {
-      # Cannot read and write to the same database at the same time. 
-      # Create a copy in a temp Andromeda first
-      #TODO: use a INSERT INTO TABLE instead
-      tempAndromeda <- Andromeda()
-      tempAndromeda$table <- data
-      on.exit(RSQLite::dbDisconnect(tempAndromeda))
-      data <- tempAndromeda$table
-    } 
-    batchApply(data, doBatchedAppend)
   }
   invisible(NULL)
 }
