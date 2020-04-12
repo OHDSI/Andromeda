@@ -28,6 +28,10 @@ Andromeda <- function() {
   # TODO: Add option to select filename (als temp folder as option) ####
   andromeda <- RSQLite::dbConnect(RSQLite::SQLite(), tempfile(fileext = ".sqlite"))
   class(andromeda) <- "Andromeda"
+  finalizer <- function(ptr) {
+    close(andromeda)
+  }
+  reg.finalizer(andromeda@ptr, finalizer, onexit = TRUE) 
   return(andromeda)
 }
 
@@ -116,6 +120,10 @@ is.Andomeda <- function(x) {
 
 #' @export
 close.Andromeda <- function(con, ...) {
+  fileName <- con@dbname
   RSQLite::dbDisconnect(con)
+  if (file.exists(fileName)) {
+    unlink(fileName)
+  }
 }
 

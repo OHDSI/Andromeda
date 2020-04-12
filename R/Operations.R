@@ -16,10 +16,12 @@
 
 #' Apply a function to batches of data in an Andromeda table
 #'
-#' @param tbl       An Andromeda table.
+#' @param tbl       An Andromeda table (or any other DBI table).
 #' @param fun       A function where the first argument is a data frame.
 #' @param ...       Additional parameters passed to fun.
 #' @param batchSize Number of rows to fetch at a time.
+#' @param safe      Create a copy of tbl first? Allows writing to the same Andromeda
+#'                  as being read from.
 #' 
 #' @details 
 #' This function is similar to the \code{lapply} function, in that it applies a 
@@ -27,23 +29,31 @@
 #' Andromeda table. Each batch will be presented to the function as a data frame.
 #'
 #' @export
-batchApply <- function(tbl, fun, ..., batchSize = 10000) {
+batchApply <- function(tbl, fun, ..., batchSize = 10000, safe = FALSE) {
   if (!inherits(tbl, "tbl_dbi")) 
-    stop("First argument must be an Andromeda table") 
+    stop("First argument must be an Andromeda (or DBI) table") 
   if (!is.function(fun)) 
     stop("Second argument must be a function")
   
-  connection <- dbplyr::remote_con(tbl)
-  sql <-  dbplyr::sql_render(tbl, connection)
-  result <- RSQLite::dbSendQuery(connection, sql)
+  if (safe) {
+    tempAndromeda <- Andromeda() 
+    on.exit(close(tempAndromeda))
+    tempAndromeda$tbl <- tbl
+    connection <- dbplyr::remote_con(tempAndromeda$tbl)
+    sql <-  dbplyr::sql_render(tempAndromeda$tbl, connection)
+  } else {
+    connection <- dbplyr::remote_con(tbl)
+    sql <-  dbplyr::sql_render(tbl, connection)
+  }
+  result <- DBI::dbSendQuery(connection, sql)
   output <- list()
   tryCatch({
-    while (!RSQLite::dbHasCompleted(result)) {
-      batch <- RSQLite::dbFetch(result, n = batchSize)
+    while (!DBI::dbHasCompleted(result)) {
+      batch <- DBI::dbFetch(result, n = batchSize)
       output[[length(output) + 1]] <- do.call(fun, append(list(batch), list(...)))
     }
   }, finally = {
-    RSQLite::dbClearResult(result)
+    DBI::dbClearResult(result)
   })
   invisible(output)
 }

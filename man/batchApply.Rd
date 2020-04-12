@@ -4,14 +4,19 @@
 \alias{batchApply}
 \title{Apply a function to batches of data in an Andromeda table}
 \usage{
-batchApply(tbl, fun, ..., batchSize = 10000)
+batchApply(tbl, fun, ..., batchSize = 10000, safe = FALSE)
 }
 \arguments{
-\item{tbl}{An Andromeda table.}
+\item{tbl}{An Andromeda table (or any other DBI table).}
 
 \item{fun}{A function where the first argument is a data frame.}
 
+\item{...}{Additional parameters passed to fun.}
+
 \item{batchSize}{Number of rows to fetch at a time.}
+
+\item{safe}{Create a copy of tbl first? Allows writing to the same Andromeda
+as being read from.}
 }
 \description{
 Apply a function to batches of data in an Andromeda table
