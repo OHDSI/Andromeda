@@ -2,7 +2,7 @@ library(testthat)
 library(dplyr)
 
 test_that("batchApply", {
-  andromeda <- Andromeda()
+  andromeda <- andromeda()
   andromeda$cars <- cars
   
   doSomething <- function(batch, multiplier) {
@@ -17,7 +17,7 @@ test_that("batchApply", {
 })
 
 test_that("batchApply safe mode", {
-  andromeda <- Andromeda()
+  andromeda <- andromeda()
   andromeda$cars <- cars
   
   doSomething <- function(batch, multiplier) {

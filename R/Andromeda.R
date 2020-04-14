@@ -16,5 +16,6 @@
 
 #' @keywords internal
 #' @aliases NULL Andromeda-package
+#' @importFrom methods slotNames
 "_PACKAGE"
 

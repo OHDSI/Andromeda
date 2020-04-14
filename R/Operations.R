@@ -36,7 +36,7 @@ batchApply <- function(tbl, fun, ..., batchSize = 10000, safe = FALSE) {
     stop("Second argument must be a function")
   
   if (safe) {
-    tempAndromeda <- Andromeda() 
+    tempAndromeda <- andromeda() 
     on.exit(close(tempAndromeda))
     tempAndromeda$tbl <- tbl
     connection <- dbplyr::remote_con(tempAndromeda$tbl)

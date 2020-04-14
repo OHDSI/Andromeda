@@ -2,14 +2,14 @@ library(testthat)
 library(dplyr)
 
 test_that("Object creation", {
-  andromeda <- Andromeda()
+  andromeda <- andromeda()
   expect_true(is.Andomeda(andromeda))
   close(andromeda)
   expect_error(names(andromeda))
 })
 
 test_that("Tables from data frames", {
-  andromeda <- Andromeda()
+  andromeda <- andromeda()
   andromeda$cars <- cars
   expect_true("cars" %in% names(andromeda))
   cars2 <- andromeda$cars %>% collect()
@@ -18,7 +18,7 @@ test_that("Tables from data frames", {
 })
 
 test_that("Tables from tables", {
-  andromeda <- Andromeda()
+  andromeda <- andromeda()
   andromeda$cars <- cars
   
   andromeda$cars2 <- andromeda$cars
@@ -29,7 +29,7 @@ test_that("Tables from tables", {
   cars3 <- andromeda$cars3 %>% collect()
   expect_equivalent(cars3, cars %>% filter(speed > 10))
   
-  andromeda2 <- Andromeda()
+  andromeda2 <- andromeda()
   andromeda2$cars <- cars
   andromeda$cars4 <- andromeda2$cars
   cars4 <- andromeda$cars4 %>% collect()
@@ -40,7 +40,7 @@ test_that("Tables from tables", {
 })
 
 test_that("Dropping tables", {
-  andromeda <- Andromeda()
+  andromeda <- andromeda()
   
   andromeda$cars <- cars
   expect_true("cars" %in% names(andromeda))
@@ -51,7 +51,7 @@ test_that("Dropping tables", {
 })
 
 test_that("Zero rows", {
-  andromeda <- Andromeda()
+  andromeda <- andromeda()
   
   andromeda$cars <- cars[cars$speed > 1000, ]
   expect_true("cars" %in% names(andromeda))
@@ -73,7 +73,7 @@ test_that("Zero rows", {
 
 
 test_that("Object cleanup", {
-  andromeda <- Andromeda()
+  andromeda <- andromeda()
   
   fileName <- andromeda@dbname
   expect_true(file.exists(fileName))
@@ -82,7 +82,7 @@ test_that("Object cleanup", {
   expect_false(file.exists(fileName))
   
   
-  andromeda2 <- Andromeda()
+  andromeda2 <- andromeda()
   
   fileName <- andromeda2@dbname
   expect_true(file.exists(fileName))

@@ -2,7 +2,7 @@ library(testthat)
 library(dplyr)
 
 test_that("Saving and loading", {
-  andromeda <- Andromeda()
+  andromeda <- andromeda()
   andromeda$table <- iris
   expect_true("table" %in% names(andromeda))
   iris1 <- andromeda$table %>% collect()
