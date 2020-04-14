@@ -97,3 +97,12 @@ appendToTable <- function(tbl, data) {
   }
   invisible(NULL)
 }
+
+
+
+#' @export
+dim.tbl_dbi <- function(tbl) {
+  if (!inherits(tbl, "tbl_dbi")) 
+    stop("Argument must be an Andromeda table") 
+  return(c((tbl %>% dplyr::count() %>%  dplyr::collect())$n, length(dbplyr::op_vars(tbl))))
+}

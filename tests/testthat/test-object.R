@@ -75,6 +75,14 @@ test_that("Zero rows", {
   close(andromeda)
 })
 
+test_that("dim function", {
+  andromeda <- andromeda()
+  andromeda$cars <- cars
+  expect_equal(nrow(andromeda$cars), nrow(cars))
+  expect_equal(ncol(andromeda$cars), ncol(cars))
+  close(andromeda)
+})
+
 test_that("Object cleanup", {
   andromeda <- andromeda()
   
