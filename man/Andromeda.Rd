@@ -9,3 +9,8 @@ andromeda()
 \description{
 Create an Andromeda object
 }
+\details{
+By default the Andromeda object is created in the systems temporary file location. You can override this by 
+specifying a folder using \code{options(andromedaTempFolder = "c:/andromedaTemp")}, where "c:/andromedaTemp"
+is the folder to create the Andromeda objects in.
+}

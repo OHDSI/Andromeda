@@ -1,11 +1,10 @@
 library(testthat)
-library(dplyr)
 
 test_that("Object creation", {
   andromeda <- andromeda()
-  expect_true(is.Andomeda(andromeda))
+  expect_true(isAndomeda(andromeda))
   close(andromeda)
-  expect_error(names(andromeda))
+  expect_null(names(andromeda))
 })
 
 test_that("Tables from data frames", {
@@ -14,6 +13,11 @@ test_that("Tables from data frames", {
   expect_true("cars" %in% names(andromeda))
   cars2 <- andromeda$cars %>% collect()
   expect_equivalent(cars2, cars)
+  
+  andromeda[["USArrests"]] <- USArrests
+  USArrests2 <- andromeda[["USArrests"]] %>% collect()
+  expect_equivalent(USArrests2, USArrests)
+  
   close(andromeda)
 })
 
@@ -71,7 +75,6 @@ test_that("Zero rows", {
   close(andromeda)
 })
 
-
 test_that("Object cleanup", {
   andromeda <- andromeda()
   
@@ -90,6 +93,14 @@ test_that("Object cleanup", {
   rm(andromeda2)
   invisible(gc())
   expect_false(file.exists(fileName))
-  
-  
-  })
+})
+
+test_that("Setting the andromeda temp folder", {
+  folder <- tempfile()
+  options(andromedaTempFolder = folder)
+  andromeda <- andromeda()
+  files <- list.files(folder)
+  expect_equal(length(files), 1)
+  close(andromeda)
+  unlink(folder, recursive = TRUE)
+})

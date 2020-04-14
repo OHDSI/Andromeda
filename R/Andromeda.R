@@ -17,5 +17,6 @@
 #' @keywords internal
 #' @aliases NULL Andromeda-package
 #' @importFrom methods slotNames
+#' @import dplyr
 "_PACKAGE"
 

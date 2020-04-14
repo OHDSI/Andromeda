@@ -12,11 +12,12 @@ License: Apache License 2.0
 VignetteBuilder: knitr
 URL: https://github.com/OHDSI/Andromeda
 BugReports: https://github.com/OHDSI/Andromeda/issues
+Depends:
+  dplyr
 Imports:
   RSQLite,
   DBI,
   zip,
-  dplyr,
   methods,
   dbplyr
 Suggests:

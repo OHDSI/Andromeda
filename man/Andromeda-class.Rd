@@ -4,9 +4,27 @@
 \name{Andromeda-class}
 \alias{Andromeda-class}
 \alias{show,Andromeda-method}
+\alias{$,Andromeda-method}
+\alias{$<-,Andromeda-method}
+\alias{[[<-,Andromeda-method}
+\alias{[[,Andromeda-method}
+\alias{length,Andromeda-method}
+\alias{close,Andromeda-method}
 \title{Andromeda class.}
 \usage{
 \S4method{show}{Andromeda}(object)
+
+\S4method{$}{Andromeda}(x, name)
+
+\S4method{$}{Andromeda}(x, name) <- value
+
+\S4method{[[}{Andromeda}(x, i) <- value
+
+\S4method{[[}{Andromeda}(x, i)
+
+\S4method{length}{Andromeda}(x)
+
+\S4method{close}{Andromeda}(con, ...)
 }
 \description{
 Andromeda class.

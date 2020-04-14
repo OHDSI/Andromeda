@@ -22,13 +22,27 @@
 setClass("Andromeda", contains = "SQLiteConnection")
 
 #' Create an Andromeda object
+#' 
+#' @details 
+#' By default the Andromeda object is created in the systems temporary file location. You can override this by 
+#' specifying a folder using \code{options(andromedaTempFolder = "c:/andromedaTemp")}, where "c:/andromedaTemp"
+#' is the folder to create the Andromeda objects in.
 #'
 #' @export
 andromeda <- function() {
-  # TODO: Add option to select filename (als temp folder as option) ####
-  andromeda <- RSQLite::dbConnect(RSQLite::SQLite(), tempfile(fileext = ".sqlite"))
+  tempFolder <- getOption("andromedaTempFolder")
+  if (is.null(tempFolder)) {
+    tempFolder <- tempdir() 
+  } else {
+    if (!file.exists(tempFolder)) {
+      dir.create(tempFolder, recursive = TRUE) 
+    }
+  }
+  andromeda <- RSQLite::dbConnect(RSQLite::SQLite(), tempfile(tmpdir = tempFolder, fileext = ".sqlite"))
   class(andromeda) <- "Andromeda"
   finalizer <- function(ptr) {
+    # Suppress R Check note:
+    missing(ptr)
     close(andromeda)
   }
   reg.finalizer(andromeda@ptr, finalizer, onexit = TRUE) 
@@ -50,16 +64,22 @@ setMethod("show", "Andromeda", function(object) {
 })
 
 #' @export
-"$.Andromeda" <- function(x, i){
-  if (RSQLite::dbExistsTable(x, i)) {
-    return(dplyr::tbl(x, i))
-  } else {
-    return(NULL)
-  }
-}
+#' @rdname Andromeda-class
+setMethod("$", "Andromeda", function(x, name) {
+  return(x[[name]])
+  
+})
 
 #' @export
-"$<-.Andromeda" <- function(x, i, value){
+#' @rdname Andromeda-class
+setMethod("$<-", "Andromeda", function(x, name, value) {
+  x[[name]] <- value
+  return(x)
+})
+
+#' @export
+#' @rdname Andromeda-class
+setMethod("[[<-", "Andromeda", function(x, i, value) {
   if (is.null(value)) {
     RSQLite::dbRemoveTable(x, i)
   } else if (inherits(value, "data.frame")) {
@@ -88,7 +108,17 @@ setMethod("show", "Andromeda", function(object) {
     }
   }
   x
-}
+})
+
+#' @export
+#' @rdname Andromeda-class
+setMethod("[[", "Andromeda", function(x, i) {
+  if (RSQLite::dbExistsTable(x, i)) {
+    return(dplyr::tbl(x, i))
+  } else {
+    return(NULL)
+  }
+})
 
 #' names
 #' 
@@ -98,15 +128,18 @@ setMethod("show", "Andromeda", function(object) {
 #' 
 #' @export
 setMethod("names", "Andromeda", function(x) {  
-  RSQLite::dbListTables(x)
+  if (RSQLite::dbIsValid(x)) {
+    return(RSQLite::dbListTables(x))
+  }
 })
 
 #TODO : add "names<-.Andromeda"
 
 #' @export
-length.Andromeda <- function(x){
+#' @rdname Andromeda-class
+setMethod("length", "Andromeda", function(x) {
   length(names(x))
-}
+})
 
 #' Check whether an object is an Andromeda object
 #' 
@@ -119,12 +152,13 @@ length.Andromeda <- function(x){
 #' A logical value.
 #' 
 #' @export
-is.Andomeda <- function(x) {
+isAndomeda <- function(x) {
   inherits(x, "Andromeda") 
 }
 
 #' @export
-close.Andromeda <- function(con, ...) {
+#' @rdname Andromeda-class
+setMethod("close", "Andromeda", function(con, ...) {
   fileName <- con@dbname
   if (RSQLite::dbIsValid(con)) {
     RSQLite::dbDisconnect(con)
@@ -132,5 +166,5 @@ close.Andromeda <- function(con, ...) {
   if (file.exists(fileName)) {
     unlink(fileName)
   }
-}
+})
 
