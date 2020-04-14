@@ -1,5 +1,4 @@
 library(testthat)
-library(dplyr)
 
 test_that("batchApply", {
   andromeda <- andromeda()
