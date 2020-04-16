@@ -5,6 +5,14 @@ test_that("Object creation", {
   expect_true(isAndomeda(andromeda))
   close(andromeda)
   expect_null(names(andromeda))
+  
+  andromeda <- andromeda(cars = cars, iris = iris)
+  expect_true("cars" %in% names(andromeda))
+  expect_true("iris" %in% names(andromeda))
+  close(andromeda)
+  
+  # All arguments must be named:
+  expect_error(andromeda(cars, iris))
 })
 
 test_that("Tables from data frames", {
@@ -42,6 +50,8 @@ test_that("Tables from tables", {
   close(andromeda)
   close(andromeda2)
 })
+
+
 
 test_that("Dropping tables", {
   andromeda <- andromeda()
@@ -111,4 +121,16 @@ test_that("Setting the andromeda temp folder", {
   expect_equal(length(files), 1)
   close(andromeda)
   unlink(folder, recursive = TRUE)
+})
+
+test_that("Copying andromeda", {
+  andromeda <- andromeda()
+  andromeda$cars <- cars
+  
+  andromeda2 <- copyAndromeda(andromeda)
+  
+  expect_true("cars" %in% names(andromeda2))
+  expect_false(andromeda@dbname == andromeda2@dbname)
+  close(andromeda)
+  close(andromeda2)
 })

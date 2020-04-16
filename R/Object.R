@@ -23,13 +23,74 @@ setClass("Andromeda", contains = "SQLiteConnection")
 
 #' Create an Andromeda object
 #' 
-#' @details 
+#' @description
 #' By default the Andromeda object is created in the systems temporary file location. You can override this by 
 #' specifying a folder using \code{options(andromedaTempFolder = "c:/andromedaTemp")}, where "c:/andromedaTemp"
 #' is the folder to create the Andromeda objects in.
-#'
+#' 
+#' @param ...   Named objects. See details for what objects are valid. If no objects are provided, an empty Andromeda
+#'              is returned.
+#'              
+#' @details 
+#' Valid objects are data frames, Andromeda tables, or any other dply table. 
+#' 
+#' @examples
+#' andr <- andromeda(cars = cars, iris = iris)
+#' 
+#' names(andr)
+#' # [1] "cars" "iris"
+#' 
+#' andr$cars %>% filter(speed > 10) %>% collect()
+#' # # A tibble: 41 x 2
+#' # speed  dist
+#' # <dbl> <dbl>
+#' # 1    11    17
+#' #  ...
+#' 
+#' close(andr)
+#' 
 #' @export
-andromeda <- function() {
+andromeda <- function(...) {
+  arguments <- list(...)
+  if (length(arguments) > 0) {
+    if (is.null(names(arguments)) || any(names(arguments) == ""))
+      stop("All arguments must be named")
+  }
+  andromeda <- .createAndromeda()
+  if (length(arguments) > 0) {
+    for (name in names(arguments)) {
+      andromeda[[name]] <- arguments[[name]]
+    }
+  }
+  return(andromeda)
+}
+
+#' Copy Andromeda
+#'
+#' @param andromeda The andromeda object to copy.
+#'
+#' @return 
+#' The copied andromeda.
+#' 
+#' @examples
+#' andr <- andromeda(cars = cars, iris = iris)
+#' 
+#' andr2 <- copyAndromeda(andr)
+#' 
+#' names(andr2)
+#' # [1] "cars" "iris"
+#' 
+#' close(andr)
+#' close(andr2)
+#' 
+#' @export
+copyAndromeda <- function(andromeda) {
+  newAndromeda <- .createAndromeda()
+  RSQLite::sqliteCopyDatabase(andromeda, newAndromeda)
+  return(newAndromeda)
+}
+
+.createAndromeda <- function() {
   tempFolder <- getOption("andromedaTempFolder")
   if (is.null(tempFolder)) {
     tempFolder <- tempdir() 
@@ -106,6 +167,8 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
       }
       batchApply(value, doBatchedAppend)
     }
+  } else {
+    stop("Table must be a data frame or dplyr table")
   }
   x
 })
