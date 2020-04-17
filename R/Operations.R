@@ -16,52 +16,52 @@
 
 #' Apply a function to batches of data in an Andromeda table
 #'
-#' @param tbl       An Andromeda table (or any other DBI table).
-#' @param fun       A function where the first argument is a data frame.
-#' @param ...       Additional parameters passed to fun.
-#' @param batchSize Number of rows to fetch at a time.
-#' @param safe      Create a copy of tbl first? Allows writing to the same Andromeda
-#'                  as being read from.
-#' 
-#' @details 
-#' This function is similar to the \code{lapply} function, in that it applies a 
-#' function to sets of data. In this case, the data is batches of data from an
-#' Andromeda table. Each batch will be presented to the function as a data frame.
-#' 
-#' @examples 
+#' @param tbl         An Andromeda table (or any other DBI table).
+#' @param fun         A function where the first argument is a data frame.
+#' @param ...         Additional parameters passed to fun.
+#' @param batchSize   Number of rows to fetch at a time.
+#' @param safe        Create a copy of tbl first? Allows writing to the same Andromeda as being read
+#'                    from.
+#'
+#' @details
+#' This function is similar to the \code{lapply} function, in that it applies a function to sets of
+#' data. In this case, the data is batches of data from an Andromeda table. Each batch will be
+#' presented to the function as a data frame.
+#'
+#' @examples
 #' andr <- andromeda(cars = cars)
-#' 
+#'
 #' fun <- function(x) {
 #'   return(nrow(x))
 #' }
-#' 
+#'
 #' result <- batchApply(andr$cars, fun, batchSize = 25)
-#' 
+#'
 #' result
-#' # [[1]]
-#' # [1] 25
+#' # [[1]] 
+#' # [1] 25 
 #' # 
-#' # [[2]]
+#' # [[2]] 
 #' # [1] 25
-#' 
+#'
 #' close(andr)
-#' 
+#'
 #' @export
 batchApply <- function(tbl, fun, ..., batchSize = 10000, safe = FALSE) {
-  if (!inherits(tbl, "tbl_dbi")) 
-    stop("First argument must be an Andromeda (or DBI) table") 
-  if (!is.function(fun)) 
+  if (!inherits(tbl, "tbl_dbi"))
+    stop("First argument must be an Andromeda (or DBI) table")
+  if (!is.function(fun))
     stop("Second argument must be a function")
-  
+
   if (safe) {
-    tempAndromeda <- andromeda() 
+    tempAndromeda <- andromeda()
     on.exit(close(tempAndromeda))
     tempAndromeda$tbl <- tbl
     connection <- dbplyr::remote_con(tempAndromeda$tbl)
-    sql <-  dbplyr::sql_render(tempAndromeda$tbl, connection)
+    sql <- dbplyr::sql_render(tempAndromeda$tbl, connection)
   } else {
     connection <- dbplyr::remote_con(tbl)
-    sql <-  dbplyr::sql_render(tbl, connection)
+    sql <- dbplyr::sql_render(tbl, connection)
   }
   result <- DBI::dbSendQuery(connection, sql)
   output <- list()
@@ -78,61 +78,58 @@ batchApply <- function(tbl, fun, ..., batchSize = 10000, safe = FALSE) {
 
 #' Apply a function to groups of data in an Andromeda table
 #'
-#' @param tbl           An Andromeda table (or any other DBI table).
-#' @param groupVariable The variable to group by
-#' @param fun           A function where the first argument is a data frame.
-#' @param ...           Additional parameters passed to fun.
-#' @param batchSize     Number of rows fetched from the table at a time. This is not
-#'                      the number of rows to which the function will be applied. Included mostly 
-#'                      for testing purposes.
-#' @param safe          Create a copy of tbl first? Allows writing to the same Andromeda
-#'                      as being read from.
-#' 
-#' @details 
-#' This function applies a function to groups of data. The groups are identified by unique values
-#' of the \code{groupVariable}, which must be a variable in the table.
-#' 
+#' @param tbl             An Andromeda table (or any other DBI table).
+#' @param groupVariable   The variable to group by
+#' @param fun             A function where the first argument is a data frame.
+#' @param ...             Additional parameters passed to fun.
+#' @param batchSize       Number of rows fetched from the table at a time. This is not the number of
+#'                        rows to which the function will be applied. Included mostly for testing
+#'                        purposes.
+#' @param safe            Create a copy of tbl first? Allows writing to the same Andromeda as being
+#'                        read from.
+#'
+#' @details
+#' This function applies a function to groups of data. The groups are identified by unique values of
+#' the \code{groupVariable}, which must be a variable in the table.
+#'
 #' @return
 #' Invisibly returns a list of objects, where each object is the output of the user supplied function
 #' applied to a group.
-#' 
-#' @examples 
+#'
+#' @examples
 #' andr <- andromeda(cars = cars)
-#' 
+#'
 #' fun <- function(x) {
-#'   return(tibble::tibble(speed = x$speed[1],
-#'                         meanDist = mean(x$dist)))
+#'   return(tibble::tibble(speed = x$speed[1], meanDist = mean(x$dist)))
 #' }
-#' 
+#'
 #' result <- groupApply(andr$cars, "speed", fun)
 #' result <- bind_rows(result)
 #' result
-#' # # A tibble: 19 x 2
-#' # speed meanDist
-#' # <dbl>    <dbl>
-#' # 1     4      6  
-#' # 2     7     13  
-#' # 3     8     16  
+#' # # A tibble: 19 x 2 
+#' # speed meanDist 
+#' # <dbl> <dbl> 
+#' # 1 4 6 
+#' # 2 7 13 
+#' # 3 8 16 
 #' # ...
-#' 
+#'
 #' close(andr)
 #'
 #' @export
-groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 10000,  safe = FALSE) {
+groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 10000, safe = FALSE) {
   if (!groupVariable %in% colnames(tbl))
     stop(groupVariable, " is not a variable in the table")
-  
+
   env <- new.env()
   assign("output", list(), envir = env)
   wrapper <- function(data, userFun, groupVariable, env, ...) {
     groups <- split(data, data[groupVariable])
     if (!is.null(env$groupValue) && groups[[1]][1, groupVariable] == env$groupValue) {
-      groups[[1]] <- bind_rows(groups[[1]], env$groupData)        
+      groups[[1]] <- bind_rows(groups[[1]], env$groupData)
     }
     if (length(groups) > 1) {
-      results <- lapply(groups[1:(length(groups) - 1)], 
-                        userFun,
-                        ...)
+      results <- lapply(groups[1:(length(groups) - 1)], userFun, ...)
       env$output <- append(env$output, results)
     }
     env$groupData <- groups[[length(groups)]]
@@ -157,42 +154,41 @@ groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 10000,  safe = 
 
 #' Append to an Andromeda table
 #'
-#' @param tbl       An Andromeda table. This must be a base table (i.e. it cannot be a query result).
-#' @param data      The data to append. This can be either a data.frame or another Andromeda table.
-#' 
-#' @description 
-#' Append a data frame, Andromeda table, or result of a query on an Andromeda table to an existing Andromeda
-#' table.
-#' 
-#' If data from another Andromeda is appended, a batch-wise copy process is used, which will be slower than when 
-#' appending data from within the same Andromeda object.
+#' @param tbl    An Andromeda table. This must be a base table (i.e. it cannot be a query result).
+#' @param data   The data to append. This can be either a data.frame or another Andromeda table.
 #'
-#' @examples 
+#' @description
+#' Append a data frame, Andromeda table, or result of a query on an Andromeda table to an existing
+#' Andromeda table.
+#' If data from another Andromeda is appended, a batch-wise copy process is used, which will be slower
+#' than when appending data from within the same Andromeda object.
+#'
+#' @examples
 #' andr <- andromeda(cars = cars)
 #' nrow(andr$cars)
 #' # [1] 50
-#' 
+#'
 #' appendToTable(andr$cars, cars)
 #' nrow(andr$cars)
 #' # [1] 100
-#' 
+#'
 #' appendToTable(andr$cars, andr$cars %>% filter(speed > 10))
 #' nrow(andr$cars)
 #' # [1] 182
-#' 
+#'
 #' close(andr)
 #'
 #' @export
 appendToTable <- function(tbl, data) {
-  if (!inherits(tbl, "tbl_dbi")) 
-    stop("First argument must be an Andromeda table") 
-  if (!inherits(tbl$ops, "op_base_remote") )
+  if (!inherits(tbl, "tbl_dbi"))
+    stop("First argument must be an Andromeda table")
+  if (!inherits(tbl$ops, "op_base_remote"))
     stop("First argument must be a base table (cannot be a query result)")
-  
+
   connection <- dbplyr::remote_con(tbl)
   tableName <- dbplyr::remote_name(tbl)
   if (inherits(data, "data.frame")) {
-    
+
     RSQLite::dbWriteTable(conn = connection,
                           name = tableName,
                           value = data,
@@ -200,7 +196,7 @@ appendToTable <- function(tbl, data) {
                           append = TRUE)
   } else if (inherits(data, "tbl_dbi")) {
     if (isTRUE(all.equal(connection, dbplyr::remote_con(data)))) {
-      sql <-  dbplyr::sql_render(data, connection)
+      sql <- dbplyr::sql_render(data, connection)
       sql <- sprintf("INSERT INTO %s %s", tableName, sql)
       RSQLite::dbExecute(connection, sql)
     } else {
@@ -219,7 +215,7 @@ appendToTable <- function(tbl, data) {
 
 #' @export
 dim.tbl_dbi <- function(x) {
-  if (!inherits(x, "tbl_dbi")) 
-    stop("Argument must be an Andromeda table") 
-  return(c((x %>% dplyr::count() %>%  dplyr::collect())$n, length(dbplyr::op_vars(x))))
+  if (!inherits(x, "tbl_dbi"))
+    stop("Argument must be an Andromeda table")
+  return(c((x %>% dplyr::count() %>% dplyr::collect())$n, length(dbplyr::op_vars(x))))
 }
