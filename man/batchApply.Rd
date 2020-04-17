@@ -26,3 +26,22 @@ This function is similar to the \code{lapply} function, in that it applies a
 function to sets of data. In this case, the data is batches of data from an
 Andromeda table. Each batch will be presented to the function as a data frame.
 }
+\examples{
+andr <- andromeda(cars = cars)
+
+fun <- function(x) {
+  return(nrow(x))
+}
+
+result <- batchApply(andr$cars, fun, batchSize = 25)
+
+result
+# [[1]]
+# [1] 25
+# 
+# [[2]]
+# [1] 25
+
+close(andr)
+
+}

@@ -5,7 +5,7 @@
 \alias{Andromeda-package}
 \title{Andromeda: AsynchroNous Disk-based Representation of MassivE DAta}
 \description{
-A replacement for ff for storing large data objects.
+AsynchroNous Disk-based Representation of MassivE DAta (ANDROMEDA): An R package for storing large data objects. Andromeda allow storing data objects on a local drive, while still making it possible to manipulate the data in an efficient manner.
 }
 \seealso{
 Useful links:

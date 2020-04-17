@@ -1,5 +1,4 @@
 library(testthat)
-library(dplyr)
 
 test_that("Saving and loading", {
   andromeda <- andromeda()
@@ -23,5 +22,28 @@ test_that("Saving and loading", {
   expect_equal(attr(andromeda, "metaData")$x, 1)
 
   close(andromeda2)
+  unlink(fileName)
+})
+
+
+test_that("Object cleanup when loading and saving", {
+  andromeda <- andromeda()
+  andromeda$cars <- cars
+
+  expect_true(file.exists(andromeda@dbname))
+  
+  fileName <- tempfile(fileext = ".zip")
+  saveAndromeda(andromeda, fileName, maintainConnection = FALSE)
+  
+  expect_false(file.exists(andromeda@dbname))
+  
+  andromeda2 <- loadAndromeda(fileName)
+  internalFileName <- andromeda2@dbname
+  
+  expect_true(file.exists(internalFileName))
+  
+  rm(andromeda2)
+  invisible(gc())
+  expect_false(file.exists(internalFileName))
   unlink(fileName)
 })

@@ -35,3 +35,18 @@ test_that("batchApply safe mode", {
   expect_equivalent(cars1, cars2)
   close(andromeda)
 })
+
+test_that("groupApply", {
+  andromeda <- andromeda()
+  andromeda$cars <- cars
+  
+  doSomething <- function(batch, multiplier) {
+    return(nrow(batch) * multiplier)
+  }
+  result <- groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10)
+  result <- unlist(result)
+  
+  expect_true(sum(result) == nrow(cars)*2)
+  expect_true(length(result) == length(unique(cars$speed)))
+  close(andromeda)
+})

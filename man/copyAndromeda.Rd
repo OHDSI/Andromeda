@@ -13,7 +13,7 @@ copyAndromeda(andromeda)
 The copied andromeda.
 }
 \description{
-Copy Andromeda
+Creates a complete copy of an Andromeda object. Object attributes are not copied.
 }
 \examples{
 andr <- andromeda(cars = cars, iris = iris)

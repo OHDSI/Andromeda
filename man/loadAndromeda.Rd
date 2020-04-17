@@ -7,8 +7,21 @@
 loadAndromeda(fileName)
 }
 \arguments{
-\item{fileName}{The path where the object is stored.}
+\item{fileName}{The path where the object was saved using \code{\link{saveAndromeda}}.}
 }
 \description{
 Load Andromeda from file
+}
+\examples{
+\dontrun{
+andr <- loadAndromeda("c:/temp/andromeda.zip")
+names(andr)
+# [1] "cars"
+
+close(andr) 
+}
+
+}
+\seealso{
+\code{\link{saveAndromeda}}
 }

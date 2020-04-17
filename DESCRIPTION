@@ -7,7 +7,7 @@ Authors@R: c(
   person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut", "cre"))
   )
 Maintainer: Martijn Schuemie <schuemie@ohdsi.org>
-Description: A replacement for ff for storing large data objects.
+Description:AsynchroNous Disk-based Representation of MassivE DAta (ANDROMEDA): An R package for storing large data objects. Andromeda allow storing data objects on a local drive, while still making it possible to manipulate the data in an efficient manner.  
 License: Apache License 2.0
 VignetteBuilder: knitr
 URL: https://github.com/OHDSI/Andromeda
@@ -19,11 +19,15 @@ Imports:
   DBI,
   zip,
   methods,
-  dbplyr
+  dbplyr,
+  cli,
+  pillar
 Suggests:
   testthat,
   knitr,
-  rmarkdown
+  rmarkdown,
+  rlang,
+  tibble
 LazyData: false
 RoxygenNote: 7.1.0
 Encoding: UTF-8

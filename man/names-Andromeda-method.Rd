@@ -12,3 +12,12 @@
 \description{
 Show the names of the tables in an Andromeda object.
 }
+\examples{
+andr <- andromeda(cars = cars, iris = iris)
+
+names(andr)
+# [1] "cars" "iris"
+
+close(andr)
+
+}

@@ -3,8 +3,12 @@ library(testthat)
 test_that("Object creation", {
   andromeda <- andromeda()
   expect_true(isAndomeda(andromeda))
+  expect_true(isValidAndromeda(andromeda))
+  
   close(andromeda)
   expect_null(names(andromeda))
+  expect_true(isAndomeda(andromeda))
+  expect_false(isValidAndromeda(andromeda))
   
   andromeda <- andromeda(cars = cars, iris = iris)
   expect_true("cars" %in% names(andromeda))

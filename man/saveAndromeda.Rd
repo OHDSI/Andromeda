@@ -22,5 +22,17 @@ saving will be faster.}
 \item{overwrite}{If the file exists, should it be overwritten? If FALSE and the file exists, an error will be thrown.}
 }
 \description{
-Save Andromeda to file
+Saves the Andromeda object in a zipped file. Note that by default the Andromeda object is automatically closed by saving it to disk. This is due
+to a limitation of the underlying technology (RSQLite). To keep the connection open, use \code{maintainConnection = TRUE}. This will first create
+a temporary copy of the Andromeda object. Note that this can be substantially slower.
+}
+\examples{
+\dontrun{
+andr <- andromeda(cars = cars)
+saveAndromeda(cars, "c:/temp/andromeda.zip")
+}
+
+}
+\seealso{
+\code{\link{loadAndromeda}}
 }

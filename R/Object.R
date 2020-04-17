@@ -68,6 +68,9 @@ andromeda <- function(...) {
 #' Copy Andromeda
 #'
 #' @param andromeda The andromeda object to copy.
+#' 
+#' @description 
+#' Creates a complete copy of an Andromeda object. Object attributes are not copied.
 #'
 #' @return 
 #' The copied andromeda.
@@ -91,14 +94,7 @@ copyAndromeda <- function(andromeda) {
 }
 
 .createAndromeda <- function() {
-  tempFolder <- getOption("andromedaTempFolder")
-  if (is.null(tempFolder)) {
-    tempFolder <- tempdir() 
-  } else {
-    if (!file.exists(tempFolder)) {
-      dir.create(tempFolder, recursive = TRUE) 
-    }
-  }
+  tempFolder <- .getAndromedaTempFolder()
   andromeda <- RSQLite::dbConnect(RSQLite::SQLite(), tempfile(tmpdir = tempFolder, fileext = ".sqlite"))
   class(andromeda) <- "Andromeda"
   finalizer <- function(ptr) {
@@ -110,16 +106,33 @@ copyAndromeda <- function(andromeda) {
   return(andromeda)
 }
 
+.getAndromedaTempFolder <- function() {
+  tempFolder <- getOption("andromedaTempFolder")
+  if (is.null(tempFolder)) {
+    tempFolder <- tempdir() 
+  } else {
+    if (!file.exists(tempFolder)) {
+      dir.create(tempFolder, recursive = TRUE) 
+    }
+  }
+  return(tempFolder)
+}
+
 # show()
 #' @export
 #' @rdname Andromeda-class
 setMethod("show", "Andromeda", function(object) {
-  writeLines("# Andromeda object")
-  writeLines(paste("# Physical location: ", object@dbname))
-  writeLines("")
-  writeLines("Tables:")
-  for (name in  RSQLite::dbListTables(object)) {
-    writeLines(paste0("- ", name, " (", paste(RSQLite::dbListFields(object, name), collapse = ", "), ")"))
+  cli::cat_line(pillar::style_subtle("# Andromeda object"))
+  
+  if (RSQLite::dbIsValid(object)) {
+    cli::cat_line(pillar::style_subtle(paste("# Physical location: ", object@dbname)))
+    cli::cat_line("")
+    cli::cat_line("Tables:")
+    for (name in  RSQLite::dbListTables(object)) {
+      cli::cat_line(paste0("- ", name, " (", paste(RSQLite::dbListFields(object, name), collapse = ", "), ")"))
+    }
+  } else {
+    cli::cli_alert_danger("Connection closed")
   }
   invisible(NULL)
 })
@@ -142,7 +155,9 @@ setMethod("$<-", "Andromeda", function(x, name, value) {
 #' @rdname Andromeda-class
 setMethod("[[<-", "Andromeda", function(x, i, value) {
   if (is.null(value)) {
-    RSQLite::dbRemoveTable(x, i)
+    if (i %in% names(x)) {
+      RSQLite::dbRemoveTable(x, i)
+    }
   } else if (inherits(value, "data.frame")) {
     RSQLite::dbWriteTable(conn = x,
                           name = i,
@@ -185,9 +200,18 @@ setMethod("[[", "Andromeda", function(x, i) {
 
 #' names
 #' 
+#' @description 
 #' Show the names of the tables in an Andromeda object.
 #' 
 #' @param x An Andromeda object.
+#' 
+#' @examples
+#' andr <- andromeda(cars = cars, iris = iris)
+#' 
+#' names(andr)
+#' # [1] "cars" "iris"
+#' 
+#' close(andr)
 #' 
 #' @export
 setMethod("names", "Andromeda", function(x) {  
@@ -216,7 +240,33 @@ setMethod("length", "Andromeda", function(x) {
 #' 
 #' @export
 isAndomeda <- function(x) {
-  inherits(x, "Andromeda") 
+  return(inherits(x, "Andromeda") )
+}
+
+#' Check whether an Andromda object is still valid
+#' 
+#' @param x The Andromeda objet to check.
+#' 
+#' @details 
+#' Checks whether an Andromeda object is still valid, or whether it has been closed.
+#' 
+#' @return 
+#' A logical value.
+#' 
+#' @examples
+#' andr <- andromeda(cars = cars, iris = iris)
+#' 
+#' isValidAndromeda(andr)
+#' # TRUE
+#' 
+#' close(andr)
+#' 
+#' isValidAndromeda(andr)
+#' # FALSE
+#' 
+#' @export
+isValidAndromeda <- function(x) {
+  return(RSQLite::dbIsValid(x))
 }
 
 #' @export
@@ -230,4 +280,3 @@ setMethod("close", "Andromeda", function(con, ...) {
     unlink(fileName)
   }
 })
-
