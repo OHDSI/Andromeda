@@ -21,7 +21,7 @@ andr <- andromeda(cars = cars, iris = iris)
 andr2 <- copyAndromeda(andr)
 
 names(andr2)
-# [1] "cars" "iris"
+# [1] 'cars' 'iris'
 
 close(andr)
 close(andr2)

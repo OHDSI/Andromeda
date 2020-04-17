@@ -16,7 +16,7 @@ Show the names of the tables in an Andromeda object.
 andr <- andromeda(cars = cars, iris = iris)
 
 names(andr)
-# [1] "cars" "iris"
+# [1] 'cars' 'iris'
 
 close(andr)
 

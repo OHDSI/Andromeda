@@ -12,11 +12,10 @@ appendToTable(tbl, data)
 \item{data}{The data to append. This can be either a data.frame or another Andromeda table.}
 }
 \description{
-Append a data frame, Andromeda table, or result of a query on an Andromeda table to an existing Andromeda
-table.
-
-If data from another Andromeda is appended, a batch-wise copy process is used, which will be slower than when 
-appending data from within the same Andromeda object.
+Append a data frame, Andromeda table, or result of a query on an Andromeda table to an existing
+Andromeda table.
+If data from another Andromeda is appended, a batch-wise copy process is used, which will be slower
+than when appending data from within the same Andromeda object.
 }
 \examples{
 andr <- andromeda(cars = cars)

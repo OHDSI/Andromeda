@@ -248,7 +248,7 @@ isAndomeda <- function(x) {
 
 #' Check whether an Andromda object is still valid
 #'
-#' @param x   The Andromeda objet to check.
+#' @param x   The Andromeda object to check.
 #'
 #' @details
 #' Checks whether an Andromeda object is still valid, or whether it has been closed.

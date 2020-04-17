@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply a function to batches of data in an Andromeda table — batchApply • Andromeda</title>
+<title>Apply a function to groups of data in an Andromeda table — groupApply • Andromeda</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Apply a function to batches of data in an Andromeda table — batchApply" />
-<meta property="og:description" content="Apply a function to batches of data in an Andromeda table" />
+<meta property="og:title" content="Apply a function to groups of data in an Andromeda table — groupApply" />
+<meta property="og:description" content="Apply a function to groups of data in an Andromeda table" />
 
 
 
@@ -114,16 +114,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply a function to batches of data in an Andromeda table</h1>
+    <h1>Apply a function to groups of data in an Andromeda table</h1>
     <small class="dont-index">Source: <a href='https://github.com/OHDSI/Andromeda/blob/master/R/Operations.R'><code>R/Operations.R</code></a></small>
-    <div class="hidden name"><code>batchApply.Rd</code></div>
+    <div class="hidden name"><code>groupApply.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Apply a function to batches of data in an Andromeda table</p>
+    <p>Apply a function to groups of data in an Andromeda table</p>
     </div>
 
-    <pre class="usage"><span class='fu'>batchApply</span>(<span class='no'>tbl</span>, <span class='no'>fun</span>, <span class='no'>...</span>, <span class='kw'>batchSize</span> <span class='kw'>=</span> <span class='fl'>10000</span>, <span class='kw'>safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>groupApply</span>(<span class='no'>tbl</span>, <span class='no'>groupVariable</span>, <span class='no'>fun</span>, <span class='no'>...</span>, <span class='kw'>batchSize</span> <span class='kw'>=</span> <span class='fl'>10000</span>, <span class='kw'>safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -131,6 +131,10 @@
     <tr>
       <th>tbl</th>
       <td><p>An Andromeda table (or any other DBI table).</p></td>
+    </tr>
+    <tr>
+      <th>groupVariable</th>
+      <td><p>The variable to group by</p></td>
     </tr>
     <tr>
       <th>fun</th>
@@ -142,42 +146,65 @@
     </tr>
     <tr>
       <th>batchSize</th>
-      <td><p>Number of rows to fetch at a time.</p></td>
+      <td><p>Number of rows fetched from the table at a time. This is not the number of
+rows to which the function will be applied. Included mostly for testing
+purposes.</p></td>
     </tr>
     <tr>
       <th>safe</th>
-      <td><p>Create a copy of tbl first? Allows writing to the same Andromeda as being read
-from.</p></td>
+      <td><p>Create a copy of tbl first? Allows writing to the same Andromeda as being
+read from.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Invisibly returns a list of objects, where each object is the output of the user supplied function
+applied to a group.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function is similar to the <code>lapply</code> function, in that it applies a function to sets of
-data. In this case, the data is batches of data from an Andromeda table. Each batch will be
-presented to the function as a data frame.</p>
+    <p>This function applies a function to groups of data. The groups are identified by unique values of
+the <code>groupVariable</code>, which must be a variable in the table.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>)
 
 <span class='no'>fun</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>x</span>) {
-  <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>x</span>))
+  <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='kw pkg'>tibble</span><span class='kw ns'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span>(<span class='kw'>speed</span> <span class='kw'>=</span> <span class='no'>x</span>$<span class='no'>speed</span>[<span class='fl'>1</span>], <span class='kw'>meanDist</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>x</span>$<span class='no'>dist</span>)))
 }
 
-<span class='no'>result</span> <span class='kw'>&lt;-</span> <span class='fu'>batchApply</span>(<span class='no'>andr</span>$<span class='no'>cars</span>, <span class='no'>fun</span>, <span class='kw'>batchSize</span> <span class='kw'>=</span> <span class='fl'>25</span>)
+<span class='no'>result</span> <span class='kw'>&lt;-</span> <span class='fu'>groupApply</span>(<span class='no'>andr</span>$<span class='no'>cars</span>, <span class='st'>"speed"</span>, <span class='no'>fun</span>)
+<span class='no'>result</span> <span class='kw'>&lt;-</span> <span class='fu'>bind_rows</span>(<span class='no'>result</span>)
+<span class='no'>result</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 19 x 2</span><span>
+#&gt;    speed meanDist
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span>     4      6  
+#&gt; </span><span style='color: #555555;'> 2</span><span>     7     13  
+#&gt; </span><span style='color: #555555;'> 3</span><span>     8     16  
+#&gt; </span><span style='color: #555555;'> 4</span><span>     9     10  
+#&gt; </span><span style='color: #555555;'> 5</span><span>    10     26  
+#&gt; </span><span style='color: #555555;'> 6</span><span>    11     22.5
+#&gt; </span><span style='color: #555555;'> 7</span><span>    12     21.5
+#&gt; </span><span style='color: #555555;'> 8</span><span>    13     35  
+#&gt; </span><span style='color: #555555;'> 9</span><span>    14     50.5
+#&gt; </span><span style='color: #555555;'>10</span><span>    15     33.3
+#&gt; </span><span style='color: #555555;'>11</span><span>    16     36  
+#&gt; </span><span style='color: #555555;'>12</span><span>    17     40.7
+#&gt; </span><span style='color: #555555;'>13</span><span>    18     64.5
+#&gt; </span><span style='color: #555555;'>14</span><span>    19     50  
+#&gt; </span><span style='color: #555555;'>15</span><span>    20     50.4
+#&gt; </span><span style='color: #555555;'>16</span><span>    22     66  
+#&gt; </span><span style='color: #555555;'>17</span><span>    23     54  
+#&gt; </span><span style='color: #555555;'>18</span><span>    24     93.8
+#&gt; </span><span style='color: #555555;'>19</span><span>    25     85  </div><div class='input'><span class='co'># # A tibble: 19 x 2 </span>
+<span class='co'># speed meanDist </span>
+<span class='co'># &lt;dbl&gt; &lt;dbl&gt; </span>
+<span class='co'># 1 4 6 </span>
+<span class='co'># 2 7 13 </span>
+<span class='co'># 3 8 16 </span>
+<span class='co'># ...</span>
 
-<span class='no'>result</span></div><div class='output co'>#&gt; [[1]]
-#&gt; [1] 25
-#&gt; 
-#&gt; [[2]]
-#&gt; [1] 25
-#&gt; </div><div class='input'><span class='co'># [[1]] </span>
-<span class='co'># [1] 25 </span>
-<span class='co'># </span>
-<span class='co'># [[2]] </span>
-<span class='co'># [1] 25</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>andr</span>)</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>andr</span>)</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -15,12 +15,12 @@ groupApply(tbl, groupVariable, fun, ..., batchSize = 10000, safe = FALSE)
 
 \item{...}{Additional parameters passed to fun.}
 
-\item{batchSize}{Number of rows fetched from the table at a time. This is not
-the number of rows to which the function will be applied. Included mostly 
-for testing purposes.}
+\item{batchSize}{Number of rows fetched from the table at a time. This is not the number of
+rows to which the function will be applied. Included mostly for testing
+purposes.}
 
-\item{safe}{Create a copy of tbl first? Allows writing to the same Andromeda
-as being read from.}
+\item{safe}{Create a copy of tbl first? Allows writing to the same Andromeda as being
+read from.}
 }
 \value{
 Invisibly returns a list of objects, where each object is the output of the user supplied function
@@ -30,26 +30,25 @@ applied to a group.
 Apply a function to groups of data in an Andromeda table
 }
 \details{
-This function applies a function to groups of data. The groups are identified by unique values
-of the \code{groupVariable}, which must be a variable in the table.
+This function applies a function to groups of data. The groups are identified by unique values of
+the \code{groupVariable}, which must be a variable in the table.
 }
 \examples{
 andr <- andromeda(cars = cars)
 
 fun <- function(x) {
-  return(tibble::tibble(speed = x$speed[1],
-                        meanDist = mean(x$dist)))
+  return(tibble::tibble(speed = x$speed[1], meanDist = mean(x$dist)))
 }
 
 result <- groupApply(andr$cars, "speed", fun)
 result <- bind_rows(result)
 result
-# # A tibble: 19 x 2
-# speed meanDist
-# <dbl>    <dbl>
-# 1     4      6  
-# 2     7     13  
-# 3     8     16  
+# # A tibble: 19 x 2 
+# speed meanDist 
+# <dbl> <dbl> 
+# 1 4 6 
+# 2 7 13 
+# 3 8 16 
 # ...
 
 close(andr)

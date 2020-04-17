@@ -15,16 +15,16 @@ batchApply(tbl, fun, ..., batchSize = 10000, safe = FALSE)
 
 \item{batchSize}{Number of rows to fetch at a time.}
 
-\item{safe}{Create a copy of tbl first? Allows writing to the same Andromeda
-as being read from.}
+\item{safe}{Create a copy of tbl first? Allows writing to the same Andromeda as being read
+from.}
 }
 \description{
 Apply a function to batches of data in an Andromeda table
 }
 \details{
-This function is similar to the \code{lapply} function, in that it applies a 
-function to sets of data. In this case, the data is batches of data from an
-Andromeda table. Each batch will be presented to the function as a data frame.
+This function is similar to the \code{lapply} function, in that it applies a function to sets of
+data. In this case, the data is batches of data from an Andromeda table. Each batch will be
+presented to the function as a data frame.
 }
 \examples{
 andr <- andromeda(cars = cars)
@@ -36,10 +36,10 @@ fun <- function(x) {
 result <- batchApply(andr$cars, fun, batchSize = 25)
 
 result
-# [[1]]
-# [1] 25
+# [[1]] 
+# [1] 25 
 # 
-# [[2]]
+# [[2]] 
 # [1] 25
 
 close(andr)

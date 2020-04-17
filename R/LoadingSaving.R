@@ -46,14 +46,14 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
     stop("File ", fileName, " already exists, and overwrite = FALSE")
   }
   # Need to save any user-defined attributes as well:
-  attributes <- attributes(andromeda)
+  attribs <- attributes(andromeda)
   for (name in slotNames(andromeda)) {
-    attributes[[name]] <- NULL
+    attribs[[name]] <- NULL
   }
-  attributes[["class"]] <- NULL
+  attribs[["class"]] <- NULL
 
   attributesFileName <- tempfile(fileext = ".rds")
-  saveRDS(attributes, attributesFileName)
+  saveRDS(attribs, attributesFileName)
 
   if (maintainConnection) {
     # Can't zip while connected, so make copy:

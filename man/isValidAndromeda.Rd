@@ -7,7 +7,7 @@
 isValidAndromeda(x)
 }
 \arguments{
-\item{x}{The Andromeda objet to check.}
+\item{x}{The Andromeda object to check.}
 }
 \value{
 A logical value.

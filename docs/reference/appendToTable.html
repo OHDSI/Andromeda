@@ -40,7 +40,10 @@
 
 
 <meta property="og:title" content="Append to an Andromeda table — appendToTable" />
-<meta property="og:description" content="Append to an Andromeda table" />
+<meta property="og:description" content="Append a data frame, Andromeda table, or result of a query on an Andromeda table to an existing
+Andromeda table.
+If data from another Andromeda is appended, a batch-wise copy process is used, which will be slower
+than when appending data from within the same Andromeda object." />
 
 
 
@@ -120,7 +123,10 @@
     </div>
 
     <div class="ref-description">
-    <p>Append to an Andromeda table</p>
+    <p>Append a data frame, Andromeda table, or result of a query on an Andromeda table to an existing
+Andromeda table.
+If data from another Andromeda is appended, a batch-wise copy process is used, which will be slower
+than when appending data from within the same Andromeda object.</p>
     </div>
 
     <pre class="usage"><span class='fu'>appendToTable</span>(<span class='no'>tbl</span>, <span class='no'>data</span>)</pre>
@@ -139,6 +145,17 @@
     </table>
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>andr</span>$<span class='no'>cars</span>)</div><div class='output co'>#&gt; [1] 50</div><div class='input'><span class='co'># [1] 50</span>
+
+<span class='fu'>appendToTable</span>(<span class='no'>andr</span>$<span class='no'>cars</span>, <span class='no'>cars</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>andr</span>$<span class='no'>cars</span>)</div><div class='output co'>#&gt; [1] 100</div><div class='input'><span class='co'># [1] 100</span>
+
+<span class='fu'>appendToTable</span>(<span class='no'>andr</span>$<span class='no'>cars</span>, <span class='no'>andr</span>$<span class='no'>cars</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span>(<span class='no'>speed</span> <span class='kw'>&gt;</span> <span class='fl'>10</span>))
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>andr</span>$<span class='no'>cars</span>)</div><div class='output co'>#&gt; [1] 182</div><div class='input'><span class='co'># [1] 182</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>andr</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -154,7 +171,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.</p>
 </div>
 
       </footer>

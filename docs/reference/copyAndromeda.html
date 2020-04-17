@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Andromeda: AsynchroNous Disk-based Representation of MassivE DAta — Andromeda-package • Andromeda</title>
+<title>Copy Andromeda — copyAndromeda • Andromeda</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Andromeda: AsynchroNous Disk-based Representation of MassivE DAta — Andromeda-package" />
-<meta property="og:description" content="AsynchroNous Disk-based Representation of MassivE DAta (ANDROMEDA): An R package for storing large data objects. Andromeda allow storing data objects on a local drive, while still making it possible to manipulate the data in an efficient manner." />
+<meta property="og:title" content="Copy Andromeda — copyAndromeda" />
+<meta property="og:description" content="Creates a complete copy of an Andromeda object. Object attributes are not copied." />
 
 
 
@@ -114,26 +114,39 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Andromeda: AsynchroNous Disk-based Representation of MassivE DAta</h1>
-    <small class="dont-index">Source: <a href='https://github.com/OHDSI/Andromeda/blob/master/R/Andromeda.R'><code>R/Andromeda.R</code></a></small>
-    <div class="hidden name"><code>Andromeda-package.Rd</code></div>
+    <h1>Copy Andromeda</h1>
+    <small class="dont-index">Source: <a href='https://github.com/OHDSI/Andromeda/blob/master/R/Object.R'><code>R/Object.R</code></a></small>
+    <div class="hidden name"><code>copyAndromeda.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>AsynchroNous Disk-based Representation of MassivE DAta (ANDROMEDA): An R package for storing large data objects. Andromeda allow storing data objects on a local drive, while still making it possible to manipulate the data in an efficient manner.</p>
+    <p>Creates a complete copy of an Andromeda object. Object attributes are not copied.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>copyAndromeda</span>(<span class='no'>andromeda</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>andromeda</th>
+      <td><p>The andromeda object to copy.</p></td>
+    </tr>
+    </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <div class='dont-index'><p>Useful links:</p><ul>
-<li><p><a href='https://github.com/OHDSI/Andromeda'>https://github.com/OHDSI/Andromeda</a></p></li>
-<li><p>Report bugs at <a href='https://github.com/OHDSI/Andromeda/issues'>https://github.com/OHDSI/Andromeda/issues</a></p></li>
-</ul>
+    <p>The copied andromeda.</p>
 
-</div>
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>, <span class='kw'>iris</span> <span class='kw'>=</span> <span class='no'>iris</span>)
 
+<span class='no'>andr2</span> <span class='kw'>&lt;-</span> <span class='fu'>copyAndromeda</span>(<span class='no'>andr</span>)
+
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>andr2</span>)</div><div class='output co'>#&gt; [1] "cars" "iris"</div><div class='input'><span class='co'># [1] 'cars' 'iris'</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>andr</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>andr2</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

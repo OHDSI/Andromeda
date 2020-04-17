@@ -16,9 +16,9 @@ Load Andromeda from file
 \dontrun{
 andr <- loadAndromeda("c:/temp/andromeda.zip")
 names(andr)
-# [1] "cars"
+# [1] 'cars'
 
-close(andr) 
+close(andr)
 }
 
 }

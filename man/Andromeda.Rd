@@ -7,13 +7,13 @@
 andromeda(...)
 }
 \arguments{
-\item{...}{Named objects. See details for what objects are valid. If no objects are provided, an empty Andromeda
-is returned.}
+\item{...}{Named objects. See details for what objects are valid. If no objects are provided, an
+empty Andromeda is returned.}
 }
 \description{
-By default the Andromeda object is created in the systems temporary file location. You can override this by 
-specifying a folder using \code{options(andromedaTempFolder = "c:/andromedaTemp")}, where "c:/andromedaTemp"
-is the folder to create the Andromeda objects in.
+By default the Andromeda object is created in the systems temporary file location. You can override
+this by specifying a folder using \code{options(andromedaTempFolder = "c:/andromedaTemp")}, where
+"c:/andromedaTemp" is the folder to create the Andromeda objects in.
 }
 \details{
 Valid objects are data frames, Andromeda tables, or any other dply table.
@@ -22,14 +22,14 @@ Valid objects are data frames, Andromeda tables, or any other dply table.
 andr <- andromeda(cars = cars, iris = iris)
 
 names(andr)
-# [1] "cars" "iris"
+# [1] 'cars' 'iris'
 
 andr$cars \%>\% filter(speed > 10) \%>\% collect()
-# # A tibble: 41 x 2
-# speed  dist
-# <dbl> <dbl>
-# 1    11    17
-#  ...
+# # A tibble: 41 x 2 
+# speed dist 
+# <dbl> <dbl> 
+# 1 11 17 
+# ...
 
 close(andr)
 
