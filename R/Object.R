@@ -131,7 +131,7 @@ setMethod("show", "Andromeda", function(object) {
     cli::cat_line("")
     cli::cat_line("Tables:")
     for (name in RSQLite::dbListTables(object)) {
-      cli::cat_line(paste0("- ",
+      cli::cat_line(paste0("$",
                            name,
                            " (",
                            paste(RSQLite::dbListFields(object, name), collapse = ", "),
