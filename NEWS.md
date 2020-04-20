@@ -1,4 +1,4 @@
-Andromeda 0.0.1
+Andromeda 0.1.0
 ================
 
 Initial version.

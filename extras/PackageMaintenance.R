@@ -24,11 +24,11 @@ devtools::spell_check()
 unlink("extras/Andromeda.pdf")
 shell("R CMD Rd2pdf ./ --output=extras/Andromeda.pdf")
 
-# rmarkdown::render("vignettes/SingleStudies.Rmd",
-#                   output_file = "../inst/doc/SingleStudies.pdf",
-#                   rmarkdown::pdf_document(latex_engine = "pdflatex",
-#                                           toc = TRUE,
-#                                           number_sections = TRUE))
-# unlink("inst/doc/SingleStudies.tex")
+rmarkdown::render("vignettes/UsingAndromeda.Rmd",
+                  output_file = "../inst/doc/UsingAndromeda.pdf",
+                  rmarkdown::pdf_document(latex_engine = "pdflatex",
+                                          toc = TRUE,
+                                          number_sections = TRUE))
+unlink("inst/doc/UsingAndromeda.tex")
 
 pkgdown::build_site()
