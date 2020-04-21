@@ -1,6 +1,6 @@
 Package: Andromeda
 Type: Package
-Title: AsynchroNous Disk-based Representation of MassivE DAta
+Title: AsynchroNous Disk-Based Representation of Massive Data
 Version: 0.1.1
 Date: 2020-04-21
 Authors@R: c(
