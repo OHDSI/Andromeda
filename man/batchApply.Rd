@@ -4,7 +4,7 @@
 \alias{batchApply}
 \title{Apply a function to batches of data in an Andromeda table}
 \usage{
-batchApply(tbl, fun, ..., batchSize = 10000, safe = FALSE)
+batchApply(tbl, fun, ..., batchSize = 1e+05, safe = FALSE)
 }
 \arguments{
 \item{tbl}{An Andromeda table (or any other DBI table).}

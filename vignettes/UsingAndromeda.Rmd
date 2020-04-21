@@ -147,7 +147,7 @@ However, for consistency it is recommended to use the `dplyr` functions instead.
 
 # Batch operations
 
-Often we'll need to perform some action against the data that is not supported by `dplyr.` For example, we may want to write to data to a CSV file, or perform some complex computation. Since we cannot assume an entire table (or query result) will fit in memory, we must assume we should do this batch-wise. For this the `Andromeda` package provides two functions: `batchApply` and `groupApply`. The former executes a function on batches of predefined length. We can specify the batch size by setting the `batchSize` argument, which defaults to 10,000. Here is a silly example, where take the number of rows in a batch, and multiply it by some number:
+Often we'll need to perform some action against the data that is not supported by `dplyr.` For example, we may want to write to data to a CSV file, or perform some complex computation. Since we cannot assume an entire table (or query result) will fit in memory, we must assume we should do this batch-wise. For this the `Andromeda` package provides two functions: `batchApply` and `groupApply`. The former executes a function on batches of predefined length. We can specify the batch size by setting the `batchSize` argument, which defaults to 100,000. Here is a silly example, where take the number of rows in a batch, and multiply it by some number:
 
 ```{r eval=TRUE}
 doSomething <- function(batch, multiplier) {

@@ -47,7 +47,7 @@
 #' close(andr)
 #'
 #' @export
-batchApply <- function(tbl, fun, ..., batchSize = 10000, safe = FALSE) {
+batchApply <- function(tbl, fun, ..., batchSize = 100000, safe = FALSE) {
   if (!inherits(tbl, "tbl_dbi"))
     stop("First argument must be an Andromeda (or DBI) table")
   if (!is.function(fun))
@@ -117,7 +117,7 @@ batchApply <- function(tbl, fun, ..., batchSize = 10000, safe = FALSE) {
 #' close(andr)
 #'
 #' @export
-groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 10000, safe = FALSE) {
+groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, safe = FALSE) {
   if (!groupVariable %in% colnames(tbl))
     stop(groupVariable, " is not a variable in the table")
 

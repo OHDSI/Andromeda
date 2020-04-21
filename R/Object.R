@@ -106,6 +106,7 @@ copyAndromeda <- function(andromeda) {
     close(andromeda)
   }
   reg.finalizer(andromeda@ptr, finalizer, onexit = TRUE)
+  RSQLite::dbExecute(andromeda, "PRAGMA journal_mode = OFF") 
   return(andromeda)
 }
 

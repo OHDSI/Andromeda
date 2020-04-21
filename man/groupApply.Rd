@@ -4,7 +4,7 @@
 \alias{groupApply}
 \title{Apply a function to groups of data in an Andromeda table}
 \usage{
-groupApply(tbl, groupVariable, fun, ..., batchSize = 10000, safe = FALSE)
+groupApply(tbl, groupVariable, fun, ..., batchSize = 1e+05, safe = FALSE)
 }
 \arguments{
 \item{tbl}{An Andromeda table (or any other DBI table).}

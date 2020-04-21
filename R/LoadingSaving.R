@@ -110,6 +110,7 @@ loadAndromeda <- function(fileName) {
   for (name in names(attributes)) {
     attr(andromeda, name) <- attributes[[name]]
   }
+  RSQLite::dbExecute(andromeda, "PRAGMA journal_mode = OFF") 
   class(andromeda) <- "Andromeda"
   return(andromeda)
 }
