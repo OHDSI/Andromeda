@@ -158,7 +158,7 @@ result <- unlist(result)
 result
 ```
 
-Alternatively, using `groupApply` we can execute a function on groups of rows, defined by the value in some variable in the table. In this example, we first filter to fast cars, and then perform the same meaningless computation as in the previous example, this time one groups of rows defined by having the same speed:
+Alternatively, using `groupApply` we can execute a function on groups of rows, defined by the value in some variable in the table. In this example, we first filter to fast cars, and then perform the same meaningless computation as in the previous example, this time on groups of rows defined by having the same speed:
 
 ```{r eval=TRUE}
 doSomething <- function(batch, multiplier) {
