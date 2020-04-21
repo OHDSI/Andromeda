@@ -3,14 +3,14 @@
 \name{isSorted}
 \alias{isSorted}
 \alias{isSorted.data.frame}
-\alias{isSorted.tbl}
+\alias{isSorted.tbl_dbi}
 \title{Check if data are sorted by one or more columns}
 \usage{
 isSorted(data, columnNames, ascending = rep(TRUE, length(columnNames)))
 
 \method{isSorted}{data.frame}(data, columnNames, ascending = rep(TRUE, length(columnNames)))
 
-\method{isSorted}{tbl}(data, columnNames, ascending = rep(TRUE, length(columnNames)))
+\method{isSorted}{tbl_dbi}(data, columnNames, ascending = rep(TRUE, length(columnNames)))
 }
 \arguments{
 \item{data}{Either a data.frame of ffdf object.}
@@ -33,7 +33,7 @@ This function currently only supports checking for sorting on numeric values.
 \itemize{
 \item \code{data.frame}: Check if a \code{data.frame} is sorted by one or more columns
 
-\item \code{tbl}: Check if an \code{Andromeda} table is sorted by one or more columns
+\item \code{tbl_dbi}: Check if an \code{Andromeda} table is sorted by one or more columns
 }}
 
 \examples{

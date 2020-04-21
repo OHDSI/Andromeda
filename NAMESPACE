@@ -2,7 +2,7 @@
 
 S3method(dim,tbl_dbi)
 S3method(isSorted,data.frame)
-S3method(isSorted,tbl)
+S3method(isSorted,tbl_dbi)
 export(andromeda)
 export(appendToTable)
 export(batchApply)

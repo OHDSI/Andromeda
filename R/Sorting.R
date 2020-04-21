@@ -54,7 +54,7 @@ isSorted.data.frame <- function(data,columnNames,ascending=rep(TRUE,length(colum
 
 #' @describeIn isSorted Check if an \code{Andromeda} table is sorted by one or more columns
 #' @export
-isSorted.tbl <- function(data, columnNames, ascending = rep(TRUE, length(columnNames))) {
+isSorted.tbl_dbi <- function(data, columnNames, ascending = rep(TRUE, length(columnNames))) {
   if (nrow(data) > 100000){ #If data is big, first check on a small subset. If that aready fails, we're done
     if (!.isSortedVectorList(data %>% dplyr::select(columnNames) %>% head(1000) %>% dplyr::collect(),
                              ascending = ascending)) {
