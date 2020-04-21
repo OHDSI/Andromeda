@@ -32,3 +32,10 @@ rmarkdown::render("vignettes/UsingAndromeda.Rmd",
 unlink("inst/doc/UsingAndromeda.tex")
 
 pkgdown::build_site()
+
+# Release package:
+devtools::check_win_devel()
+
+devtools::check_rhub()
+
+devtools::release()
