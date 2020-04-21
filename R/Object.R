@@ -48,6 +48,8 @@ setClass("Andromeda", contains = "SQLiteConnection")
 #' # ...
 #'
 #' close(andr)
+#' 
+#' @rdname andromeda_constructor
 #'
 #' @export
 andromeda <- function(...) {

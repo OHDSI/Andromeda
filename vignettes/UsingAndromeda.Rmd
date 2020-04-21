@@ -190,6 +190,14 @@ doSomething <- function(batch) {
   batchApply(andr$cars, doSomething, safe = TRUE)
 ```
 
+Note that this only a restriction of `batchApply` and `groupApply`. We could have achieved the same task as the example above much faster using only `dplyr`:
+
+```{r eval=TRUE}
+andr$cars2 <-
+  andr$cars %>%
+  mutate(speedSquared = speed^2)
+```
+
 # Saving and loading Andromeda objects
 
 To reuse an `Andromeda` at a later point in time, we can save it to a permanent location:
