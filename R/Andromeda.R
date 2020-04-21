@@ -19,5 +19,7 @@
 #' NULL Andromeda-package
 #' @importFrom methods slotNames
 #' @import dplyr
+#' @useDynLib Andromeda, .registration = TRUE
+#' 
 "_PACKAGE"
 

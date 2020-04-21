@@ -4,10 +4,13 @@ Title: AsynchroNous Disk-Based Representation of Massive Data
 Version: 0.1.1
 Date: 2020-04-21
 Authors@R: c(
-  person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut", "cre"))
+  person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut", "cre")),
+  person("Marc A.", "Suchard", , "msuchard@ucla.edu", role = c("aut"))
   )
 Maintainer: Martijn Schuemie <schuemie@ohdsi.org>
-Description:AsynchroNous Disk-based Representation of MassivE DAta (ANDROMEDA). Andromeda allow storing data objects on a local drive, while still making it possible to manipulate the data in an efficient manner.  
+Description: AsynchroNous Disk-based Representation of MassivE DAta (ANDROMEDA). 
+  Andromeda allow storing data objects on a local drive, while still making it 
+  possible to manipulate the data in an efficient manner.
 License: Apache License 2.0
 VignetteBuilder: knitr
 URL: https://github.com/OHDSI/Andromeda
@@ -21,7 +24,8 @@ Imports:
   methods,
   dbplyr,
   cli,
-  pillar
+  pillar,
+  Rcpp
 Suggests:
   testthat,
   knitr,
@@ -31,3 +35,5 @@ Suggests:
 LazyData: false
 RoxygenNote: 7.1.0
 Encoding: UTF-8
+LinkingTo: 
+  Rcpp
