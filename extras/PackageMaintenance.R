@@ -24,6 +24,7 @@ devtools::spell_check()
 unlink("extras/Andromeda.pdf")
 shell("R CMD Rd2pdf ./ --output=extras/Andromeda.pdf")
 
+dir.create("inst/doc", recursive = TRUE)
 rmarkdown::render("vignettes/UsingAndromeda.Rmd",
                   output_file = "../inst/doc/UsingAndromeda.pdf",
                   rmarkdown::pdf_document(latex_engine = "pdflatex",
