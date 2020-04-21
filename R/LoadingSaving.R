@@ -59,7 +59,7 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
     # Can't zip while connected, so make copy:
     tempFileName <- tempfile(fileext = ".sqlite")
     RSQLite::sqliteCopyDatabase(andromeda, tempFileName)
-    zip::zipr(fileName, c(attributesFileName, tempFileName))
+    zip::zipr(fileName, c(attributesFileName, tempFileName), compression_level = 2)
     unlink(tempFileName)
   } else {
     RSQLite::dbDisconnect(andromeda)
