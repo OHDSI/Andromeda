@@ -219,3 +219,51 @@ dim.tbl_dbi <- function(x) {
     stop("Argument must be an Andromeda table")
   return(c((x %>% dplyr::count() %>% dplyr::collect())$n, length(dbplyr::op_vars(x))))
 }
+
+#' Apply a boolean test to batches of data in an Andromeda table and terminate early
+#'
+#' @param tbl         An Andromeda table (or any other DBI table).
+#' @param fun         A function where the first argument is a data frame and returns TRUE/FALSE.
+#' @param ...         Additional parameters passed to fun.
+#' @param batchSize   Number of rows to fetch at a time.
+#'
+#' @details
+#' This function applies a boolean teset function to sets of
+#' data and terminates at the first FALSE.
+#'
+#' @examples
+#' andr <- andromeda(cars = cars)
+#'
+#' fun <- function(x) {
+#'   is.unsorted(x %>% select(speed) %>% collect())   
+#' }
+#'
+#' result <- batchTest(andr$cars, fun, batchSize = 25)
+#'
+#' result
+#' # [1] FALSE 
+#'
+#' close(andr)
+#'
+#' @export
+batchTest <- function(tbl, fun, ..., batchSize = 100000) {
+  if (!inherits(tbl, "tbl_dbi"))
+    stop("First argument must be an Andromeda (or DBI) table")
+  if (!is.function(fun))
+    stop("Second argument must be a function")
+  
+  connection <- dbplyr::remote_con(tbl)
+  sql <- dbplyr::sql_render(tbl, connection)
+  
+  result <- DBI::dbSendQuery(connection, sql)
+  output <- TRUE
+  tryCatch({
+    while (!DBI::dbHasCompleted(result) && output) {
+      batch <- DBI::dbFetch(result, n = batchSize)
+      output <- all(do.call(fun, append(list(batch), list(...))))
+    }
+  }, finally = {
+    DBI::dbClearResult(result)
+  })
+  return(output)
+}

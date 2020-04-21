@@ -50,3 +50,18 @@ test_that("groupApply", {
   expect_true(length(result) == length(unique(cars$speed)))
   close(andromeda)
 })
+
+test_that("batchTest", {
+  andromeda <- andromeda(cars = cars)
+  
+  isSpeedNotSorted <- function(batch) {
+    return(is.unsorted(batch %>% select("speed") %>% collect()))
+  }
+  
+  isSpeedSorted <- function(batch) {
+    return(!is.unsorted(batch %>% select("speed") %>% collect()))
+  }
+  
+  expect_true(batchTest(andromeda$cars, isSpeedNotSorted, batchSize = 5) == FALSE)
+  expect_true(batchTest(andromeda$cars, isSpeedSorted, batchSize = 100) == TRUE)
+})
