@@ -24,13 +24,11 @@ test_that("isSorted Andromeda", {
   andr <- andromeda(x = x)
   expect_false(isSorted(andr$x,c("a","b"),c(TRUE,FALSE)))
 
-  # x <- x[ffdforder(x[c("a","b")]),]
-  # 
-  # expect_true(isSorted(x,c("a","b")))
-  # expect_false(isSorted(x,c("a","b"),c(TRUE,FALSE)))
-  # 
-  # x$minb <- 0-x$b
-  # x <- x[ffdforder(x[c("a","minb")]),]
-  # expect_true(isSorted(x,c("a","b"),c(TRUE,FALSE)))
-  # expect_false(isSorted(x,c("a","b")))
+  andr$xSorted <- andr$x %>% dplyr::arrange(a, b)
+  expect_true(isSorted(andr$xSorted,c("a","b")))
+  expect_false(isSorted(andr$xSorted,c("a","b"),c(TRUE,FALSE)))
+  
+  andr$xSorted2 <- andr$xSorted %>% mutate(minb = 0 - b) %>% arrange(a, minb)
+  expect_true(isSorted(andr$xSorted2,c("a","b"),c(TRUE,FALSE)))
+  expect_false(isSorted(andr$xSorted2,c("a","b")))
 })
