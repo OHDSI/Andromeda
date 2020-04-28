@@ -1,5 +1,15 @@
+Andromeda 0.1.2
+===============
+
+Changes
+
+- Adding fast isSorted function.
+
+- Changes in documentation for CRAN.
+
+
 Andromeda 0.1.1
-================
+===============
 
 Changes
 
@@ -11,7 +21,8 @@ Changes
 
 - Turning of SQLIte journal to increase speed.
 
+
 Andromeda 0.1.0
-================
+===============
 
 Initial version.

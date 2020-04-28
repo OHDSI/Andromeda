@@ -3,9 +3,9 @@
 \docType{package}
 \name{Andromeda-package}
 \alias{Andromeda-package}
-\title{Andromeda: AsynchroNous Disk-based Representation of MassivE DAta}
+\title{Andromeda: AsynchroNous Disk-Based Representation of Massive Data}
 \description{
-AsynchroNous Disk-based Representation of MassivE DAta (ANDROMEDA). Andromeda allow storing data objects on a local drive, while still making it possible to manipulate the data in an efficient manner.
+Storing very large data objects on a local drive, while still making it possible to manipulate the data in an efficient manner.
 }
 \seealso{
 Useful links:
@@ -17,6 +17,16 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Martijn Schuemie \email{schuemie@ohdsi.org}
+
+Authors:
+\itemize{
+  \item Marc A. Suchard \email{msuchard@ucla.edu}
+}
+
+Other contributors:
+\itemize{
+  \item Observational Health Data Science and Informatics [copyright holder]
+}
 
 }
 \keyword{internal}

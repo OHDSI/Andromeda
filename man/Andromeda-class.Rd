@@ -27,6 +27,34 @@
 \S4method{close}{Andromeda}(con, ...)
 }
 \description{
-Andromeda class.
+The Andromeda class is an S4 object.
+
+This class provides the ability to work with data objects in R that are too large to fit in memory. Instead, 
+these objects are stored on disk. This is slower than working from memory, but may be the only viable option.
 }
-\keyword{internal}
+\section{Tables}{
+
+An `Andromeda` object has zero, one or more tables. The list of table names can be retrieved using the \code{names} 
+method. Tables can be accessed using the dollar sign syntax, e.g. \code{andromeda$myTable}.
+}
+
+\section{Permanence}{
+
+
+To mimic the behavior of in-memory objects, when working with data in Andromeda the data is stored in a 
+temporary location on the disk. You can modify the data as you can see fit, and when needed can save the data 
+to a permanent location. Later this data can be loaded to a temporary location again and be read and modified, 
+while keeping the saved data as is.
+}
+
+\section{Inheritance}{
+
+
+The Andromeda inherits directly from \code{SQLiteConnection}. As such, it can be used as if it is a \code{SQLiteConnection}. 
+\code{RSQLite} is an R wrapper around SQLite, a low-weight but very powerful single-user SQL database that can run 
+from a single file on the local file system.
+}
+
+\seealso{
+\code{\link{andromeda}}
+}

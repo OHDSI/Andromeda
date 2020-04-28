@@ -10,6 +10,9 @@ andromeda(...)
 \item{...}{Named objects. See details for what objects are valid. If no objects are provided, an
 empty Andromeda is returned.}
 }
+\value{
+Returns an \code{\link{Andromeda-class}} object.
+}
 \description{
 By default the Andromeda object is created in the systems temporary file location. You can override
 this by specifying a folder using \code{options(andromedaTempFolder = "c:/andromedaTemp")}, where
