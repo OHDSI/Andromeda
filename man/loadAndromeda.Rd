@@ -7,21 +7,31 @@
 loadAndromeda(fileName)
 }
 \arguments{
-\item{fileName}{The path where the object was saved using \code{\link{saveAndromeda}}.}
+\item{fileName}{The path where the object was saved using \code{\link[=saveAndromeda]{saveAndromeda()}}.}
+}
+\value{
+An \code{\link{Andromeda}} object.
 }
 \description{
 Load Andromeda from file
 }
 \examples{
-\dontrun{
-andr <- loadAndromeda("c:/temp/andromeda.zip")
-names(andr)
-# [1] 'cars'
+# For this example we create an Andromeda object and save it to
+# a temporary file locationL
+fileName <- tempfile()
+andr <- andromeda(cars = cars)
+saveAndromeda(andr, fileName)
 
+# Using loadAndromeda to load the object back:
+andr <- loadAndromeda(fileName)
+
+# Don't forget to close Andromeda when you are done:
 close(andr)
-}
+
+# Cleaning up the file used in this example:
+unlink(fileName)
 
 }
 \seealso{
-\code{\link{saveAndromeda}}
+\code{\link[=saveAndromeda]{saveAndromeda()}}
 }

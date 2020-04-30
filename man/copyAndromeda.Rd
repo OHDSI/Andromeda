@@ -7,13 +7,13 @@
 copyAndromeda(andromeda)
 }
 \arguments{
-\item{andromeda}{The andromeda object to copy.}
+\item{andromeda}{The \code{\link{Andromeda}} object to copy.}
 }
 \value{
-The copied andromeda.
+The copied \code{\link{Andromeda}} object.
 }
 \description{
-Creates a complete copy of an Andromeda object. Object attributes are not copied.
+Creates a complete copy of an \code{\link{Andromeda}} object. Object attributes are not copied.
 }
 \examples{
 andr <- andromeda(cars = cars, iris = iris)

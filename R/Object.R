@@ -14,34 +14,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Andromeda class.
+#' The Andromeda class
 #' 
 #' @description 
-#' The Andromeda class is an S4 object.
+#' The `Andromeda` class is an S4 object.
 #' 
 #' This class provides the ability to work with data objects in R that are too large to fit in memory. Instead, 
 #' these objects are stored on disk. This is slower than working from memory, but may be the only viable option. 
 #' 
 #' @section Tables:
-#' An `Andromeda` object has zero, one or more tables. The list of table names can be retrieved using the \code{names} 
-#' method. Tables can be accessed using the dollar sign syntax, e.g. \code{andromeda$myTable}.
+#' An `Andromeda` object has zero, one or more tables. The list of table names can be retrieved using the [`names()`] 
+#' method. Tables can be accessed using the dollar sign syntax, e.g. `andromeda$myTable`, or double-square-bracket 
+#' syntax, e.g. `andromeda[["myTable"]]`
 #'
 #' 
 #' @section Permanence:
 #' 
-#' To mimic the behavior of in-memory objects, when working with data in Andromeda the data is stored in a 
+#' To mimic the behavior of in-memory objects, when working with data in `Andromeda` the data is stored in a 
 #' temporary location on the disk. You can modify the data as you can see fit, and when needed can save the data 
 #' to a permanent location. Later this data can be loaded to a temporary location again and be read and modified, 
 #' while keeping the saved data as is.
 #' 
 #' @section Inheritance:
 #' 
-#' The Andromeda inherits directly from \code{SQLiteConnection}. As such, it can be used as if it is a \code{SQLiteConnection}. 
-#' \code{RSQLite} is an R wrapper around SQLite, a low-weight but very powerful single-user SQL database that can run 
+#' The `Andromeda` inherits directly from `SQLiteConnection.` As such, it can be used as if it is a `SQLiteConnection`. 
+#' [`RSQLite`] is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run 
 #' from a single file on the local file system.
 #' 
 #' @name Andromeda-class
-#' @seealso \code{\link{andromeda}}
+#' @aliases Andromeda
+#' @seealso \code{\link{andromeda()}}
 NULL
 
 #' Andromeda class.
@@ -53,18 +55,18 @@ setClass("Andromeda", contains = "SQLiteConnection")
 #' Create an Andromeda object
 #'
 #' @description
-#' By default the Andromeda object is created in the systems temporary file location. You can override
-#' this by specifying a folder using \code{options(andromedaTempFolder = "c:/andromedaTemp")}, where
-#' "c:/andromedaTemp" is the folder to create the Andromeda objects in.
+#' By default the `Andromeda` object is created in the systems temporary file location. You can override
+#' this by specifying a folder using `options(andromedaTempFolder = "c:/andromedaTemp")`, where
+#' `"c:/andromedaTemp"` is the folder to create the Andromeda objects in.
 #'
 #' @param ...   Named objects. See details for what objects are valid. If no objects are provided, an
 #'              empty Andromeda is returned.
 #'
 #' @details
-#' Valid objects are data frames, Andromeda tables, or any other dply table.
+#' Valid objects are data frames, `Andromeda` tables, or any other [`dplyr`] table.
 #' 
 #' @return 
-#' Returns an \code{\link{Andromeda-class}} object.
+#' Returns an [`Andromeda`] object.
 #'
 #' @examples
 #' andr <- andromeda(cars = cars, iris = iris)
@@ -101,13 +103,13 @@ andromeda <- function(...) {
 
 #' Copy Andromeda
 #'
-#' @param andromeda   The andromeda object to copy.
+#' @param andromeda   The [`Andromeda`] object to copy.
 #'
 #' @description
-#' Creates a complete copy of an Andromeda object. Object attributes are not copied.
+#' Creates a complete copy of an [`Andromeda`] object. Object attributes are not copied.
 #'
 #' @return
-#' The copied andromeda.
+#' The copied [`Andromeda`] object.
 #'
 #' @examples
 #' andr <- andromeda(cars = cars, iris = iris)
@@ -154,7 +156,7 @@ copyAndromeda <- function(andromeda) {
   return(tempFolder)
 }
 
-# show()
+#' @param object  An [`Andromeda`] object.
 #' @export
 #' @rdname
 #' Andromeda-class
@@ -178,6 +180,8 @@ setMethod("show", "Andromeda", function(object) {
   invisible(NULL)
 })
 
+#' @param x     An [`Andromeda`] object.
+#' @param name  The name of a table in the [`Andromeda`] object.
 #' @export
 #' @rdname
 #' Andromeda-class
@@ -186,6 +190,9 @@ setMethod("$", "Andromeda", function(x, name) {
 
 })
 
+#' @param x     An [`Andromeda`] object.
+#' @param name  The name of a table in the [`Andromeda`] object.
+#' @param value A data frame, [`Andromeda`] table, or other 'DBI' table.
 #' @export
 #' @rdname
 #' Andromeda-class
@@ -194,6 +201,9 @@ setMethod("$<-", "Andromeda", function(x, name, value) {
   return(x)
 })
 
+#' @param x    An [`Andromeda`] object.
+#' @param i    The name of a table in the [`Andromeda`] object.
+#' @param value A data frame, [`Andromeda`] table, or other 'DBI' table.
 #' @export
 #' @rdname
 #' Andromeda-class
@@ -224,6 +234,8 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
   x
 })
 
+#' @param x    An [`Andromeda`] object.
+#' @param i    The name of a table in the [`Andromeda`] object.
 #' @export
 #' @rdname
 #' Andromeda-class
@@ -240,7 +252,10 @@ setMethod("[[", "Andromeda", function(x, i) {
 #' @description
 #' Show the names of the tables in an Andromeda object.
 #'
-#' @param x   An Andromeda object.
+#' @param x    An [`Andromeda`] object.
+#' 
+#' @return 
+#' A vector of names.
 #'
 #' @examples
 #' andr <- andromeda(cars = cars, iris = iris)
@@ -250,6 +265,9 @@ setMethod("[[", "Andromeda", function(x, i) {
 #'
 #' close(andr)
 #'
+#' @rdname
+#' Andromeda-class
+#' 
 #' @export
 setMethod("names", "Andromeda", function(x) {
   if (RSQLite::dbIsValid(x)) {
@@ -259,6 +277,7 @@ setMethod("names", "Andromeda", function(x) {
 
 # TODO : add 'names<-.Andromeda'
 
+#' @param x    An [`Andromeda`] object.
 #' @export
 #' @rdname
 #' Andromeda-class
@@ -307,6 +326,8 @@ isValidAndromeda <- function(x) {
   return(RSQLite::dbIsValid(x))
 }
 
+#' @param con    An [`Andromeda`] object.
+#' @param ...	   Included for compatability with generic `close()` method.
 #' @export
 #' @rdname
 #' Andromeda-class

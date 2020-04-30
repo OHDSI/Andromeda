@@ -14,31 +14,41 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 #' Save Andromeda to file
 #'
-#' @param andromeda            An object of class Andromeda.
+#' @param andromeda            An object of class [`Andromeda`].
 #' @param fileName             The path where the object will be written.
-#' @param maintainConnection   Should the connection be maintained after saving? If FALSE, the
+#' @param maintainConnection   Should the connection be maintained after saving? If `FALSE`, the
 #'                             Andromeda object will be invalid after this operation, but saving will
 #'                             be faster.
-#' @param overwrite            If the file exists, should it be overwritten? If FALSE and the file
+#' @param overwrite            If the file exists, should it be overwritten? If `FALSE` and the file
 #'                             exists, an error will be thrown.
 #'
 #' @seealso
 #' \code{\link{loadAndromeda}}
 #'
 #' @description
-#' Saves the Andromeda object in a zipped file. Note that by default the Andromeda object is
+#' Saves the [`Andromeda`] object in a zipped file. Note that by default the [`Andromeda`] object is
 #' automatically closed by saving it to disk. This is due to a limitation of the underlying technology
-#' (RSQLite). To keep the connection open, use \code{maintainConnection = TRUE}. This will first
-#' create a temporary copy of the Andromeda object. Note that this can be substantially slower.
+#' ('RSQLite'). To keep the connection open, use 'maintainConnection = TRUE'. This will first
+#' create a temporary copy of the [`Andromeda`] object. Note that this can be substantially slower.
+#'
+#' @return 
+#' Returns no value. Executed for the side-effect of saving the object to disk.
 #'
 #' @examples
-#' \dontrun{
 #' andr <- andromeda(cars = cars)
-#' saveAndromeda(cars, "c:/temp/andromeda.zip")
-#' }
+#' 
+#' # For this example we'll use a temporary file location:
+#' fileName <- tempfile()
+#' 
+#' saveAndromeda(andr, fileName)
+#' 
+#' # Cleaning up the file used in this example:
+#' unlink(fileName)
+#' 
+#' @seealso 
+#' [`loadAndromeda()`]
 #'
 #' @export
 saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overwrite = TRUE) {
@@ -72,19 +82,29 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
 
 #' Load Andromeda from file
 #'
-#' @param fileName   The path where the object was saved using \code{\link{saveAndromeda}}.
+#' @param fileName   The path where the object was saved using [`saveAndromeda()`].
 #'
 #' @seealso
-#' \code{\link{saveAndromeda}}
+#' [`saveAndromeda()`]
+#' 
+#' @return 
+#' An [`Andromeda`] object.
 #'
 #' @examples
-#' \dontrun{
-#' andr <- loadAndromeda("c:/temp/andromeda.zip")
-#' names(andr)
-#' # [1] 'cars'
-#'
+#' # For this example we create an Andromeda object and save it to
+#' # a temporary file locationL
+#' fileName <- tempfile()
+#' andr <- andromeda(cars = cars)
+#' saveAndromeda(andr, fileName)
+#' 
+#' # Using loadAndromeda to load the object back:
+#' andr <- loadAndromeda(fileName)
+#' 
+#' # Don't forget to close Andromeda when you are done:
 #' close(andr)
-#' }
+#' 
+#' # Cleaning up the file used in this example:
+#' unlink(fileName)
 #'
 #' @export
 loadAndromeda <- function(fileName) {

@@ -17,18 +17,18 @@
 #' Check if data are sorted by one or more columns
 #'
 #' @description
-#' \code{isSorted} checks wether data are sorted by one or more specified columns.
+#' Checks wether data are sorted by one or more specified columns.
 #'
-#' @param data            Either a data.frame of ffdf object.
+#' @param data            Either a data frame or [`Andromeda`] table.
 #' @param columnNames     Vector of one or more column names.
-#' @param ascending       Logical vector indicating the data should be sorted ascending or descending
-#' according the specified columns.
+#' @param ascending       Logical vector indicating the data should be sorted ascending or 
+#'                        descending according the specified columns.
 #'
 #' @details
 #' This function currently only supports checking for sorting on numeric values.
 #'
 #' @return
-#' True or false
+#' `TRUE` or `FALSE`.
 #'
 #' @examples
 #' x <- data.frame(a = runif(1000), b = runif(1000))
@@ -42,17 +42,17 @@
 #' isSorted(x, c("a", "b"), c(TRUE, FALSE))
 #'
 #' @export
-isSorted <- function(data,columnNames,ascending=rep(TRUE,length(columnNames))){
+isSorted <- function(data, columnNames, ascending = rep(TRUE, length(columnNames))){
   UseMethod("isSorted")
 }
 
-#' @describeIn isSorted Check if a \code{data.frame} is sorted by one or more columns
+#' @describeIn isSorted Check if a `data.frame` is sorted by one or more columns
 #' @export
 isSorted.data.frame <- function(data,columnNames,ascending=rep(TRUE,length(columnNames))){
   return(.isSorted(data,columnNames,ascending))
 }
 
-#' @describeIn isSorted Check if an \code{Andromeda} table is sorted by one or more columns
+#' @describeIn isSorted Check if an [`Andromeda`] table is sorted by one or more columns
 #' @export
 isSorted.tbl_dbi <- function(data, columnNames, ascending = rep(TRUE, length(columnNames))) {
   if (nrow(data) > 100000){ #If data is big, first check on a small subset. If that aready fails, we're done

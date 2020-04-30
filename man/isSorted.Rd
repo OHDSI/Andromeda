@@ -13,18 +13,18 @@ isSorted(data, columnNames, ascending = rep(TRUE, length(columnNames)))
 \method{isSorted}{tbl_dbi}(data, columnNames, ascending = rep(TRUE, length(columnNames)))
 }
 \arguments{
-\item{data}{Either a data.frame of ffdf object.}
+\item{data}{Either a data frame or \code{\link{Andromeda}} table.}
 
 \item{columnNames}{Vector of one or more column names.}
 
-\item{ascending}{Logical vector indicating the data should be sorted ascending or descending
-according the specified columns.}
+\item{ascending}{Logical vector indicating the data should be sorted ascending or
+descending according the specified columns.}
 }
 \value{
-True or false
+\code{TRUE} or \code{FALSE}.
 }
 \description{
-\code{isSorted} checks wether data are sorted by one or more specified columns.
+Checks wether data are sorted by one or more specified columns.
 }
 \details{
 This function currently only supports checking for sorting on numeric values.
@@ -33,7 +33,7 @@ This function currently only supports checking for sorting on numeric values.
 \itemize{
 \item \code{data.frame}: Check if a \code{data.frame} is sorted by one or more columns
 
-\item \code{tbl_dbi}: Check if an \code{Andromeda} table is sorted by one or more columns
+\item \code{tbl_dbi}: Check if an \code{\link{Andromeda}} table is sorted by one or more columns
 }}
 
 \examples{

@@ -7,11 +7,11 @@
 batchTest(tbl, fun, ..., batchSize = 1e+05)
 }
 \arguments{
-\item{tbl}{An Andromeda table (or any other DBI table).}
+\item{tbl}{An \code{\link{Andromeda}} table (or any other 'DBI' table).}
 
-\item{fun}{A function where the first argument is a data frame and returns TRUE/FALSE.}
+\item{fun}{A function where the first argument is a data frame and returns a logical value.}
 
-\item{...}{Additional parameters passed to fun.}
+\item{...}{Additional parameters passed to \code{fun}.}
 
 \item{batchSize}{Number of rows to fetch at a time.}
 }
@@ -19,8 +19,8 @@ batchTest(tbl, fun, ..., batchSize = 1e+05)
 Apply a boolean test to batches of data in an Andromeda table and terminate early
 }
 \details{
-This function applies a boolean teset function to sets of
-data and terminates at the first FALSE.
+This function applies a boolean test function to sets of
+data and terminates at the first \code{FALSE}.
 }
 \examples{
 andr <- andromeda(cars = cars)

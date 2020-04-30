@@ -7,7 +7,7 @@
 groupApply(tbl, groupVariable, fun, ..., batchSize = 1e+05, safe = FALSE)
 }
 \arguments{
-\item{tbl}{An Andromeda table (or any other DBI table).}
+\item{tbl}{An \code{\link{Andromeda}} table (or any other 'DBI' table).}
 
 \item{groupVariable}{The variable to group by}
 
@@ -19,11 +19,11 @@ groupApply(tbl, groupVariable, fun, ..., batchSize = 1e+05, safe = FALSE)
 rows to which the function will be applied. Included mostly for testing
 purposes.}
 
-\item{safe}{Create a copy of tbl first? Allows writing to the same Andromeda as being
+\item{safe}{Create a copy of \code{tbl} first? Allows writing to the same Andromeda as being
 read from.}
 }
 \value{
-Invisibly returns a list of objects, where each object is the output of the user supplied function
+Invisibly returns a list of objects, where each object is the output of the user-supplied function
 applied to a group.
 }
 \description{

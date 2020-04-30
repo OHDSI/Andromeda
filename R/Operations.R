@@ -16,7 +16,7 @@
 
 #' Apply a function to batches of data in an Andromeda table
 #'
-#' @param tbl         An Andromeda table (or any other DBI table).
+#' @param tbl         An [`Andromeda`] table (or any other 'DBI' table).
 #' @param fun         A function where the first argument is a data frame.
 #' @param ...         Additional parameters passed to fun.
 #' @param batchSize   Number of rows to fetch at a time.
@@ -24,9 +24,13 @@
 #'                    from.
 #'
 #' @details
-#' This function is similar to the \code{lapply} function, in that it applies a function to sets of
-#' data. In this case, the data is batches of data from an Andromeda table. Each batch will be
+#' This function is similar to the [`lapply()'] function, in that it applies a function to sets of
+#' data. In this case, the data is batches of data from an [`Andromeda`] table. Each batch will be
 #' presented to the function as a data frame.
+#' 
+#' @return 
+#' Invisibly returns a list of objects, where each object is the output of the user-supplied function
+#' applied to a batch
 #'
 #' @examples
 #' andr <- andromeda(cars = cars)
@@ -78,22 +82,22 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, safe = FALSE) {
 
 #' Apply a function to groups of data in an Andromeda table
 #'
-#' @param tbl             An Andromeda table (or any other DBI table).
+#' @param tbl             An [`Andromeda`] table (or any other 'DBI' table).
 #' @param groupVariable   The variable to group by
 #' @param fun             A function where the first argument is a data frame.
 #' @param ...             Additional parameters passed to fun.
 #' @param batchSize       Number of rows fetched from the table at a time. This is not the number of
 #'                        rows to which the function will be applied. Included mostly for testing
 #'                        purposes.
-#' @param safe            Create a copy of tbl first? Allows writing to the same Andromeda as being
+#' @param safe            Create a copy of `tbl` first? Allows writing to the same Andromeda as being
 #'                        read from.
 #'
 #' @details
 #' This function applies a function to groups of data. The groups are identified by unique values of
-#' the \code{groupVariable}, which must be a variable in the table.
+#' the `groupVariable`, which must be a variable in the table.
 #'
 #' @return
-#' Invisibly returns a list of objects, where each object is the output of the user supplied function
+#' Invisibly returns a list of objects, where each object is the output of the user-supplied function
 #' applied to a group.
 #'
 #' @examples
@@ -154,14 +158,17 @@ groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, safe = 
 
 #' Append to an Andromeda table
 #'
-#' @param tbl    An Andromeda table. This must be a base table (i.e. it cannot be a query result).
+#' @param tbl    An [`Andromeda`] table. This must be a base table (i.e. it cannot be a query result).
 #' @param data   The data to append. This can be either a data.frame or another Andromeda table.
 #'
 #' @description
-#' Append a data frame, Andromeda table, or result of a query on an Andromeda table to an existing
-#' Andromeda table.
-#' If data from another Andromeda is appended, a batch-wise copy process is used, which will be slower
-#' than when appending data from within the same Andromeda object.
+#' Append a data frame, Andromeda table, or result of a query on an [`Andromeda`] table to an existing
+#' [`Andromeda`] table.
+#' If data from another [`Andromeda`] is appended, a batch-wise copy process is used, which will be slower
+#' than when appending data from within the same [`Andromeda`] object.
+#' 
+#' @return 
+#' Returns no value. Executed for the side-effect of appending the data to the table.
 #'
 #' @examples
 #' andr <- andromeda(cars = cars)
@@ -222,14 +229,14 @@ dim.tbl_dbi <- function(x) {
 
 #' Apply a boolean test to batches of data in an Andromeda table and terminate early
 #'
-#' @param tbl         An Andromeda table (or any other DBI table).
-#' @param fun         A function where the first argument is a data frame and returns TRUE/FALSE.
-#' @param ...         Additional parameters passed to fun.
+#' @param tbl         An [`Andromeda`] table (or any other 'DBI' table).
+#' @param fun         A function where the first argument is a data frame and returns a logical value.
+#' @param ...         Additional parameters passed to `fun`.
 #' @param batchSize   Number of rows to fetch at a time.
 #'
 #' @details
-#' This function applies a boolean teset function to sets of
-#' data and terminates at the first FALSE.
+#' This function applies a boolean test function to sets of
+#' data and terminates at the first `FALSE`.
 #'
 #' @examples
 #' andr <- andromeda(cars = cars)

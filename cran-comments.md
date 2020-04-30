@@ -2,11 +2,13 @@ This package aims to functionally replace the 'ff' package, which effectively ha
 
 In response to your comments:
 
-- Added 'Observational Health Data Science and Informatics' as copyright holder to README
-- Changed description so it does not start with the package name.
+- Added 'Observational Health Data Science and Informatics' as copyright holder to DESCRIPTION (‘cph’ role in the ‘Authors@R’).
+- Changed package description so it does not start with the package name.
 - Package names are no longer in the description, so no single quotes are required.
-- No references are applicable at this point in time.
-- 
+- No literature references are applicable to cite at this point in time.
+- All functions now have a \value section in their documentation.
+- loadAndromeda now uses a file that is created in the example itself in a temp location, and deleted afterwards (and no longer uses \dontrun{})
+- The saveAndromeda example no longer writes to home filespace (and no longer uses \dontrun{})
 
 ---
 

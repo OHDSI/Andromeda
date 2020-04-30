@@ -11,15 +11,15 @@ andromeda(...)
 empty Andromeda is returned.}
 }
 \value{
-Returns an \code{\link{Andromeda-class}} object.
+Returns an \code{\link{Andromeda}} object.
 }
 \description{
-By default the Andromeda object is created in the systems temporary file location. You can override
+By default the \code{Andromeda} object is created in the systems temporary file location. You can override
 this by specifying a folder using \code{options(andromedaTempFolder = "c:/andromedaTemp")}, where
-"c:/andromedaTemp" is the folder to create the Andromeda objects in.
+\code{"c:/andromedaTemp"} is the folder to create the Andromeda objects in.
 }
 \details{
-Valid objects are data frames, Andromeda tables, or any other dply table.
+Valid objects are data frames, \code{Andromeda} tables, or any other \code{\link{dplyr}} table.
 }
 \examples{
 andr <- andromeda(cars = cars, iris = iris)

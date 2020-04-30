@@ -7,15 +7,18 @@
 appendToTable(tbl, data)
 }
 \arguments{
-\item{tbl}{An Andromeda table. This must be a base table (i.e. it cannot be a query result).}
+\item{tbl}{An \code{\link{Andromeda}} table. This must be a base table (i.e. it cannot be a query result).}
 
 \item{data}{The data to append. This can be either a data.frame or another Andromeda table.}
 }
+\value{
+Returns no value. Executed for the side-effect of appending the data to the table.
+}
 \description{
-Append a data frame, Andromeda table, or result of a query on an Andromeda table to an existing
-Andromeda table.
-If data from another Andromeda is appended, a batch-wise copy process is used, which will be slower
-than when appending data from within the same Andromeda object.
+Append a data frame, Andromeda table, or result of a query on an \code{\link{Andromeda}} table to an existing
+\code{\link{Andromeda}} table.
+If data from another \code{\link{Andromeda}} is appended, a batch-wise copy process is used, which will be slower
+than when appending data from within the same \code{\link{Andromeda}} object.
 }
 \examples{
 andr <- andromeda(cars = cars)

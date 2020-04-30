@@ -7,7 +7,7 @@
 batchApply(tbl, fun, ..., batchSize = 1e+05, safe = FALSE)
 }
 \arguments{
-\item{tbl}{An Andromeda table (or any other DBI table).}
+\item{tbl}{An \code{\link{Andromeda}} table (or any other 'DBI' table).}
 
 \item{fun}{A function where the first argument is a data frame.}
 
@@ -18,12 +18,15 @@ batchApply(tbl, fun, ..., batchSize = 1e+05, safe = FALSE)
 \item{safe}{Create a copy of tbl first? Allows writing to the same Andromeda as being read
 from.}
 }
+\value{
+Invisibly returns a list of objects, where each object is the output of the user-supplied function
+applied to a batch
+}
 \description{
 Apply a function to batches of data in an Andromeda table
 }
 \details{
-This function is similar to the \code{lapply} function, in that it applies a function to sets of
-data. In this case, the data is batches of data from an Andromeda table. Each batch will be
+This function is similar to the [\verb{lapply()'] function, in that it applies a function to sets of data. In this case, the data is batches of data from an [}Andromeda`] table. Each batch will be
 presented to the function as a data frame.
 }
 \examples{
