@@ -24,7 +24,7 @@
 #'                    from.
 #'
 #' @details
-#' This function is similar to the [`lapply()'] function, in that it applies a function to sets of
+#' This function is similar to the [`lapply()`] function, in that it applies a function to sets of
 #' data. In this case, the data is batches of data from an [`Andromeda`] table. Each batch will be
 #' presented to the function as a data frame.
 #' 

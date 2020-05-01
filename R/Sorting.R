@@ -17,7 +17,7 @@
 #' Check if data are sorted by one or more columns
 #'
 #' @description
-#' Checks wether data are sorted by one or more specified columns.
+#' Checks whether data are sorted by one or more specified columns.
 #'
 #' @param data            Either a data frame or [`Andromeda`] table.
 #' @param columnNames     Vector of one or more column names.
@@ -48,22 +48,27 @@ isSorted <- function(data, columnNames, ascending = rep(TRUE, length(columnNames
 
 #' @describeIn isSorted Check if a `data.frame` is sorted by one or more columns
 #' @export
-isSorted.data.frame <- function(data,columnNames,ascending=rep(TRUE,length(columnNames))){
-  return(.isSorted(data,columnNames,ascending))
+isSorted.data.frame <- function(data, columnNames, ascending = rep(TRUE, length(columnNames))){
+  return(.isSorted(data, columnNames, ascending))
 }
 
 #' @describeIn isSorted Check if an [`Andromeda`] table is sorted by one or more columns
 #' @export
 isSorted.tbl_dbi <- function(data, columnNames, ascending = rep(TRUE, length(columnNames))) {
-  if (nrow(data) > 100000){ #If data is big, first check on a small subset. If that aready fails, we're done
-    if (!.isSortedVectorList(data %>% dplyr::select(columnNames) %>% head(1000) %>% dplyr::collect(),
+  if (nrow(data) > 100000) { #If data is big, first check on a small subset. If that aready fails, we're done
+    if (!.isSortedVectorList(data %>% 
+                             dplyr::select(columnNames) %>% 
+                             head(1000) %>% 
+                             dplyr::collect(),
                              ascending = ascending)) {
       return(FALSE)
     }
   }
   Andromeda::batchTest(data,
                        function(batch) {
-                         .isSortedVectorList(batch %>% dplyr::select(columnNames) %>% dplyr::collect(),
+                         .isSortedVectorList(batch %>% 
+                                               dplyr::select(columnNames) %>% 
+                                               dplyr::collect(),
                                              ascending = ascending)
                        })
 }

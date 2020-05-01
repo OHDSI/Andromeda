@@ -29,7 +29,7 @@ Returns no value. Executed for the side-effect of saving the object to disk.
 \description{
 Saves the \code{\link{Andromeda}} object in a zipped file. Note that by default the \code{\link{Andromeda}} object is
 automatically closed by saving it to disk. This is due to a limitation of the underlying technology
-('RSQLite'). To keep the connection open, use 'maintainConnection = TRUE'. This will first
+('RSQLite'). To keep the connection open, use \code{maintainConnection = TRUE}. This will first
 create a temporary copy of the \code{\link{Andromeda}} object. Note that this can be substantially slower.
 }
 \examples{

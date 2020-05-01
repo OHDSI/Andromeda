@@ -43,7 +43,7 @@
 
 \item{con}{An \code{\link{Andromeda}} object.}
 
-\item{...}{Included for compatability with generic \code{close()} method.}
+\item{...}{Included for compatibility with generic \code{close()} method.}
 }
 \value{
 A vector of names.
@@ -90,5 +90,5 @@ close(andr)
 
 }
 \seealso{
-\code{\link{andromeda()}}
+\code{\link[=andromeda]{andromeda()}}
 }

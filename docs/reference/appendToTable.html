@@ -75,7 +75,7 @@ than when appending data from within the same Andromeda object." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -135,10 +135,10 @@ than when appending data from within the same Andromeda object." />
     </div>
 
     <div class="ref-description">
-    <p>Append a data frame, Andromeda table, or result of a query on an Andromeda table to an existing
-Andromeda table.
-If data from another Andromeda is appended, a batch-wise copy process is used, which will be slower
-than when appending data from within the same Andromeda object.</p>
+    <p>Append a data frame, Andromeda table, or result of a query on an <code><a href='Andromeda-class.html'>Andromeda</a></code> table to an existing
+<code><a href='Andromeda-class.html'>Andromeda</a></code> table.
+If data from another <code><a href='Andromeda-class.html'>Andromeda</a></code> is appended, a batch-wise copy process is used, which will be slower
+than when appending data from within the same <code><a href='Andromeda-class.html'>Andromeda</a></code> object.</p>
     </div>
 
     <pre class="usage"><span class='fu'>appendToTable</span>(<span class='no'>tbl</span>, <span class='no'>data</span>)</pre>
@@ -148,7 +148,7 @@ than when appending data from within the same Andromeda object.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>tbl</th>
-      <td><p>An Andromeda table. This must be a base table (i.e. it cannot be a query result).</p></td>
+      <td><p>An <code><a href='Andromeda-class.html'>Andromeda</a></code> table. This must be a base table (i.e. it cannot be a query result).</p></td>
     </tr>
     <tr>
       <th>data</th>
@@ -156,6 +156,9 @@ than when appending data from within the same Andromeda object.</p>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Returns no value. Executed for the side-effect of appending the data to the table.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda_constructor.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>)
@@ -179,7 +182,7 @@ than when appending data from within the same Andromeda object.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Martijn Schuemie.</p>
+  <p>Developed by Martijn Schuemie, Marc A. Suchard.</p>
 </div>
 
 <div class="pkgdown">

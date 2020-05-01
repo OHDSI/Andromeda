@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -142,22 +142,31 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>fileName</th>
-      <td><p>The path where the object was saved using <code><a href='saveAndromeda.html'>saveAndromeda</a></code>.</p></td>
+      <td><p>The path where the object was saved using <code><a href='saveAndromeda.html'>saveAndromeda()</a></code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>An <code><a href='Andromeda-class.html'>Andromeda</a></code> object.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='saveAndromeda.html'>saveAndromeda</a></code></p></div>
+    <div class='dont-index'><p><code><a href='saveAndromeda.html'>saveAndromeda()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'>loadAndromeda</span>(<span class='st'>"c:/temp/andromeda.zip"</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>andr</span>)
-<span class='co'># [1] 'cars'</span>
+    <pre class="examples"><div class='input'><span class='co'># For this example we create an Andromeda object and save it to</span>
+<span class='co'># a temporary file locationL</span>
+<span class='no'>fileName</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
+<span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda_constructor.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>)
+<span class='fu'><a href='saveAndromeda.html'>saveAndromeda</a></span>(<span class='no'>andr</span>, <span class='no'>fileName</span>)</div><div class='output co'>#&gt; Disconnected Andromeda. This data object can no longer be used</div><div class='input'>
+<span class='co'># Using loadAndromeda to load the object back:</span>
+<span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'>loadAndromeda</span>(<span class='no'>fileName</span>)
 
+<span class='co'># Don't forget to close Andromeda when you are done:</span>
 <span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>andr</span>)
-}</div></pre>
+
+<span class='co'># Cleaning up the file used in this example:</span>
+<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span>(<span class='no'>fileName</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -169,7 +178,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Martijn Schuemie.</p>
+  <p>Developed by Martijn Schuemie, Marc A. Suchard.</p>
 </div>
 
 <div class="pkgdown">

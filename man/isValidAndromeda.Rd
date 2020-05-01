@@ -2,7 +2,7 @@
 % Please edit documentation in R/Object.R
 \name{isValidAndromeda}
 \alias{isValidAndromeda}
-\title{Check whether an Andromda object is still valid}
+\title{Check whether an Andromeda object is still valid}
 \usage{
 isValidAndromeda(x)
 }
@@ -13,7 +13,7 @@ isValidAndromeda(x)
 A logical value.
 }
 \description{
-Check whether an Andromda object is still valid
+Check whether an Andromeda object is still valid
 }
 \details{
 Checks whether an Andromeda object is still valid, or whether it has been closed.

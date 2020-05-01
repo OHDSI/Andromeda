@@ -43,7 +43,7 @@
 #' 
 #' @name Andromeda-class
 #' @aliases Andromeda
-#' @seealso \code{\link{andromeda()}}
+#' @seealso [`andromeda()`]
 NULL
 
 #' Andromeda class.
@@ -300,7 +300,7 @@ isAndomeda <- function(x) {
   return(inherits(x, "Andromeda"))
 }
 
-#' Check whether an Andromda object is still valid
+#' Check whether an Andromeda object is still valid
 #'
 #' @param x   The Andromeda object to check.
 #'
@@ -327,7 +327,7 @@ isValidAndromeda <- function(x) {
 }
 
 #' @param con    An [`Andromeda`] object.
-#' @param ...	   Included for compatability with generic `close()` method.
+#' @param ...	   Included for compatibility with generic `close()` method.
 #' @export
 #' @rdname
 #' Andromeda-class

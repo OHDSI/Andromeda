@@ -24,7 +24,7 @@ descending according the specified columns.}
 \code{TRUE} or \code{FALSE}.
 }
 \description{
-Checks wether data are sorted by one or more specified columns.
+Checks whether data are sorted by one or more specified columns.
 }
 \details{
 This function currently only supports checking for sorting on numeric values.

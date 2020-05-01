@@ -42,7 +42,7 @@
 <meta property="og:title" content="Save Andromeda to file — saveAndromeda" />
 <meta property="og:description" content="Saves the Andromeda object in a zipped file. Note that by default the Andromeda object is
 automatically closed by saving it to disk. This is due to a limitation of the underlying technology
-(RSQLite). To keep the connection open, use maintainConnection = TRUE. This will first
+('RSQLite'). To keep the connection open, use maintainConnection = TRUE. This will first
 create a temporary copy of the Andromeda object. Note that this can be substantially slower." />
 
 
@@ -75,7 +75,7 @@ create a temporary copy of the Andromeda object. Note that this can be substanti
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -135,10 +135,10 @@ create a temporary copy of the Andromeda object. Note that this can be substanti
     </div>
 
     <div class="ref-description">
-    <p>Saves the Andromeda object in a zipped file. Note that by default the Andromeda object is
+    <p>Saves the <code><a href='Andromeda-class.html'>Andromeda</a></code> object in a zipped file. Note that by default the <code><a href='Andromeda-class.html'>Andromeda</a></code> object is
 automatically closed by saving it to disk. This is due to a limitation of the underlying technology
-(RSQLite). To keep the connection open, use <code>maintainConnection = TRUE</code>. This will first
-create a temporary copy of the Andromeda object. Note that this can be substantially slower.</p>
+('RSQLite'). To keep the connection open, use <code>maintainConnection = TRUE</code>. This will first
+create a temporary copy of the <code><a href='Andromeda-class.html'>Andromeda</a></code> object. Note that this can be substantially slower.</p>
     </div>
 
     <pre class="usage"><span class='fu'>saveAndromeda</span>(
@@ -153,7 +153,7 @@ create a temporary copy of the Andromeda object. Note that this can be substanti
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>andromeda</th>
-      <td><p>An object of class Andromeda.</p></td>
+      <td><p>An object of class <code><a href='Andromeda-class.html'>Andromeda</a></code>.</p></td>
     </tr>
     <tr>
       <th>fileName</th>
@@ -161,26 +161,34 @@ create a temporary copy of the Andromeda object. Note that this can be substanti
     </tr>
     <tr>
       <th>maintainConnection</th>
-      <td><p>Should the connection be maintained after saving? If FALSE, the
+      <td><p>Should the connection be maintained after saving? If <code>FALSE</code>, the
 Andromeda object will be invalid after this operation, but saving will
 be faster.</p></td>
     </tr>
     <tr>
       <th>overwrite</th>
-      <td><p>If the file exists, should it be overwritten? If FALSE and the file
+      <td><p>If the file exists, should it be overwritten? If <code>FALSE</code> and the file
 exists, an error will be thrown.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Returns no value. Executed for the side-effect of saving the object to disk.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='loadAndromeda.html'>loadAndromeda</a></code></p></div>
+    <div class='dont-index'><p><code><a href='loadAndromeda.html'>loadAndromeda</a></code></p>
+<p><code><a href='loadAndromeda.html'>loadAndromeda()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda_constructor.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>)
-<span class='fu'>saveAndromeda</span>(<span class='no'>cars</span>, <span class='st'>"c:/temp/andromeda.zip"</span>)
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda_constructor.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>)
+
+<span class='co'># For this example we'll use a temporary file location:</span>
+<span class='no'>fileName</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
+
+<span class='fu'>saveAndromeda</span>(<span class='no'>andr</span>, <span class='no'>fileName</span>)</div><div class='output co'>#&gt; Disconnected Andromeda. This data object can no longer be used</div><div class='input'>
+<span class='co'># Cleaning up the file used in this example:</span>
+<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span>(<span class='no'>fileName</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -192,7 +200,7 @@ exists, an error will be thrown.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Martijn Schuemie.</p>
+  <p>Developed by Martijn Schuemie, Marc A. Suchard.</p>
 </div>
 
 <div class="pkgdown">

@@ -30,7 +30,7 @@
 #' @description
 #' Saves the [`Andromeda`] object in a zipped file. Note that by default the [`Andromeda`] object is
 #' automatically closed by saving it to disk. This is due to a limitation of the underlying technology
-#' ('RSQLite'). To keep the connection open, use 'maintainConnection = TRUE'. This will first
+#' ('RSQLite'). To keep the connection open, use `maintainConnection = TRUE`. This will first
 #' create a temporary copy of the [`Andromeda`] object. Note that this can be substantially slower.
 #'
 #' @return 
