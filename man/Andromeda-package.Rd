@@ -3,7 +3,7 @@
 \docType{package}
 \name{Andromeda-package}
 \alias{Andromeda-package}
-\title{Andromeda: AsynchroNous Disk-Based Representation of Massive Data}
+\title{Andromeda: Asynchronous Disk-Based Representation of Massive Data}
 \description{
 Storing very large data objects on a local drive, while still making it possible to manipulate the data in an efficient manner.
 }
