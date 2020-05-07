@@ -15,6 +15,9 @@ batchTest(tbl, fun, ..., batchSize = 1e+05)
 
 \item{batchSize}{Number of rows to fetch at a time.}
 }
+\value{
+Returns \code{FALSE} if any of the calls to the user-supplied function returned \code{FALSE}, else returns \code{TRUE}.
+}
 \description{
 Apply a boolean test to batches of data in an Andromeda table and terminate early
 }

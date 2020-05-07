@@ -1,3 +1,11 @@
+Andromeda 0.1.3
+===============
+
+Changes
+
+- Changes in documentation for CRAN.
+
+
 Andromeda 0.1.2
 ===============
 

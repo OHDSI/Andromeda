@@ -237,6 +237,9 @@ dim.tbl_dbi <- function(x) {
 #' @details
 #' This function applies a boolean test function to sets of
 #' data and terminates at the first `FALSE`.
+#' 
+#' @return 
+#' Returns `FALSE` if any of the calls to the user-supplied function returned `FALSE`, else returns `TRUE`.
 #'
 #' @examples
 #' andr <- andromeda(cars = cars)
