@@ -2,12 +2,12 @@ library(testthat)
 
 test_that("Object creation", {
   andromeda <- andromeda()
-  expect_true(isAndomeda(andromeda))
+  expect_true(isAndromeda(andromeda))
   expect_true(isValidAndromeda(andromeda))
 
   close(andromeda)
   expect_null(names(andromeda))
-  expect_true(isAndomeda(andromeda))
+  expect_true(isAndromeda(andromeda))
   expect_false(isValidAndromeda(andromeda))
 
   andromeda <- andromeda(cars = cars, iris = iris)
@@ -86,14 +86,6 @@ test_that("Zero rows", {
   count2 <- andromeda$iris2 %>% count() %>% collect()
   expect_equal(count2$n, 0)
 
-  close(andromeda)
-})
-
-test_that("dim function", {
-  andromeda <- andromeda()
-  andromeda$cars <- cars
-  expect_equal(nrow(andromeda$cars), nrow(cars))
-  expect_equal(ncol(andromeda$cars), ncol(cars))
   close(andromeda)
 })
 

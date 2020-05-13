@@ -193,7 +193,7 @@ appendToTable <- function(tbl, data) {
     stop("First argument must be a base table (cannot be a query result)")
 
   connection <- dbplyr::remote_con(tbl)
-  tableName <- dbplyr::remote_name(tbl)
+  tableName <- as.character(dbplyr::remote_name(tbl))
   if (inherits(data, "data.frame")) {
 
     RSQLite::dbWriteTable(conn = connection,
@@ -220,12 +220,6 @@ appendToTable <- function(tbl, data) {
   invisible(NULL)
 }
 
-#' @export
-dim.tbl_dbi <- function(x) {
-  if (!inherits(x, "tbl_dbi"))
-    stop("Argument must be an Andromeda table")
-  return(c((x %>% dplyr::count() %>% dplyr::collect())$n, length(dbplyr::op_vars(x))))
-}
 
 #' Apply a boolean test to batches of data in an Andromeda table and terminate early
 #'

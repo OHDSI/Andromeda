@@ -296,7 +296,7 @@ setMethod("length", "Andromeda", function(x) {
 #' A logical value.
 #'
 #' @export
-isAndomeda <- function(x) {
+isAndromeda <- function(x) {
   return(inherits(x, "Andromeda"))
 }
 

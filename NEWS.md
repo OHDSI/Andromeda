@@ -1,3 +1,16 @@
+Andromeda 0.2.0
+===============
+
+Changes
+
+- Dropping nrow and ncol support, as this seems to cause instability and is not consistent with dplyr.
+
+Bug fixes
+
+- Fixed typo in isAndromeda function name.
+
+- Fixed incompatibility issue with dplyr 1.0.0 causing 'method not supported' error.
+
 Andromeda 0.1.3
 ===============
 

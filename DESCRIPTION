@@ -1,8 +1,8 @@
 Package: Andromeda
 Type: Package
 Title: Asynchronous Disk-Based Representation of Massive Data
-Version: 0.1.3
-Date: 2020-05-07
+Version: 0.2.0
+Date: 2020-05-13
 Authors@R: c(
   person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut", "cre")),
   person("Marc A.", "Suchard", , "msuchard@ucla.edu", role = c("aut")),
@@ -12,7 +12,7 @@ Maintainer: Martijn Schuemie <schuemie@ohdsi.org>
 Description: Storing very large data objects on a local drive, while still making it possible to manipulate the data in an efficient manner.
 License: Apache License 2.0
 VignetteBuilder: knitr
-URL: https://github.com/OHDSI/Andromeda
+URL: https://ohdsi.github.io/Andromeda/, https://github.com/OHDSI/Andromeda
 BugReports: https://github.com/OHDSI/Andromeda/issues
 Depends:
   dplyr

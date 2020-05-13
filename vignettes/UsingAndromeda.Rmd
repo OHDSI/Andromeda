@@ -120,13 +120,11 @@ This way the query result does not have to pass through memory, but instead is d
 
 ## Simple meta-data
 
-If we wish to know the tables that exist in an `Andromeda` object, we can call the generic `names` function. Similarly, we can call `colnames` to get the names of the columns in a table. We can call `nrow` and `ncol` to get the number of columns. Note that these functions also work on query results, but be warned that `nrow` and `ncol` require actually executing the query, so may be slow:
+If we wish to know the tables that exist in an `Andromeda` object, we can call the generic `names` function. Similarly, we can call `colnames` to get the names of the columns in a table:
 
 ```{r eval=TRUE}
 names(andr)
 colnames(andr$cars)
-nrow(andr$cars)
-ncol(andr$cars %>% select(speed))
 ```
 
 
