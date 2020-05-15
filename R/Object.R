@@ -44,10 +44,6 @@
 #' @name Andromeda-class
 #' @aliases Andromeda
 #' @seealso [`andromeda()`]
-NULL
-
-#' Andromeda class.
-#'
 #' @import RSQLite
 #' @export
 setClass("Andromeda", contains = "SQLiteConnection")
