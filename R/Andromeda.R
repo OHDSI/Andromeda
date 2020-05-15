@@ -20,7 +20,6 @@
 #' @importFrom methods slotNames
 #' @importFrom utils head
 #' @import dplyr
-#' @useDynLib Andromeda, .registration = TRUE
 #' 
 "_PACKAGE"
 

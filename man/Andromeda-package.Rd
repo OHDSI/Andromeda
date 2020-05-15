@@ -10,6 +10,7 @@ Storing very large data objects on a local drive, while still making it possible
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://ohdsi.github.io/Andromeda/}
   \item \url{https://github.com/OHDSI/Andromeda}
   \item Report bugs at \url{https://github.com/OHDSI/Andromeda/issues}
 }

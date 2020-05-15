@@ -35,5 +35,3 @@ LazyData: false
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
 Encoding: UTF-8
-LinkingTo: 
-  Rcpp
