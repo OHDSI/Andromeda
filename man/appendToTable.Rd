@@ -17,8 +17,12 @@ Returns no value. Executed for the side-effect of appending the data to the tabl
 \description{
 Append a data frame, Andromeda table, or result of a query on an \code{\link{Andromeda}} table to an existing
 \code{\link{Andromeda}} table.
+
 If data from another \code{\link{Andromeda}} is appended, a batch-wise copy process is used, which will be slower
 than when appending data from within the same \code{\link{Andromeda}} object.
+
+\strong{Important}: columns are appended based on column name, not on column order. The column names should
+therefore be identical (but not necessarily in the same order).
 }
 \examples{
 andr <- andromeda(cars = cars)

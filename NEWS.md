@@ -13,6 +13,8 @@ Bug fixes
 
 - Fixed incompatibility issue with dplyr 1.0.0 causing 'method not supported' error.
 
+- Correctly handling differences in column order when appending.
+
 
 Andromeda 0.1.3
 ===============

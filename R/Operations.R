@@ -163,9 +163,13 @@ groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, safe = 
 #'
 #' @description
 #' Append a data frame, Andromeda table, or result of a query on an [`Andromeda`] table to an existing
-#' [`Andromeda`] table.
+#' [`Andromeda`] table. 
+#' 
 #' If data from another [`Andromeda`] is appended, a batch-wise copy process is used, which will be slower
 #' than when appending data from within the same [`Andromeda`] object.
+#' 
+#' **Important**: columns are appended based on column name, not on column order. The column names should
+#' therefore be identical (but not necessarily in the same order).
 #' 
 #' @return 
 #' Returns no value. Executed for the side-effect of appending the data to the table.
@@ -203,7 +207,7 @@ appendToTable <- function(tbl, data) {
                           append = TRUE)
   } else if (inherits(data, "tbl_dbi")) {
     if (isTRUE(all.equal(connection, dbplyr::remote_con(data)))) {
-      sql <- dbplyr::sql_render(data, connection)
+      sql <- dbplyr::sql_render(select(data, all_of(colnames(tbl))), connection)
       sql <- sprintf("INSERT INTO %s %s", tableName, sql)
       RSQLite::dbExecute(connection, sql)
     } else {
