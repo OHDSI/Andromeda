@@ -221,8 +221,12 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
     } else {
       doBatchedAppend <- function(batch) {
         RSQLite::dbWriteTable(conn = x, name = i, value = batch, overwrite = FALSE, append = TRUE)
+        return(TRUE)
       }
-      batchApply(value, doBatchedAppend)
+      dummy <- batchApply(value, doBatchedAppend)
+      if (length(dummy) == 0) {
+        RSQLite::dbWriteTable(conn = x, name = i, value = dplyr::collect(value), overwrite = FALSE, append = TRUE)
+      }
     }
   } else {
     stop("Table must be a data frame or dplyr table")

@@ -56,7 +56,6 @@ test_that("Tables from tables", {
 })
 
 
-
 test_that("Dropping tables", {
   andromeda <- andromeda()
 
@@ -86,7 +85,13 @@ test_that("Zero rows", {
   count2 <- andromeda$iris2 %>% count() %>% collect()
   expect_equal(count2$n, 0)
 
+  andromeda2 <- andromeda(iris2 = andromeda$iris2)
+  
+  count3 <- andromeda2$iris2 %>% count() %>% collect()
+  expect_equal(count3$n, 0)
+  
   close(andromeda)
+  close(andromeda2)
 })
 
 test_that("Object cleanup", {

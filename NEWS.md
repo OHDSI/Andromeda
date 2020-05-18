@@ -15,6 +15,8 @@ Bug fixes
 
 - Correctly handling differences in column order when appending.
 
+- Fixed copying of zero-row tables from one Andromeda to another.
+
 
 Andromeda 0.1.3
 ===============
