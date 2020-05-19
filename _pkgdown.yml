@@ -12,5 +12,5 @@ navbar:
     right: [methodsLibrary, github]
   components:
     methodsLibrary:
-      text: Methods Library
-      href: https://ohdsi.github.io/MethodsLibrary
+      text: hadesLogo
+      href: https://ohdsi.github.io/Hades

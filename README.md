@@ -3,8 +3,10 @@ Andromeda
 
 [![Build Status](https://travis-ci.org/OHDSI/CaseControl.svg?branch=master)](https://travis-ci.org/OHDSI/Andromeda)
 [![codecov.io](https://codecov.io/github/OHDSI/Andromeda/coverage.svg?branch=master)](https://codecov.io/github/OHDSI/Andromeda?branch=master)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/Andromeda)](https://cran.r-project.org/package=Andromeda)
+[![CRAN_Status_Badge](http://cranlogs.r-pkg.org/badges/Andromeda)](https://cran.r-project.org/package=Andromeda)
 
-Andromeda is part of the [OHDSI Methods Library](https://ohdsi.github.io/MethodsLibrary).
+Andromeda is part of [HADES](https://ohdsi.github.io/Hades).
 
 Introduction
 ============
@@ -69,7 +71,7 @@ Support
 
 Contributing
 ============
-Read [here](https://ohdsi.github.io/MethodsLibrary/contribute.html) how you can contribute to this package.
+Read [here](https://ohdsi.github.io/Hades/contribute.html) how you can contribute to this package.
 
 License
 =======

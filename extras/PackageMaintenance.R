@@ -32,7 +32,8 @@ rmarkdown::render("vignettes/UsingAndromeda.Rmd",
                                           number_sections = TRUE))
 unlink("inst/doc/UsingAndromeda.tex")
 
-pkgdown::build_site()
+pkgdown::build_site(preview = FALSE)
+OhdsiRTools::fixHadesLogo()
 
 # Release package:
 devtools::check_win_devel()
