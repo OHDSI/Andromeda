@@ -210,4 +210,47 @@ We can load the object again using:
 andr <- loadAndromeda("c:/temp/andromeda.zip")
 ```
 
+# Using Andromeda in your packages
+
+Andromeda is intended to be used inside of other packages. Here are some tips:
+
+## Import dplyr
+
+Make sure `dplyr` is imported in the NAMESPACE. That way all `dplyr` functions can be used on the Andromeda objects in your functions.
+
+## Import .data from rlang
+
+If we reference variables in our `dplyr` function calls we should precede them with `.data$` to avoid R check warnings about using an unknown variable. For example, instead of
+
+```{r eval=FALSE}
+andr$cars %>%
+  filter(speed > 10)
+```
+
+we should write
+
+```{r eval=FALSE}
+andr$cars %>%
+  filter(.data$speed > 10)
+```
+
+to avoid R check warnings about `speed` being an unknown variable.
+
+## Beware of variable name confusion
+
+`dplyr` sometimes confuses variable names, so we have to help. For example, this code:
+
+```{r eval=FALSE}
+speed <- 10
+andr$cars %>%
+  filter(.data$speed == speed)
+```
+
+will not actually filter anything, because the second `speed` variable in the filter statement is interpreted to refer to the `speed` field in the data, not the variable we defined earlier. One way to avoid this is by forcing early evaluation of the variable:
+
+```{r eval=FALSE}
+speed <- 10
+andr$cars %>%
+  filter(.data$speed == !!speed)
+```
 
