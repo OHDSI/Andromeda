@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>names — names,Andromeda-method • Andromeda</title>
+<title>Check whether an object is an Andromeda object — isAndromeda • Andromeda</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="names — names,Andromeda-method" />
-<meta property="og:description" content="Show the names of the tables in an Andromeda object." />
+<meta property="og:title" content="Check whether an object is an Andromeda object — isAndromeda" />
+<meta property="og:description" content="Check whether an object is an Andromeda object" />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://ohdsi.github.io/MethodsLibrary">Methods Library</a>
+  <a href="https://ohdsi.github.io/Hades"><img src='https://ohdsi.github.io/Hades/images/hadesMini.png' width=80 height=17 style='vertical-align: top;'></a>
 </li>
 <li>
   <a href="https://github.com/OHDSI/Andromeda/">
@@ -126,34 +126,33 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>names</h1>
+    <h1>Check whether an object is an Andromeda object</h1>
     <small class="dont-index">Source: <a href='https://github.com/OHDSI/Andromeda/blob/master/R/Object.R'><code>R/Object.R</code></a></small>
-    <div class="hidden name"><code>names-Andromeda-method.Rd</code></div>
+    <div class="hidden name"><code>isAndromeda.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Show the names of the tables in an Andromeda object.</p>
+    <p>Check whether an object is an Andromeda object</p>
     </div>
 
-    <pre class="usage"><span class='co'># S4 method for Andromeda</span>
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>isAndromeda</span>(<span class='no'>x</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An Andromeda object.</p></td>
+      <td><p>The object to check.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda_constructor.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>, <span class='kw'>iris</span> <span class='kw'>=</span> <span class='no'>iris</span>)
+    <p>A logical value.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>andr</span>)</div><div class='output co'>#&gt; [1] "cars" "iris"</div><div class='input'><span class='co'># [1] 'cars' 'iris'</span>
+    <p>Checks whether an object is an Andromeda object.</p>
 
-<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>andr</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -165,7 +164,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Martijn Schuemie.</p>
+  <p>Developed by Martijn Schuemie, Marc A. Suchard.</p>
 </div>
 
 <div class="pkgdown">
