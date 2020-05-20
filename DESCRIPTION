@@ -22,9 +22,9 @@ Imports:
   zip,
   methods,
   dbplyr,
+  tidyselect,
   cli,
-  pillar,
-  Rcpp
+  pillar
 Suggests:
   testthat,
   knitr,

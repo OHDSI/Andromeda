@@ -5,7 +5,9 @@ Changes
 
 - Dropping nrow and ncol support, as this seems to cause instability and is not consistent with dplyr.
 
-- Dropping isSorted function, as database queries are only guaranteed to stay sorted if explictly required to (using 'arrange').
+- Dropping isSorted function, as database queries are only guaranteed to stay sorted if explicitly required to (using 'arrange').
+
+- Added restoreDate and restorePosixct functions.
 
 Bug fixes
 

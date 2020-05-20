@@ -275,3 +275,67 @@ batchTest <- function(tbl, fun, ..., batchSize = 100000) {
   })
   return(output)
 }
+
+#' Restore dates
+#' 
+#' @description 
+#' Restores dates that were converted by Andromeda to numeric values back to dates.
+#'
+#' @param x  A numeric vector representing dates.
+#'
+#' @return
+#' A vector of type `Date`.
+#' 
+#' @examples
+#' myData <- data.frame(startDate = as.Date(c("2000-01-01", "2001-01-31", "2004-12-31")))
+#' andr <- andromeda(myData = myData)
+#' 
+#' andr$myData %>% 
+#'   collect() %>%
+#'   mutate(startDate = restoreDate(startDate))
+#' # # A tibble: 3 x 1
+#' # startDate 
+#' # <date>    
+#' # 1 2000-01-01
+#' # 2 2001-01-31
+#' # 3 2004-12-31
+#' 
+#' close(andr)
+#' 
+#' @export
+restoreDate <- function(x) { 
+  return(as.Date(x, origin = "1970-01-01"))
+}
+
+#' Restore timestamps
+#' 
+#' @description 
+#' Restores dates that were converted by Andromeda to numeric values back to dates.
+#'
+#' @param x  A numeric vector representing timestamps
+#'
+#' @return
+#' A vector of type `POSIXct`.
+#' 
+#' @examples
+#' myData <- data.frame(startTime = as.POSIXct(c("2000-01-01 10:00", 
+#'                                               "2001-01-31 11:00", 
+#'                                               "2004-12-31 12:00")))
+#' andr <- andromeda(myData = myData)
+#' 
+#' andr$myData %>% 
+#'   collect() %>%
+#'   mutate(startTime = restorePosixct(startTime))
+#' # # A tibble: 3 x 1
+#' # startTime          
+#' # <dttm>             
+#' # 1 2000-01-01 10:00:00
+#' # 2 2001-01-31 11:00:00
+#' # 3 2004-12-31 12:00:00
+#' 
+#' close(andr)
+#' 
+#' @export
+restorePosixct <- function(x) { 
+  return(as.POSIXct(x, origin = "1970-01-01"))
+}

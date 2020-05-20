@@ -138,6 +138,24 @@ RSQLite::dbGetQuery(andr, "SELECT * FROM cars LIMIT 5;")
 
 However, for consistency it is recommended to use the `dplyr` functions instead.
 
+## Dates and times
+
+One limitation of SQLite - the technology underlying Andromeda - is that it does not support date and time formats. Dates and times are automatically converted to numeric values when adding them to an Andromeda table. Converting them back needs to be done manually:
+
+```{r eval=TRUE}
+myData <- data.frame(someTime = as.POSIXct(c("2000-01-01 10:00", 
+                                             "2001-01-31 11:00", 
+                                             "2004-12-31 12:00")),
+                     someDate = as.Date(c("2000-01-01", 
+                                          "2001-01-31", 
+                                          "2004-12-31")))
+andr$myData <- myData
+andr$myData %>% 
+  collect() %>%
+  mutate(someTime = restorePosixct(someTime),
+         someDate = restoreDate(someDate))
+```
+
 # Batch operations
 
 Often we'll need to perform some action against the data that is not supported by `dplyr.` For example, we may want to write to data to a CSV file, or perform some complex computation. Since we cannot assume an entire table (or query result) will fit in memory, we must assume we should do this batch-wise. For this the `Andromeda` package provides two functions: `batchApply` and `groupApply`. The former executes a function on batches of predefined length. We can specify the batch size by setting the `batchSize` argument, which defaults to 100,000. Here is a silly example, where take the number of rows in a batch, and multiply it by some number:
