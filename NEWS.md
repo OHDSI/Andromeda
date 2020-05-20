@@ -17,6 +17,8 @@ Bug fixes
 
 - Fixed copying of zero-row tables from one Andromeda to another.
 
+- Fixed issue where Andromeda object inheritance was lost on R restart.
+
 
 Andromeda 0.1.3
 ===============
