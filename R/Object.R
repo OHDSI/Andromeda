@@ -120,6 +120,7 @@ andromeda <- function(...) {
 #'
 #' @export
 copyAndromeda <- function(andromeda) {
+  checkIfValid(andromeda)
   newAndromeda <- .createAndromeda()
   RSQLite::sqliteCopyDatabase(andromeda, newAndromeda)
   return(newAndromeda)
@@ -205,6 +206,7 @@ setMethod("$<-", "Andromeda", function(x, name, value) {
 #' @rdname
 #' Andromeda-class
 setMethod("[[<-", "Andromeda", function(x, i, value) {
+  checkIfValid(x)
   if (is.null(value)) {
     if (i %in% names(x)) {
       RSQLite::dbRemoveTable(x, i)
@@ -241,6 +243,7 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
 #' @rdname
 #' Andromeda-class
 setMethod("[[", "Andromeda", function(x, i) {
+  checkIfValid(x)
   if (RSQLite::dbExistsTable(x, i)) {
     return(dplyr::tbl(x, i))
   } else {
@@ -341,3 +344,8 @@ setMethod("close", "Andromeda", function(con, ...) {
     unlink(fileName)
   }
 })
+
+checkIfValid <- function(x) {
+  if (!isValidAndromeda(x))
+    stop("Andromeda object is no longer valid. Perhaps it was saved without maintainConnection = TRUE, or R has been restarted?", call. = FALSE)
+}
