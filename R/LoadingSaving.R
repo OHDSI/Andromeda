@@ -160,9 +160,13 @@ checkAvailableSpace <- function(fileName) {
       }
       space <- tryCatch({
         rJava::.jinit()
-        path <- rJava::J("java.nio.file.Paths")$get(fileName, rJava::.jarray(c("")))
-        fileStore <- rJava::J("java.nio.file.Files")$getFileStore(path)
-        fileStore$getUsableSpace()
+        file <- rJava::new(rJava::J("java.io.File"), fileName)
+        file$getUsableSpace()
+        
+        # This throws "illegal reflective access operation" warning:
+        # path <- rJava::J("java.nio.file.Paths")$get(fileName, rJava::.jarray(c("")))
+        # fileStore <- rJava::J("java.nio.file.Files")$getFileStore(path)
+        # fileStore$getUsableSpace()
       }, error = function(e) Inf)
       if (space < warnDiskSpace) {
         message <- sprintf("Low disk space in '%s'. Only %0.1f GB left.", 
