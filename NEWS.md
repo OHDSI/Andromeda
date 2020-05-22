@@ -1,9 +1,16 @@
-Andromeda 0.2.0
+Andromeda 0.2.1
 ===============
 
 Changes
 
 - Throw more informative error when user tries to use invalid Andromeda object.
+
+- Throw warning when disk space becomes low. Requires rJava to be installed. Threshold defaults to 10GB, but can be altered using options(warnDiskSpaceThreshold = <n>).
+
+Bug fixes
+
+- Unzipping now also done in Andromeda temp folder (instead of system temp folder).
+
 
 Andromeda 0.2.0
 ===============

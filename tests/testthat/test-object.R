@@ -55,7 +55,6 @@ test_that("Tables from tables", {
   close(andromeda2)
 })
 
-
 test_that("Dropping tables", {
   andromeda <- andromeda()
 
@@ -134,4 +133,16 @@ test_that("Copying andromeda", {
   expect_false(andromeda@dbname == andromeda2@dbname)
   close(andromeda)
   close(andromeda2)
+})
+
+test_that("Warning when disk space low", {
+  installedVersion <- tryCatch(utils::packageVersion("rJava"), 
+                               error = function(e) NA)
+  skip_if(is.na(installedVersion))
+  
+  andromeda <- andromeda()
+  options(warnDiskSpaceThreshold = Inf)
+  expect_warning(andromeda$cars <- cars)
+  close(andromeda)
+  options(warnDiskSpaceThreshold = NULL)
 })

@@ -24,3 +24,5 @@
 #' 
 "_PACKAGE"
 
+# Used to remember when a warning has already been thrown for a temp file location:
+andromedaGlobalEnv <- new.env(parent = emptyenv())

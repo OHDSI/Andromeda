@@ -111,12 +111,17 @@ loadAndromeda <- function(fileName) {
   fileNamesInZip <- zip::zip_list(fileName)$filename
   sqliteFilenameInZip <- fileNamesInZip[grepl(".sqlite$", fileNamesInZip)]
   rdsFilenameInZip <- fileNamesInZip[grepl(".rds$", fileNamesInZip)]
-  tempDir <- tempfile()
+  
+  andromedaTempFolder <- .getAndromedaTempFolder()
+  checkAvailableSpace(andromedaTempFolder)
+  
+  # Unzip:
+  tempDir <- tempfile(tmpdir = andromedaTempFolder)
   dir.create(tempDir)
   on.exit(unlink(tempDir, recursive = TRUE))
   zip::unzip(fileName, exdir = tempDir)
-
-  andromedaTempFolder <- .getAndromedaTempFolder()
+  
+  # Rename unzipped files:
   newFileName <- tempfile(tmpdir = andromedaTempFolder, fileext = ".sqlite")
   file.rename(file.path(tempDir, sqliteFilenameInZip), newFileName)
   attributes <- readRDS(file.path(tempDir, rdsFilenameInZip))
@@ -132,5 +137,52 @@ loadAndromeda <- function(fileName) {
   }
   RSQLite::dbExecute(andromeda, "PRAGMA journal_mode = OFF") 
   class(andromeda) <- "Andromeda"
+  attr(class(andromeda), "package") <- "Andromeda"
   return(andromeda)
+}
+
+checkAvailableSpace <- function(fileName) {
+  # Using Java because no cross-platform functions available in R:
+  if (isInstalled("rJava")) {
+    warnDiskSpace <- getOption("warnDiskSpaceThreshold")
+    if (is.null(warnDiskSpace)) {
+      warnDiskSpace <- 10 * 1024 ^ 3
+    }
+    if (warnDiskSpace != 0) {
+      if (exists("lowDiskWarnings", envir = andromedaGlobalEnv)) {
+        lowDiskWarnings <- get("lowDiskWarnings", envir = andromedaGlobalEnv)
+        if (dirname(fileName) %in% lowDiskWarnings) {
+          # Already warned about this location. Not warning again.
+          return()
+        }
+      } else {
+        lowDiskWarnings <- c()
+      }
+      space <- tryCatch({
+        rJava::.jinit()
+        path <- rJava::J("java.nio.file.Paths")$get(fileName, rJava::.jarray(c("")))
+        fileStore <- rJava::J("java.nio.file.Files")$getFileStore(path)
+        fileStore$getUsableSpace()
+      }, error = function(e) Inf)
+      if (space < warnDiskSpace) {
+        message <- sprintf("Low disk space in '%s'. Only %0.1f GB left.", 
+                                                 dirname(fileName), 
+                                                 space / 1024^3)
+        
+        message <- c(message, 
+                     pillar::style_subtle("Use options(warnDiskSpace = <n>) to set the number of bytes for this warning to trigger."))
+        message <- c(message, 
+                     pillar::style_subtle("This warning will not be shown for this file location again during this R session."))
+        
+        warning(paste(message, collapse = "\n"), call. = FALSE) 
+        assign("lowDiskWarnings", c(lowDiskWarnings, dirname(fileName)), envir = andromedaGlobalEnv)
+      }
+    }
+  }
+}
+
+isInstalled <- function(pkg) {
+  installedVersion <- tryCatch(utils::packageVersion(pkg), 
+                               error = function(e) NA)
+  return(!is.na(installedVersion))
 }
