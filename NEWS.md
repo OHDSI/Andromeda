@@ -11,6 +11,8 @@ Bug fixes
 
 - Unzipping now also done in Andromeda temp folder (instead of system temp folder).
 
+- Lower but faster compression level now also used when saving without maintaining connection.
+
 
 Andromeda 0.2.0
 ===============

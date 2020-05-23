@@ -73,7 +73,7 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
     unlink(tempFileName)
   } else {
     RSQLite::dbDisconnect(andromeda)
-    zip::zipr(fileName, c(attributesFileName, andromeda@dbname))
+    zip::zipr(fileName, c(attributesFileName, andromeda@dbname), compression_level = 2)
     unlink(andromeda@dbname)
     writeLines("Disconnected Andromeda. This data object can no longer be used")
   }
