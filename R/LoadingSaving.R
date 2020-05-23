@@ -174,7 +174,7 @@ checkAvailableSpace <- function(fileName) {
                                                  space / 1024^3)
         
         message <- c(message, 
-                     pillar::style_subtle("Use options(warnDiskSpace = <n>) to set the number of bytes for this warning to trigger."))
+                     pillar::style_subtle("Use options(warnDiskSpaceThreshold = <n>) to set the number of bytes for this warning to trigger."))
         message <- c(message, 
                      pillar::style_subtle("This warning will not be shown for this file location again during this R session."))
         
