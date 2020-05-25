@@ -197,7 +197,7 @@ appendToTable <- function(tbl, data) {
     stop("First argument must be a base table (cannot be a query result)")
 
   connection <- dbplyr::remote_con(tbl)
-  checkAvailableSpace(connection@dbname)
+  .checkAvailableSpace(connection)
   tableName <- as.character(dbplyr::remote_name(tbl))
   if (inherits(data, "data.frame")) {
 

@@ -212,10 +212,10 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
       RSQLite::dbRemoveTable(x, i)
     }
   } else if (inherits(value, "data.frame")) {
-    checkAvailableSpace(x@dbname)
+    .checkAvailableSpace(x)
     RSQLite::dbWriteTable(conn = x, name = i, value = value, overwrite = TRUE, append = FALSE)
   } else if (inherits(value, "tbl_dbi")) {
-    checkAvailableSpace(x@dbname)
+    .checkAvailableSpace(x)
     if (RSQLite::dbExistsTable(x, i)) {
       RSQLite::dbRemoveTable(x, i)
     }

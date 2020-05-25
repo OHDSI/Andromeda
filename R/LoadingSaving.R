@@ -113,7 +113,7 @@ loadAndromeda <- function(fileName) {
   rdsFilenameInZip <- fileNamesInZip[grepl(".rds$", fileNamesInZip)]
   
   andromedaTempFolder <- .getAndromedaTempFolder()
-  checkAvailableSpace(andromedaTempFolder)
+  .checkAvailableSpace()
   
   # Unzip:
   tempDir <- tempfile(tmpdir = andromedaTempFolder)
@@ -141,37 +141,32 @@ loadAndromeda <- function(fileName) {
   return(andromeda)
 }
 
-checkAvailableSpace <- function(fileName) {
-  # Using Java because no cross-platform functions available in R:
-  if (isInstalled("rJava")) {
+.checkAvailableSpace <- function(andromeda = NULL) {
+  if (.isInstalled("rJava")) {
     warnDiskSpace <- getOption("warnDiskSpaceThreshold")
     if (is.null(warnDiskSpace)) {
       warnDiskSpace <- 10 * 1024 ^ 3
     }
     if (warnDiskSpace != 0) {
+      if (is.null(andromeda)) {
+        folder <- .getAndromedaTempFolder()
+      } else {
+        folder <- dirname(andromeda@dbname) 
+      }
       if (exists("lowDiskWarnings", envir = andromedaGlobalEnv)) {
         lowDiskWarnings <- get("lowDiskWarnings", envir = andromedaGlobalEnv)
-        if (dirname(fileName) %in% lowDiskWarnings) {
+        if (folder %in% lowDiskWarnings) {
           # Already warned about this location. Not warning again.
           return()
         }
       } else {
         lowDiskWarnings <- c()
       }
-      space <- tryCatch({
-        rJava::.jinit()
-        file <- rJava::new(rJava::J("java.io.File"), fileName)
-        file$getUsableSpace()
-        
-        # This throws "illegal reflective access operation" warning:
-        # path <- rJava::J("java.nio.file.Paths")$get(fileName, rJava::.jarray(c("")))
-        # fileStore <- rJava::J("java.nio.file.Files")$getFileStore(path)
-        # fileStore$getUsableSpace()
-      }, error = function(e) Inf)
-      if (space < warnDiskSpace) {
+      space <- getAndromedaTempDiskSpace(andromeda)
+      if (!is.na(space) && space < warnDiskSpace) {
         message <- sprintf("Low disk space in '%s'. Only %0.1f GB left.", 
-                                                 dirname(fileName), 
-                                                 space / 1024^3)
+                           folder, 
+                           space / 1024^3)
         
         message <- c(message, 
                      pillar::style_subtle("Use options(warnDiskSpaceThreshold = <n>) to set the number of bytes for this warning to trigger."))
@@ -179,13 +174,66 @@ checkAvailableSpace <- function(fileName) {
                      pillar::style_subtle("This warning will not be shown for this file location again during this R session."))
         
         warning(paste(message, collapse = "\n"), call. = FALSE) 
-        assign("lowDiskWarnings", c(lowDiskWarnings, dirname(fileName)), envir = andromedaGlobalEnv)
+        assign("lowDiskWarnings", c(lowDiskWarnings, folder), envir = andromedaGlobalEnv)
       }
     }
   }
 }
 
-isInstalled <- function(pkg) {
+#' Get the available disk space in Andromeda temp
+#' 
+#' @description 
+#' Attempts to determine how much disk space is still available in the Andromeda temp folder. 
+#' This function uses Java, so will only work if the `rJava` package is installed.
+#' 
+#' By default the Andromeda temp folder is located in the system temp space, but the location
+#' can be altered using `options(andromedaTempFolder = "c:/andromedaTemp")`, where
+#' `"c:/andromedaTemp"` is the folder to create the Andromeda objects in.
+#' 
+#' @param andromeda  Optional: provide an [Andromeda] object for which to get the available disk 
+#'                   space. Normally all [Andromeda] objects use the same temp folder, but the user
+#'                   could have altered it. 
+#'
+#' @return
+#' The number of bytes of available disk space in the Andromeda temp folder. Returns NA
+#' if unable to determine the amount of available disk space, for example because `rJava` 
+#' is not installed, or because the user doesn't have the rights to query the available 
+#' disk space.
+#'
+#' @examples
+#' # Get the number of available gigabytes:
+#' getAndromedaTempDiskSpace() / 1024^3
+#' #123.456
+#' 
+#' @export
+getAndromedaTempDiskSpace <- function(andromeda = NULL) {
+  if (!is.null(andromeda) && !inherits(andromeda, "SQLiteConnection")) 
+    stop("Andromeda argument must be of type 'Andromeda'.")
+  
+  # Using Java because no cross-platform functions available in R:
+  if (!.isInstalled("rJava")) {
+    return(NA)
+  } else {
+    if (is.null(andromeda)) {
+      folder <- .getAndromedaTempFolder()
+    } else {
+      folder <- dirname(andromeda@dbname) 
+    }
+    space <- tryCatch({
+      rJava::.jinit()
+      file <- rJava::new(rJava::J("java.io.File"), folder)
+      file$getUsableSpace()
+      
+      # This throws "illegal reflective access operation" warning:
+      # path <- rJava::J("java.nio.file.Paths")$get(fileName, rJava::.jarray(c("")))
+      # fileStore <- rJava::J("java.nio.file.Files")$getFileStore(path)
+      # fileStore$getUsableSpace()
+    }, error = function(e) NA)
+    return(space)
+  }
+}
+
+.isInstalled <- function(pkg) {
   installedVersion <- tryCatch(utils::packageVersion(pkg), 
                                error = function(e) NA)
   return(!is.na(installedVersion))

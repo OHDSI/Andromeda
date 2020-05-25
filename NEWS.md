@@ -5,7 +5,9 @@ Changes
 
 - Throw more informative error when user tries to use invalid Andromeda object.
 
-- Throw warning when disk space becomes low. Requires rJava to be installed. Threshold defaults to 10GB, but can be altered using options(warnDiskSpaceThreshold = <n>).
+- Added function `getAndromedaTempDiskSpace`. Requires rJava to be installed. (Returns `NA` if not installed.)
+
+- Throw warning when disk space becomes low. Threshold defaults to 10GB, but can be altered using `options(warnDiskSpaceThreshold = <n>)`.
 
 Bug fixes
 
@@ -19,17 +21,17 @@ Andromeda 0.2.0
 
 Changes
 
-- Dropping nrow and ncol support, as this seems to cause instability and is not consistent with dplyr.
+- Dropping `nrow` and `ncol` support, as this seems to cause instability and is not consistent with `dplyr`.
 
-- Dropping isSorted function, as database queries are only guaranteed to stay sorted if explicitly required to (using 'arrange').
+- Dropping `isSorted` function, as database queries are only guaranteed to stay sorted if explicitly required to (using `arrange`).
 
-- Added restoreDate and restorePosixct functions.
+- Added `restoreDate` and `restorePosixct` functions.
 
 Bug fixes
 
-- Fixed typo in isAndromeda function name.
+- Fixed typo in `isAndromeda` function name.
 
-- Fixed incompatibility issue with dplyr 1.0.0 causing 'method not supported' error.
+- Fixed incompatibility issue with `dplyr` 1.0.0 causing 'method not supported' error.
 
 - Correctly handling differences in column order when appending.
 
@@ -51,7 +53,7 @@ Andromeda 0.1.2
 
 Changes
 
-- Adding fast isSorted function.
+- Adding fast `isSorted` function.
 
 - Changes in documentation for CRAN.
 
