@@ -9,6 +9,8 @@ Changes
 
 - Throw warning when disk space becomes low. Threshold defaults to 10GB, but can be altered using `options(warnDiskSpaceThreshold = <n>)`.
 
+- Allow assigning query result to an Andromeda table where the query uses that Andromeda table. (e.g. `andromeda$cars <- andromeda$cars %>% filter(speed > 10)`)
+
 Bug fixes
 
 - Unzipping now also done in Andromeda temp folder (instead of system temp folder).

@@ -55,6 +55,17 @@ test_that("Tables from tables", {
   close(andromeda2)
 })
 
+test_that("Table from same table in same Andromeda", {
+  andromeda <- andromeda()
+  andromeda$cars <- cars
+  andromeda$cars <- andromeda$cars %>% filter(speed > 10)
+  
+  cars2 <- andromeda$cars %>% collect()
+  expect_equivalent(cars2, cars %>% filter(speed > 10))
+  
+  close(andromeda)
+})
+
 test_that("Dropping tables", {
   andromeda <- andromeda()
 

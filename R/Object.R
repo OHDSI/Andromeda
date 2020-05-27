@@ -216,14 +216,25 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
     RSQLite::dbWriteTable(conn = x, name = i, value = value, overwrite = TRUE, append = FALSE)
   } else if (inherits(value, "tbl_dbi")) {
     .checkAvailableSpace(x)
-    if (RSQLite::dbExistsTable(x, i)) {
-      RSQLite::dbRemoveTable(x, i)
-    }
     if (isTRUE(all.equal(x, dbplyr::remote_con(value)))) {
       sql <- dbplyr::sql_render(value, x)
-      sql <- sprintf("CREATE TABLE %s AS %s", i, sql)
-      RSQLite::dbExecute(x, sql)
+      if (RSQLite::dbExistsTable(x, i)) {
+        # Maybe we're copying data from a table into the same table. So write to temp
+        # table first, then drop old table, and rename temp to old name:
+        tempName <- paste(sample(letters, 16), collapse = "")
+        sql <- sprintf("CREATE TABLE %s AS %s", tempName, sql)
+        RSQLite::dbExecute(x, sql)
+        RSQLite::dbRemoveTable(x, i)
+        sql <- sprintf("ALTER TABLE %s RENAME TO %s;", tempName, i)
+        RSQLite::dbExecute(x, sql)
+      } else {
+        sql <- sprintf("CREATE TABLE %s AS %s", i, sql)
+        RSQLite::dbExecute(x, sql)
+      }
     } else {
+      if (RSQLite::dbExistsTable(x, i)) {
+        RSQLite::dbRemoveTable(x, i)
+      }
       doBatchedAppend <- function(batch) {
         RSQLite::dbWriteTable(conn = x, name = i, value = batch, overwrite = FALSE, append = TRUE)
         return(TRUE)
