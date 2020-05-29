@@ -1,4 +1,4 @@
-Andromeda 0.2.1
+Andromeda 0.3.0
 ===============
 
 Changes
@@ -10,6 +10,8 @@ Changes
 - Throw warning when disk space becomes low. Threshold defaults to 10GB, but can be altered using `options(warnDiskSpaceThreshold = <n>)`.
 
 - Allow assigning query result to an Andromeda table where the query uses that Andromeda table. (e.g. `andromeda$cars <- andromeda$cars %>% filter(speed > 10)`)
+
+- Added `showProgressBar` arguments to `batchApply` and `groupApply`.
 
 Bug fixes
 

@@ -4,7 +4,14 @@
 \alias{batchApply}
 \title{Apply a function to batches of data in an Andromeda table}
 \usage{
-batchApply(tbl, fun, ..., batchSize = 1e+05, safe = FALSE)
+batchApply(
+  tbl,
+  fun,
+  ...,
+  batchSize = 1e+05,
+  showProgressBar = FALSE,
+  safe = FALSE
+)
 }
 \arguments{
 \item{tbl}{An \code{\link{Andromeda}} table (or any other 'DBI' table).}
@@ -15,8 +22,10 @@ batchApply(tbl, fun, ..., batchSize = 1e+05, safe = FALSE)
 
 \item{batchSize}{Number of rows to fetch at a time.}
 
-\item{safe}{Create a copy of tbl first? Allows writing to the same Andromeda as being read
-from.}
+\item{showProgressBar}{Show a progress bar?}
+
+\item{safe}{Create a copy of tbl first? Allows writing to the same Andromeda as being
+read from.}
 }
 \value{
 Invisibly returns a list of objects, where each object is the output of the user-supplied function

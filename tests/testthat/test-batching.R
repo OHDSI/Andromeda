@@ -36,6 +36,21 @@ test_that("batchApply safe mode", {
   close(andromeda)
 })
 
+test_that("batchApply progress bar", {
+  andromeda <- andromeda()
+  andromeda$cars <- cars
+  
+  doSomething <- function(batch, multiplier) {
+    return(nrow(batch) * multiplier)
+  }
+  result <- batchApply(andromeda$cars, doSomething, multiplier = 2, batchSize = 10, showProgressBar = TRUE)
+  result <- unlist(result)
+  
+  expect_true(sum(result) == nrow(cars) * 2)
+  expect_true(length(result) == ceiling(nrow(cars)/10))
+  close(andromeda)
+})
+
 test_that("groupApply", {
   andromeda <- andromeda()
   andromeda$cars <- cars
@@ -46,6 +61,21 @@ test_that("groupApply", {
   result <- groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10)
   result <- unlist(result)
 
+  expect_true(sum(result) == nrow(cars) * 2)
+  expect_true(length(result) == length(unique(cars$speed)))
+  close(andromeda)
+})
+
+test_that("groupApply", {
+  andromeda <- andromeda()
+  andromeda$cars <- cars
+  
+  doSomething <- function(batch, multiplier) {
+    return(nrow(batch) * multiplier)
+  }
+  result <- groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10, showProgressBar = TRUE)
+  result <- unlist(result)
+  
   expect_true(sum(result) == nrow(cars) * 2)
   expect_true(length(result) == length(unique(cars$speed)))
   close(andromeda)

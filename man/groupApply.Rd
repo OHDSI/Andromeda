@@ -4,7 +4,15 @@
 \alias{groupApply}
 \title{Apply a function to groups of data in an Andromeda table}
 \usage{
-groupApply(tbl, groupVariable, fun, ..., batchSize = 1e+05, safe = FALSE)
+groupApply(
+  tbl,
+  groupVariable,
+  fun,
+  ...,
+  batchSize = 1e+05,
+  showProgressBar = FALSE,
+  safe = FALSE
+)
 }
 \arguments{
 \item{tbl}{An \code{\link{Andromeda}} table (or any other 'DBI' table).}
@@ -18,6 +26,8 @@ groupApply(tbl, groupVariable, fun, ..., batchSize = 1e+05, safe = FALSE)
 \item{batchSize}{Number of rows fetched from the table at a time. This is not the number of
 rows to which the function will be applied. Included mostly for testing
 purposes.}
+
+\item{showProgressBar}{Show a progress bar?}
 
 \item{safe}{Create a copy of \code{tbl} first? Allows writing to the same Andromeda as being
 read from.}

@@ -18,7 +18,7 @@
 #' @aliases
 #' NULL Andromeda-package
 #' @importFrom methods slotNames
-#' @importFrom utils head
+#' @importFrom utils head setTxtProgressBar txtProgressBar
 #' @importFrom tidyselect all_of
 #' @import dplyr
 #' 
