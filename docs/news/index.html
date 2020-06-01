@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -129,20 +129,38 @@
       <small>Source: <a href='https://github.com/OHDSI/Andromeda/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="andromeda-020" class="section level1">
-<h1 class="page-header" data-toc-text="0.2.0">
-<a href="#andromeda-020" class="anchor"></a>Andromeda 0.2.0<small> Unreleased </small>
+    <div id="andromeda-030" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.0">
+<a href="#andromeda-030" class="anchor"></a>Andromeda 0.3.0<small> Unreleased </small>
 </h1>
 <p>Changes</p>
 <ul>
-<li><p>Dropping nrow and ncol support, as this seems to cause instability and is not consistent with dplyr.</p></li>
-<li><p>Dropping isSorted function, as database queries are only guaranteed to stay sorted if explicitly required to (using ‘arrange’).</p></li>
-<li><p>Added restoreDate and restorePosixct functions.</p></li>
+<li><p>Throw more informative error when user tries to use invalid Andromeda object.</p></li>
+<li><p>Added function <code>getAndromedaTempDiskSpace</code>. Requires rJava to be installed. (Returns <code>NA</code> if not installed.)</p></li>
+<li><p>Throw warning when disk space becomes low. Threshold defaults to 10GB, but can be altered using <code>options(warnDiskSpaceThreshold = &lt;n&gt;)</code>.</p></li>
+<li><p>Allow assigning query result to an Andromeda table where the query uses that Andromeda table. (e.g. <code>andromeda$cars &lt;- andromeda$cars %&gt;% filter(speed &gt; 10)</code>)</p></li>
+<li><p>Added <code>progressBar</code> arguments to <code>batchApply</code> and <code>groupApply</code>.</p></li>
 </ul>
 <p>Bug fixes</p>
 <ul>
-<li><p>Fixed typo in isAndromeda function name.</p></li>
-<li><p>Fixed incompatibility issue with dplyr 1.0.0 causing ‘method not supported’ error.</p></li>
+<li><p>Unzipping now also done in Andromeda temp folder (instead of system temp folder).</p></li>
+<li><p>Lower but faster compression level now also used when saving without maintaining connection.</p></li>
+</ul>
+</div>
+    <div id="andromeda-020" class="section level1">
+<h1 class="page-header" data-toc-text="0.2.0">
+<a href="#andromeda-020" class="anchor"></a>Andromeda 0.2.0<small> 2020-05-20 </small>
+</h1>
+<p>Changes</p>
+<ul>
+<li><p>Dropping <code>nrow</code> and <code>ncol</code> support, as this seems to cause instability and is not consistent with <code>dplyr</code>.</p></li>
+<li><p>Dropping <code>isSorted</code> function, as database queries are only guaranteed to stay sorted if explicitly required to (using <code>arrange</code>).</p></li>
+<li><p>Added <code>restoreDate</code> and <code>restorePosixct</code> functions.</p></li>
+</ul>
+<p>Bug fixes</p>
+<ul>
+<li><p>Fixed typo in <code>isAndromeda</code> function name.</p></li>
+<li><p>Fixed incompatibility issue with <code>dplyr</code> 1.0.0 causing ‘method not supported’ error.</p></li>
 <li><p>Correctly handling differences in column order when appending.</p></li>
 <li><p>Fixed copying of zero-row tables from one Andromeda to another.</p></li>
 <li><p>Fixed issue where Andromeda object inheritance was lost on R restart.</p></li>
@@ -163,7 +181,7 @@
 </h1>
 <p>Changes</p>
 <ul>
-<li><p>Adding fast isSorted function.</p></li>
+<li><p>Adding fast <code>isSorted</code> function.</p></li>
 <li><p>Changes in documentation for CRAN.</p></li>
 </ul>
 </div>

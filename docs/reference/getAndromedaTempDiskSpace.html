@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply a boolean test to batches of data in an Andromeda table and terminate early — batchTest • Andromeda</title>
+<title>Get the available disk space in Andromeda temp — getAndromedaTempDiskSpace • Andromeda</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,12 @@
 
 
 
-<meta property="og:title" content="Apply a boolean test to batches of data in an Andromeda table and terminate early — batchTest" />
-<meta property="og:description" content="Apply a boolean test to batches of data in an Andromeda table and terminate early" />
+<meta property="og:title" content="Get the available disk space in Andromeda temp — getAndromedaTempDiskSpace" />
+<meta property="og:description" content="Attempts to determine how much disk space is still available in the Andromeda temp folder.
+This function uses Java, so will only work if the rJava package is installed.
+By default the Andromeda temp folder is located in the system temp space, but the location
+can be altered using options(andromedaTempFolder = &quot;c:/andromedaTemp&quot;), where
+&quot;c:/andromedaTemp&quot; is the folder to create the Andromeda objects in." />
 
 
 
@@ -126,58 +130,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply a boolean test to batches of data in an Andromeda table and terminate early</h1>
-    <small class="dont-index">Source: <a href='https://github.com/OHDSI/Andromeda/blob/master/R/Operations.R'><code>R/Operations.R</code></a></small>
-    <div class="hidden name"><code>batchTest.Rd</code></div>
+    <h1>Get the available disk space in Andromeda temp</h1>
+    <small class="dont-index">Source: <a href='https://github.com/OHDSI/Andromeda/blob/master/R/LoadingSaving.R'><code>R/LoadingSaving.R</code></a></small>
+    <div class="hidden name"><code>getAndromedaTempDiskSpace.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Apply a boolean test to batches of data in an Andromeda table and terminate early</p>
+    <p>Attempts to determine how much disk space is still available in the Andromeda temp folder.
+This function uses Java, so will only work if the <code>rJava</code> package is installed.</p>
+<p>By default the Andromeda temp folder is located in the system temp space, but the location
+can be altered using <code><a href='https://rdrr.io/r/base/options.html'>options(andromedaTempFolder = "c:/andromedaTemp")</a></code>, where
+<code>"c:/andromedaTemp"</code> is the folder to create the Andromeda objects in.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>batchTest</span>(<span class='no'>tbl</span>, <span class='no'>fun</span>, <span class='no'>...</span>, <span class='kw'>batchSize</span> <span class='kw'>=</span> <span class='fl'>1e+05</span>)</pre>
+    <pre class="usage"><span class='fu'>getAndromedaTempDiskSpace</span>(<span class='kw'>andromeda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>tbl</th>
-      <td><p>An <code><a href='Andromeda-class.html'>Andromeda</a></code> table (or any other 'DBI' table).</p></td>
-    </tr>
-    <tr>
-      <th>fun</th>
-      <td><p>A function where the first argument is a data frame and returns a logical value.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Additional parameters passed to <code>fun</code>.</p></td>
-    </tr>
-    <tr>
-      <th>batchSize</th>
-      <td><p>Number of rows to fetch at a time.</p></td>
+      <th>andromeda</th>
+      <td><p>Optional: provide an <a href='Andromeda-class.html'>Andromeda</a> object for which to get the available disk
+space. Normally all <a href='Andromeda-class.html'>Andromeda</a> objects use the same temp folder, but the user
+could have altered it.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns <code>FALSE</code> if any of the calls to the user-supplied function returned <code>FALSE</code>, else returns <code>TRUE</code>.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>This function applies a boolean test function to sets of
-data and terminates at the first <code>FALSE</code>.</p>
+    <p>The number of bytes of available disk space in the Andromeda temp folder. Returns NA
+if unable to determine the amount of available disk space, for example because <code>rJava</code>
+is not installed, or because the user doesn't have the rights to query the available
+disk space.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda_constructor.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>)
+    <pre class="examples"><div class='input'><span class='co'># Get the number of available gigabytes:</span>
+<span class='fu'>getAndromedaTempDiskSpace</span>() / <span class='fl'>1024</span>^<span class='fl'>3</span></div><div class='output co'>#&gt; [1] 33.65819</div><div class='input'>#123.456
 
-<span class='no'>fun</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>x</span>) {
-  <span class='fu'><a href='https://rdrr.io/r/base/is.unsorted.html'>is.unsorted</a></span>(<span class='no'>x</span> <span class='kw'>%&gt;%</span> <span class='fu'>select</span>(<span class='no'>speed</span>) <span class='kw'>%&gt;%</span> <span class='fu'>collect</span>())
-}
-
-<span class='no'>result</span> <span class='kw'>&lt;-</span> <span class='fu'>batchTest</span>(<span class='no'>andr</span>$<span class='no'>cars</span>, <span class='no'>fun</span>, <span class='kw'>batchSize</span> <span class='kw'>=</span> <span class='fl'>25</span>)
-
-<span class='no'>result</span></div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='co'># [1] FALSE </span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>andr</span>)</div></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

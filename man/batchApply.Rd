@@ -4,14 +4,7 @@
 \alias{batchApply}
 \title{Apply a function to batches of data in an Andromeda table}
 \usage{
-batchApply(
-  tbl,
-  fun,
-  ...,
-  batchSize = 1e+05,
-  showProgressBar = FALSE,
-  safe = FALSE
-)
+batchApply(tbl, fun, ..., batchSize = 1e+05, progressBar = FALSE, safe = FALSE)
 }
 \arguments{
 \item{tbl}{An \code{\link{Andromeda}} table (or any other 'DBI' table).}
@@ -22,7 +15,7 @@ batchApply(
 
 \item{batchSize}{Number of rows to fetch at a time.}
 
-\item{showProgressBar}{Show a progress bar?}
+\item{progressBar}{Show a progress bar?}
 
 \item{safe}{Create a copy of tbl first? Allows writing to the same Andromeda as being
 read from.}

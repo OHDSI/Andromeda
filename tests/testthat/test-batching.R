@@ -43,7 +43,7 @@ test_that("batchApply progress bar", {
   doSomething <- function(batch, multiplier) {
     return(nrow(batch) * multiplier)
   }
-  result <- batchApply(andromeda$cars, doSomething, multiplier = 2, batchSize = 10, showProgressBar = TRUE)
+  result <- batchApply(andromeda$cars, doSomething, multiplier = 2, batchSize = 10, progressBar = TRUE)
   result <- unlist(result)
   
   expect_true(sum(result) == nrow(cars) * 2)
@@ -73,7 +73,7 @@ test_that("groupApply", {
   doSomething <- function(batch, multiplier) {
     return(nrow(batch) * multiplier)
   }
-  result <- groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10, showProgressBar = TRUE)
+  result <- groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10, progressBar = TRUE)
   result <- unlist(result)
   
   expect_true(sum(result) == nrow(cars) * 2)

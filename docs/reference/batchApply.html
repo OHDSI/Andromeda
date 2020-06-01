@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -135,7 +135,7 @@
     <p>Apply a function to batches of data in an Andromeda table</p>
     </div>
 
-    <pre class="usage"><span class='fu'>batchApply</span>(<span class='no'>tbl</span>, <span class='no'>fun</span>, <span class='no'>...</span>, <span class='kw'>batchSize</span> <span class='kw'>=</span> <span class='fl'>1e+05</span>, <span class='kw'>safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>batchApply</span>(<span class='no'>tbl</span>, <span class='no'>fun</span>, <span class='no'>...</span>, <span class='kw'>batchSize</span> <span class='kw'>=</span> <span class='fl'>1e+05</span>, <span class='kw'>progressBar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>safe</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -157,9 +157,13 @@
       <td><p>Number of rows to fetch at a time.</p></td>
     </tr>
     <tr>
+      <th>progressBar</th>
+      <td><p>Show a progress bar?</p></td>
+    </tr>
+    <tr>
       <th>safe</th>
-      <td><p>Create a copy of tbl first? Allows writing to the same Andromeda as being read
-from.</p></td>
+      <td><p>Create a copy of tbl first? Allows writing to the same Andromeda as being
+read from.</p></td>
     </tr>
     </table>
 

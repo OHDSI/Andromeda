@@ -10,7 +10,7 @@ groupApply(
   fun,
   ...,
   batchSize = 1e+05,
-  showProgressBar = FALSE,
+  progressBar = FALSE,
   safe = FALSE
 )
 }
@@ -27,7 +27,7 @@ groupApply(
 rows to which the function will be applied. Included mostly for testing
 purposes.}
 
-\item{showProgressBar}{Show a progress bar?}
+\item{progressBar}{Show a progress bar?}
 
 \item{safe}{Create a copy of \code{tbl} first? Allows writing to the same Andromeda as being
 read from.}
