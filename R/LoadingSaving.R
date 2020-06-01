@@ -221,8 +221,8 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
     }
     space <- tryCatch({
       rJava::.jinit()
-      file <- rJava::new(rJava::J("java.io.File"), folder)
-      file$getUsableSpace()
+      file <- rJava::.jnew("java.io.File", folder, check = FALSE, silent = TRUE)
+      rJava::.jcall(file, "J", "getUsableSpace")
       
       # This throws "illegal reflective access operation" warning:
       # path <- rJava::J("java.nio.file.Paths")$get(fileName, rJava::.jarray(c("")))

@@ -1,3 +1,11 @@
+Andromeda 0.3.1
+===============
+
+Bug fixes
+
+- Switching to low-level Java calls to avoid error in CRAN's Debian test environment.
+
+
 Andromeda 0.3.0
 ===============
 
