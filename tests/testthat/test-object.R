@@ -147,10 +147,10 @@ test_that("Copying andromeda", {
 })
 
 test_that("Warning when disk space low", {
-  installedVersion <- tryCatch(utils::packageVersion("rJava"), 
-                               error = function(e) NA)
-  skip_if(is.na(installedVersion))
-  
+  availableSpace <- tryCatch(getAndromedaTempDiskSpace(), 
+                             error = function(e) NA)
+  skip_if(is.na(availableSpace))
+
   andromeda <- andromeda()
   options(warnDiskSpaceThreshold = Inf)
   expect_warning(andromeda$cars <- cars)
