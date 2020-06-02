@@ -1,4 +1,4 @@
-This update has 5 changes and 2 bugfixes (see NEWS.md)
+This update has 5 changes and 3 bugfixes since version 0.2.0 (see NEWS.md)
 
 ---
 
