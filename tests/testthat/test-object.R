@@ -147,6 +147,8 @@ test_that("Copying andromeda", {
 })
 
 test_that("Warning when disk space low", {
+  skip_if(.Platform$OS.type != "windows")
+  
   availableSpace <- tryCatch(getAndromedaTempDiskSpace(), 
                              error = function(e) NA)
   skip_if(is.na(availableSpace))
