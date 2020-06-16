@@ -136,6 +136,7 @@ loadAndromeda <- function(fileName) {
     attr(andromeda, name) <- attributes[[name]]
   }
   RSQLite::dbExecute(andromeda, "PRAGMA journal_mode = OFF") 
+  RSQLite::dbExecute(andromeda, sprintf("PRAGMA temp_store_directory = '%s'", andromedaTempFolder)) 
   class(andromeda) <- "Andromeda"
   attr(class(andromeda), "package") <- "Andromeda"
   return(andromeda)

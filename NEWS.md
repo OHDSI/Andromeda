@@ -1,3 +1,10 @@
+Andromeda 0.3.2
+===============
+
+Bug fixes
+
+- Setting SQLite temp_store_directory to Andromeda temp folder as well.
+
 Andromeda 0.3.1
 ===============
 
