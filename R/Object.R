@@ -139,6 +139,7 @@ copyAndromeda <- function(andromeda) {
   }
   reg.finalizer(andromeda@ptr, finalizer, onexit = TRUE)
   RSQLite::dbExecute(andromeda, "PRAGMA journal_mode = OFF") 
+  RSQLite::dbExecute(andromeda, sprintf("PRAGMA temp_store_directory = '%s'", tempFolder)) 
   return(andromeda)
 }
 
