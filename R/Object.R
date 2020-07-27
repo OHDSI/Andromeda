@@ -148,6 +148,7 @@ copyAndromeda <- function(andromeda) {
   if (is.null(tempFolder)) {
     tempFolder <- tempdir()
   } else {
+    tempFolder <- path.expand(tempFolder)
     if (!file.exists(tempFolder)) {
       dir.create(tempFolder, recursive = TRUE)
     }
