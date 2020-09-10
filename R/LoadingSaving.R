@@ -119,7 +119,7 @@ loadAndromeda <- function(fileName) {
   tempDir <- tempfile(tmpdir = andromedaTempFolder)
   dir.create(tempDir)
   on.exit(unlink(tempDir, recursive = TRUE))
-  zip::unzip(fileName, exdir = tempDir)
+  .unzip(fileName, exdir = tempDir)
   
   # Rename unzipped files:
   newFileName <- tempfile(tmpdir = andromedaTempFolder, fileext = ".sqlite")
@@ -238,4 +238,13 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
   installedVersion <- tryCatch(utils::packageVersion(pkg), 
                                error = function(e) NA)
   return(!is.na(installedVersion))
+}
+
+.unzip <- function(fileName, exdir) {
+  zipInfo <- getOption("andromedaZip")
+  if (is.null(zipInfo) || zipInfo != "system") {
+    zip::unzip(fileName, exdir = exdir)
+  } else {
+    system2("unzip", args = c(fileName, paste("-d", exdir)), stdout = "")
+  }
 }
