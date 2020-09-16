@@ -1,4 +1,4 @@
-This update has 5 changes and 3 bugfixes since version 0.2.0 (see NEWS.md)
+This update has 1 bugfix (see NEWS.md)
 
 ---
 
@@ -12,4 +12,4 @@ There were no ERRORs or WARNINGs.
 
 ## Downstream dependencies
 
-There are no downstream dependencies.
+Andromeda is used in Cyclops and DatabaseConnector. This new version has been tested with these packages, and both work well.
