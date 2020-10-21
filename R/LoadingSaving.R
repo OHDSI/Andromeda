@@ -241,7 +241,7 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
   if (.Platform$OS.type == "windows") {
     # https://stackoverflow.com/questions/32200879/how-to-get-disk-space-of-windows-machine-with-r
     # https://stackoverflow.com/questions/293780/free-space-in-a-cmd-shell
-    disks <- system("wmic logicaldisk get size,freespace,caption", inter = T)
+    disks <- system("wmic logicaldisk get size,freespace,caption", intern = T)
     disks <- read.table(textConnection(disks), 
                         skip = 1,
                         col.names =  c("disk", "freeSpace", "size"),
