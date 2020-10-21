@@ -87,7 +87,7 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
     RSQLite::dbDisconnect(andromeda)
     zip::zipr(fileName, c(attributesFileName, andromeda@dbname), compression_level = 2)
     unlink(andromeda@dbname)
-    message("Disconnected Andromeda. This data object can no longer be used")
+    rlang::inform("Disconnected Andromeda. This data object can no longer be used", class = "Andromeda")
   }
   unlink(attributesFileName)
 }
@@ -182,10 +182,8 @@ loadAndromeda <- function(fileName) {
       
       message <- c(message, 
                    pillar::style_subtle("Use options(warnDiskSpaceThreshold = <n>) to set the number of bytes for this warning to trigger."))
-      message <- c(message, 
-                   pillar::style_subtle("This warning will not be shown for this file location again during this R session."))
       
-      warning(paste(message, collapse = "\n"), call. = FALSE) 
+      rlang::warn(paste(message, collapse = "\n"), class = "Andromeda", .frequency = "once", .frequency_id = folder) 
       assign("lowDiskWarnings", c(lowDiskWarnings, folder), envir = andromedaGlobalEnv)
     }
   }
@@ -233,15 +231,13 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
     return(NA)
   }
   
-  osInfo <- tolower(paste(sessionInfo()$platform, sessionInfo()$running))
-  os <- regmatches(osInfo, regexpr("windows|mac|linux", osInfo))
-  if(!(os %in% c("windows", "mac", "linux"))) {
+  if(!(.Platform$OS.type %in% c("windows", "unix"))) {
     msg <- "Operating system cannot be determined.\nCannot get available Andromeda disk space.\n"
     rlang::warn(msg, class = "Andromeda")
     return(NA)
   }
   
-  if (os == "windows") {
+  if (.Platform$OS.type == "windows") {
     # https://stackoverflow.com/questions/32200879/how-to-get-disk-space-of-windows-machine-with-r
     # https://stackoverflow.com/questions/293780/free-space-in-a-cmd-shell
     disks <- system("wmic logicaldisk get size,freespace,caption", inter = T)
@@ -263,10 +259,10 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
     }
   }
   
-  if (os %in% c("linux", "mac")) {
+  if (.Platform$OS.type == "unix") {
     # https://stat.ethz.ch/pipermail/r-help/2007-October/142319.html
-    if(length(system("which dsf", intern = T, ignore.stderr = T)) != 1) {
-      msg <- paste0("`which df` command returned error on ", os, "\n",
+    if(length(system("which df", intern = T, ignore.stderr = T)) != 1) {
+      msg <- paste0("`which df` command returned error\n",
                     "Cannot get available Andromeda disk space.\n")
       rlang::warn(msg, class = "Andromeda")
       return(NA)

@@ -24,12 +24,13 @@ Imports:
   dbplyr,
   tidyselect,
   cli,
-  pillar
+  pillar,
+  stringr,
+  rlang
 Suggests:
   testthat,
   knitr,
   rmarkdown,
-  rlang,
   tibble
 LazyData: false
 Roxygen: list(markdown = TRUE)
