@@ -43,11 +43,8 @@ test_that("batchApply progress bar", {
   doSomething <- function(batch, multiplier) {
     return(nrow(batch) * multiplier)
   }
-  result <- batchApply(andromeda$cars, doSomething, multiplier = 2, batchSize = 10, progressBar = TRUE)
-  result <- unlist(result)
-  
-  expect_true(sum(result) == nrow(cars) * 2)
-  expect_true(length(result) == ceiling(nrow(cars)/10))
+  result <- capture_output(batchApply(andromeda$cars, doSomething, multiplier = 2, batchSize = 10, progressBar = TRUE))
+  expect_true(stringr::str_count(result, "=") > 100)
   close(andromeda)
 })
 
@@ -66,18 +63,15 @@ test_that("groupApply", {
   close(andromeda)
 })
 
-test_that("groupApply", {
+test_that("groupApply progress bar", {
   andromeda <- andromeda()
   andromeda$cars <- cars
   
   doSomething <- function(batch, multiplier) {
     return(nrow(batch) * multiplier)
   }
-  result <- groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10, progressBar = TRUE)
-  result <- unlist(result)
-  
-  expect_true(sum(result) == nrow(cars) * 2)
-  expect_true(length(result) == length(unique(cars$speed)))
+  result <- capture_output(groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10, progressBar = TRUE))
+  expect_true(stringr::str_count(result, "=") > 100)
   close(andromeda)
 })
 

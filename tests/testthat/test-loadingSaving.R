@@ -9,10 +9,17 @@ test_that("Saving and loading", {
   attr(andromeda, "metaData") <- list(x = 1)
 
   fileName <- tempfile(fileext = ".zip")
+  
+  # saveAndromeda writes to stdout which we want to supress when testing
+  expect_error(
+    capture.output(
+      saveAndromeda(andromeda, fileName, maintainConnection = FALSE)
+    ),
+  NA)
+  
+  expect_error(saveAndromeda(andromeda, fileName), "closed")
 
-  saveAndromeda(andromeda, fileName, maintainConnection = FALSE)
-
-  andromeda2 <- loadAndromeda(fileName)
+  expect_error(andromeda2 <- loadAndromeda(fileName), NA)
   expect_true("table" %in% names(andromeda2))
 
   iris2 <- andromeda2$table %>% collect()
@@ -46,4 +53,42 @@ test_that("Object cleanup when loading and saving", {
   invisible(gc())
   expect_false(file.exists(internalFileName))
   unlink(fileName)
+})
+
+test_that("saveAndromeda handles bad file paths and tilde expansion", {
+  andromeda <- andromeda(cars = cars)
+  expect_error(saveAndromeda(andromeda, "/some/non/exist/ant/path.zip"), class = "Andromeda")
+  close(andromeda)
+})
+
+test_that("saveAndromeda perfroms tilde expansion", {
+  skip_if(!dir.exists("~"))
+  andromeda <- andromeda(cars = cars)
+  expect_error(saveAndromeda(andromeda, "~/andromedatestfile0010101011.zip"), NA)
+  unlink("~/andromedatestfile0010101011.zip")
+})
+    
+
+test_that("getAndromedaTempDiskSpace works", {
+  space <- getAndromedaTempDiskSpace()
+  expect_true(is.numeric(space) && space > 0)
+  
+  andromeda <- andromeda(cars = cars)
+  space <- getAndromedaTempDiskSpace(andromeda)
+  expect_true(is.numeric(space) && space > 0)
+})
+
+test_that(".checkAvailableSpace works", {
+  # check that there is no error
+  expect_error(.checkAvailableSpace(), NA)
+  
+  andromeda <- andromeda(cars = cars)
+  expect_error(.checkAvailableSpace(andromeda), NA)
+  
+  oldOption <- getOption("warnDiskSpaceThreshold")
+  options(warnDiskSpaceThreshold = 1e15)
+  expect_warning(.checkAvailableSpace(), "Low disk space")
+  # Checking the same location again should not produce a warning
+  expect_warning(.checkAvailableSpace(), NA)
+  options(warnDiskSpaceThreshold = oldOption)
 })
