@@ -223,8 +223,9 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
   } else {
     folder <- dirname(andromeda@dbname) 
   }
+  folder <- normalizePath(folder)
   
-  if(!dir.exists(folder)) {
+  if (!dir.exists(folder)) {
     msg <- paste("Andromeda temp folder does not exist\n",
                  "folder:", folder, "\n",
                  "Cannot determine available Andromeda disk space.")
@@ -232,7 +233,7 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
     return(NA)
   }
   
-  if(!(.Platform$OS.type %in% c("windows", "unix"))) {
+  if (!(.Platform$OS.type %in% c("windows", "unix"))) {
     msg <- "Operating system cannot be determined.\nCannot get available Andromeda disk space.\n"
     rlang::warn(msg, class = "Andromeda")
     return(NA)
@@ -241,43 +242,32 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
   if (.Platform$OS.type == "windows") {
     # https://stackoverflow.com/questions/32200879/how-to-get-disk-space-of-windows-machine-with-r
     # https://stackoverflow.com/questions/293780/free-space-in-a-cmd-shell
-    disks <- system("wmic logicaldisk get size,freespace,caption", intern = T)
-    disks <- read.table(textConnection(disks), 
-                        skip = 1,
-                        col.names =  c("disk", "freeSpace", "size"),
-                        row.names = NULL)
-    
-    idRow <- stringr::str_detect(tolower(folder), tolower(paste0("^",disks$disk)))
-    if(sum(idRow) != 1) {
-      msg <- paste0("Andromeda temp disk cannot be determined.\n",
-                    "folder: ", folder, "\n",
-                    "disks: ", paste(disks$disk, collapse = ", "), "\n",
-                    "Cannot get available Andromeda disk space.\n")
-      rlang::warn(msg, class = "Andromeda")
+    driveLetter <- substr(folder, 1, 1)
+    space <- system(sprintf("wmic logicaldisk where caption=\"%s:\" get freespace", driveLetter),
+                    intern = TRUE)
+    if (!grepl("FreeSpace", space[1])) {
+      rlang::warn(paste0("Andromeda temp disk cannot be determined for folder ", folder), class = "Andromeda")
       return(NA)
     } else {
-      space <- disks[idRow,]$freeSpace
+      space <- read.table(textConnection(space), 
+                          skip = 1,
+                          col.names =  c("freeSpace"),
+                          row.names = NULL)$freeSpace[1]
     }
   }
   
   if (.Platform$OS.type == "unix") {
     # https://stat.ethz.ch/pipermail/r-help/2007-October/142319.html
-    if(length(system("which df", intern = T, ignore.stderr = T)) != 1) {
+    if (length(system("which df", intern = TRUE, ignore.stderr = TRUE)) != 1) {
       msg <- paste0("`which df` command returned error\n",
                     "Cannot get available Andromeda disk space.\n")
       rlang::warn(msg, class = "Andromeda")
       return(NA)
     } else {
-      stdout <- system(paste("df", folder), intern = T, ignore.stderr = T)
+      stdout <- system(paste("df", folder), intern = TRUE, ignore.stderr = TRUE)
       space <- as.integer(strsplit(stdout[length(stdout)], "[ ]+")[[1]][4])
     }
   }
   
   return(space)
-}
-
-.isInstalled <- function(pkg) {
-  installedVersion <- tryCatch(utils::packageVersion(pkg), 
-                               error = function(e) NA)
-  return(!is.na(installedVersion))
 }

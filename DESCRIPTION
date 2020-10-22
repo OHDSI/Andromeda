@@ -25,9 +25,9 @@ Imports:
   tidyselect,
   cli,
   pillar,
-  stringr,
   rlang
 Suggests:
+  string,
   testthat,
   knitr,
   rmarkdown,
