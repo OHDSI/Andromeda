@@ -24,15 +24,16 @@ Imports:
   dbplyr,
   tidyselect,
   cli,
+  rlang,
   pillar
 Suggests:
   testthat,
+  stringr,
   knitr,
   rmarkdown,
-  rlang,
   tibble,
   rJava
 LazyData: false
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Encoding: UTF-8

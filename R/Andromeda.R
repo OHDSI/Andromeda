@@ -20,6 +20,7 @@
 #' @importFrom methods slotNames
 #' @importFrom utils head setTxtProgressBar txtProgressBar
 #' @importFrom tidyselect all_of
+#' @importFrom rlang abort warn inform
 #' @import dplyr
 #' 
 "_PACKAGE"

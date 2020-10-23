@@ -53,18 +53,28 @@
 #' @export
 saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overwrite = TRUE) {
   if (!overwrite && file.exists(fileName)) {
-    stop("File ", fileName, " already exists, and overwrite = FALSE")
+    abort(sprintf("File %s already exists, and overwrite = FALSE", fileName))
   }
+  
+  if (!isValidAndromeda(andromeda)) {
+    abort("andromeda object is closed or not valid.")
+  }
+  
+  fileName <- path.expand(fileName)
+  if (!dir.exists(dirname(fileName))) {
+    abort(sprintf("The directory '%s' does not exist. Andromeda object cannot be saved", dirname(fileName)))
+  }  
+  
   # Need to save any user-defined attributes as well:
   attribs <- attributes(andromeda)
   for (name in slotNames(andromeda)) {
     attribs[[name]] <- NULL
   }
   attribs[["class"]] <- NULL
-
+  
   attributesFileName <- tempfile(fileext = ".rds")
   saveRDS(attribs, attributesFileName)
-
+  
   if (maintainConnection) {
     # Can't zip while connected, so make copy:
     tempFileName <- tempfile(fileext = ".sqlite")
@@ -75,7 +85,7 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
     RSQLite::dbDisconnect(andromeda)
     zip::zipr(fileName, c(attributesFileName, andromeda@dbname), compression_level = 2)
     unlink(andromeda@dbname)
-    writeLines("Disconnected Andromeda. This data object can no longer be used")
+    inform("Disconnected Andromeda. This data object can no longer be used")
   }
   unlink(attributesFileName)
 }
@@ -108,6 +118,9 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
 #'
 #' @export
 loadAndromeda <- function(fileName) {
+  if (!file.exists(fileName)) {
+    abort(sprintf("File %s does not exist", fileName))
+  }
   fileNamesInZip <- zip::zip_list(fileName)$filename
   sqliteFilenameInZip <- fileNamesInZip[grepl(".sqlite$", fileNamesInZip)]
   rdsFilenameInZip <- fileNamesInZip[grepl(".rds$", fileNamesInZip)]
@@ -174,7 +187,7 @@ loadAndromeda <- function(fileName) {
         message <- c(message, 
                      pillar::style_subtle("This warning will not be shown for this file location again during this R session."))
         
-        warning(paste(message, collapse = "\n"), call. = FALSE) 
+        warn(paste(message, collapse = "\n")) 
         assign("lowDiskWarnings", c(lowDiskWarnings, folder), envir = andromedaGlobalEnv)
       }
     }
@@ -209,7 +222,7 @@ loadAndromeda <- function(fileName) {
 #' @export
 getAndromedaTempDiskSpace <- function(andromeda = NULL) {
   if (!is.null(andromeda) && !inherits(andromeda, "SQLiteConnection")) 
-    stop("Andromeda argument must be of type 'Andromeda'.")
+    abort("Andromeda argument must be of type 'Andromeda'.")
   
   # Using Java because no cross-platform functions available in R:
   if (!.isInstalled("rJava")) {
@@ -222,7 +235,7 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
     }
     space <- tryCatch({
       rJava::.jinit()
-      file <- rJava::.jnew("java.io.File", folder, check = FALSE, silent = TRUE)
+      file <- rJava::.jnew("java.io.File", normalizePath(folder), check = FALSE, silent = TRUE)
       rJava::.jcall(file, "J", "getUsableSpace")
       
       # This throws "illegal reflective access operation" warning:

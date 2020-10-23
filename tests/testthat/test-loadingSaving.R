@@ -57,7 +57,7 @@ test_that("Object cleanup when loading and saving", {
 
 test_that("saveAndromeda handles bad file paths and tilde expansion", {
   andromeda <- andromeda(cars = cars)
-  expect_error(saveAndromeda(andromeda, "/some/non/exist/ant/path.zip"), class = "Andromeda")
+  expect_error(saveAndromeda(andromeda, "/some/non/exist/ant/path.zip"))
   close(andromeda)
 })
 

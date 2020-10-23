@@ -86,7 +86,7 @@ andromeda <- function(...) {
   arguments <- list(...)
   if (length(arguments) > 0) {
     if (is.null(names(arguments)) || any(names(arguments) == ""))
-      stop("All arguments must be named")
+      abort("All arguments must be named")
   }
   andromeda <- .createAndromeda()
   if (length(arguments) > 0) {
@@ -247,7 +247,7 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
       }
     }
   } else {
-    stop("Table must be a data frame or dplyr table")
+    abort("Table must be a data frame or dplyr table")
   }
   x
 })
@@ -362,5 +362,5 @@ setMethod("close", "Andromeda", function(con, ...) {
 
 checkIfValid <- function(x) {
   if (!isValidAndromeda(x))
-    stop("Andromeda object is no longer valid. Perhaps it was saved without maintainConnection = TRUE, or R has been restarted?", call. = FALSE)
+    abort("Andromeda object is no longer valid. Perhaps it was saved without maintainConnection = TRUE, or R has been restarted?")
 }
