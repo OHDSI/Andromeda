@@ -1,0 +1,191 @@
+# Copyright 2020 Observational Health Data Sciences and Informatics
+#
+# This file is part of Andromeda
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#' Create an index on one or more columns in an Andromeda table
+#'
+#' @param tbl             An [`Andromeda`] table (or any other 'DBI' table).
+#' @param columnNames     A vector of column names (character) on which the index is to be created.
+#' @param unique          Should values in the column(s) be enforced to be unique?
+#' @param indexName       The name of the index. If not provided, a random name will be generated.
+#' 
+#' @details
+#' Indices can speed up subsequent queries that use the indexed columns, but can take time to create, 
+#' and will take additional space on the drive. 
+#' 
+#' @seealso [listIndices()], [removeIndex()]
+#' 
+#' @return 
+#' Invisibly returns the input table.
+#'
+#' @examples
+#' andr <- andromeda(cars = cars)
+#'
+#' createIndex(andr$cars, "speed")
+#'
+#' # Will be faster now that speed is indexed:
+#' andr$cars %>%
+#'   filter(speed == 10) %>%
+#'   collect()
+#' 
+#' close(andr)
+#'
+#' @export
+createIndex <- function(tbl, columnNames, unique = FALSE, indexName = NULL) {
+  if (!inherits(tbl, "tbl_dbi"))
+    abort("First argument must be an Andromeda (or DBI) table")
+  if (!all(columnNames %in% colnames(tbl)))
+    abort(sprintf("Column(s) %s not found in the table", paste(columnNames[!columnNames %in% names(tbl)], collapse = ", ")))
+  
+  if (is.null(indexName)) {
+    indexName <- paste(c("idx_", sample(c(letters, 0:9), 20)), collapse = "")
+  }
+  
+  statement <- sprintf("CREATE %s INDEX %s ON %s(%s);", 
+                       if (unique) "UNIQUE" else "", 
+                       indexName, 
+                       as.character(dbplyr::remote_name(tbl)), 
+                       paste(columnNames, collapse = ", "))
+  
+  RSQLite::dbExecute(conn = dbplyr::remote_con(tbl), statement = statement)
+  invisible(tbl)
+}
+
+
+#' List all indices on an Andromeda table
+#'
+#' @param tbl             An [`Andromeda`] table (or any other 'DBI' table).
+#' 
+#' @details
+#' Lists any indices that may have been created using the  [createIndex()] function. 
+#' 
+#' @seealso [createIndex()], [removeIndex()]
+#' 
+#' @return 
+#' Returns a tibble listing the indices, indexed columns, and whether the index is unique.
+#'
+#' @examples
+#' andr <- andromeda(cars = cars)
+#'
+#' createIndex(andr$cars, "speed")
+#'
+#' listIndices(andr$cars)
+#' # # A tibble: 1 x 5
+#' # indexSequenceId indexName                unique columnSequenceId columnName
+#' #           <int> <chr>                    <lgl>             <int> <chr>     
+#' #1              0 idx_ocy8we9j2i7ld0rshgb4 FALSE                 0 speed           
+#' 
+#' close(andr)
+#'
+#' @export
+listIndices <- function(tbl) {
+  if (!inherits(tbl, "tbl_dbi"))
+    abort("Argument must be an Andromeda (or DBI) table")
+  
+  tableName <- as.character(dbplyr::remote_name(tbl))
+  connection <- dbplyr::remote_con(tbl)
+  indices <- RSQLite::dbGetQuery(conn = connection, 
+                                 statement = sprintf("PRAGMA index_list('%s');", tableName)) %>%
+    dplyr::as_tibble()
+  if (nrow(indices) == 0) {
+    return(dplyr::tibble())
+  }
+  getIndexInfo <- function(indexName) {
+    indexInfo <- RSQLite::dbGetQuery(conn = connection, 
+                                     statement = sprintf("PRAGMA index_info('%s');", indexName)) %>%
+      dplyr::as_tibble()
+    indexInfo$indexName <- indexName
+    return(indexInfo)
+  }
+  indexInfo <- lapply(indices$name, getIndexInfo)
+  indexInfo <- bind_rows(indexInfo) %>% 
+    select(indexName = .data$indexName,
+           columnSequenceId = .data$seqno,
+           columnName = .data$name) 
+  
+  result <- indices %>%
+      mutate(unique = case_when(.data$unique == 1 ~ TRUE, TRUE ~ FALSE)) %>%
+      select(indexSequenceId = .data$seq,       
+             indexName = .data$name,
+             unique = .data$unique) %>%
+    inner_join(indexInfo, by = "indexName")
+  
+  return(result)
+}
+
+#' Removes an index from an Andromeda table
+#'
+#' @param tbl             An [`Andromeda`] table (or any other 'DBI' table).
+#' @param columnNames     A vector of column names (character) on which the index was created. If not
+#'                        provided, then the `indexName` argument must be provided.
+#' @param indexName       The name of the index. If not provided, the `columnNames` argument must be 
+#'                        provided.
+#' 
+#' @details
+#' Remove an index created using the [createIndex()] function. Either the index name or the column 
+#' names on which the index was created must be provided. 
+#' 
+#' @seealso [createIndex()], [listIndices()]
+#' 
+#' @return 
+#' Invisibly returns the input table.
+#'
+#' @examples
+#' andr <- andromeda(cars = cars)
+#'
+#' createIndex(andr$cars, "speed")
+#'
+#' # Will be faster now that speed is indexed:
+#' andr$cars %>%
+#'   filter(speed == 10) %>%
+#'   collect()
+#'   
+#' removeIndex(andr$cars, "speed")
+#' 
+#' close(andr)
+#'
+#' @export
+removeIndex <- function(tbl, columnNames = NULL, indexName = NULL) {
+  if (!inherits(tbl, "tbl_dbi"))
+    abort("First argument must be an Andromeda (or DBI) table")
+  
+  tableName <- as.character(dbplyr::remote_name(tbl))
+  connection <- dbplyr::remote_con(tbl)
+  indices <- RSQLite::dbGetQuery(conn = connection, 
+                                 statement = sprintf("PRAGMA index_list('%s');", tableName))
+  
+  if (is.null(indexName)) {
+    for (indexName in indices$name) {
+      indexInfo <- RSQLite::dbGetQuery(conn = connection, 
+                                     statement = sprintf("PRAGMA index_info('%s');", indexName))
+      if (all(columnNames %in% indexInfo$name)) {
+        indexName <- indexName
+        break;
+      }
+    }
+    if (is.null(indexName)) {
+      abort(sprintf("Could not find an index on column(s) %s", paste(columnNames, collapse = ", ")))
+    }
+  } else {
+    if (!indexName %in% indices$name) {
+      abort(sprintf("Index with name '%s' not found", indexName))
+    }
+  }
+  
+  statement <- sprintf("DROP INDEX %s;", indexName)
+  
+  RSQLite::dbExecute(conn = dbplyr::remote_con(tbl), statement = statement)
+  invisible(tbl)
+}

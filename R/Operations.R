@@ -29,6 +29,8 @@
 #' data. In this case, the data is batches of data from an [`Andromeda`] table. Each batch will be
 #' presented to the function as a data frame.
 #' 
+#' @seealso [groupApply()]
+#' 
 #' @return 
 #' Invisibly returns a list of objects, where each object is the output of the user-supplied function
 #' applied to a batch
@@ -110,6 +112,8 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
 #' @details
 #' This function applies a function to groups of data. The groups are identified by unique values of
 #' the `groupVariable`, which must be a variable in the table.
+#'
+#' @seealso [batchApply()]
 #'
 #' @return
 #' Invisibly returns a list of objects, where each object is the output of the user-supplied function
@@ -299,6 +303,8 @@ batchTest <- function(tbl, fun, ..., batchSize = 100000) {
 #' Restores dates that were converted by Andromeda to numeric values back to dates.
 #'
 #' @param x  A numeric vector representing dates.
+#' 
+#' @seealso [restorePosixct()]
 #'
 #' @return
 #' A vector of type `Date`.
@@ -330,6 +336,8 @@ restoreDate <- function(x) {
 #' Restores dates that were converted by Andromeda to numeric values back to dates.
 #'
 #' @param x  A numeric vector representing timestamps
+#' 
+#' @seealso [restoreDate()]
 #'
 #' @return
 #' A vector of type `POSIXct`.

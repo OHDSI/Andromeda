@@ -34,3 +34,6 @@ andr$myData \%>\%
 close(andr)
 
 }
+\seealso{
+\code{\link[=restoreDate]{restoreDate()}}
+}

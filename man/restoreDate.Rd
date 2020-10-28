@@ -32,3 +32,6 @@ andr$myData \%>\%
 close(andr)
 
 }
+\seealso{
+\code{\link[=restorePosixct]{restorePosixct()}}
+}

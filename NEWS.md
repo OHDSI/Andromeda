@@ -1,9 +1,15 @@
-Andromeda 0.3.2
+Andromeda 0.4.0
 ===============
+
+Changes
+
+- Added the `createIndex`, `listIndices`, and `removeIndex` functions.
 
 Bug fixes
 
 - Setting SQLite temp_store_directory to Andromeda temp folder as well to prevent running out of space in default drive.
+
+- Normalizing path before querying available disk space to avoid errors when using tilde in the path.
 
 
 Andromeda 0.3.1

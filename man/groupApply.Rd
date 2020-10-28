@@ -64,3 +64,6 @@ result
 close(andr)
 
 }
+\seealso{
+\code{\link[=batchApply]{batchApply()}}
+}
