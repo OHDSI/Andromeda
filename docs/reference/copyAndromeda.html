@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -135,7 +135,7 @@
     <p>Creates a complete copy of an <code><a href='Andromeda-class.html'>Andromeda</a></code> object. Object attributes are not copied.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>copyAndromeda</span>(<span class='no'>andromeda</span>)</pre>
+    <pre class="usage"><span class='fu'>copyAndromeda</span><span class='op'>(</span><span class='va'>andromeda</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -151,14 +151,17 @@
     <p>The copied <code><a href='Andromeda-class.html'>Andromeda</a></code> object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda_constructor.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>, <span class='kw'>iris</span> <span class='kw'>=</span> <span class='no'>iris</span>)
+    <pre class="examples"><div class='input'><span class='va'>andr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='andromeda.html'>andromeda</a></span><span class='op'>(</span>cars <span class='op'>=</span> <span class='va'>cars</span>, iris <span class='op'>=</span> <span class='va'>iris</span><span class='op'>)</span>
 
-<span class='no'>andr2</span> <span class='kw'>&lt;-</span> <span class='fu'>copyAndromeda</span>(<span class='no'>andr</span>)
+<span class='va'>andr2</span> <span class='op'>&lt;-</span> <span class='fu'>copyAndromeda</span><span class='op'>(</span><span class='va'>andr</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>andr2</span>)</div><div class='output co'>#&gt; [1] "cars" "iris"</div><div class='input'><span class='co'># [1] 'cars' 'iris'</span>
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>andr2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "cars" "iris"</div><div class='input'><span class='co'># [1] 'cars' 'iris'</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>andr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>andr2</span>)</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span><span class='op'>(</span><span class='va'>andr</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span><span class='op'>(</span><span class='va'>andr2</span><span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -174,7 +177,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

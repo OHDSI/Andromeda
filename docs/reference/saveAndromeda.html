@@ -75,7 +75,7 @@ create a temporary copy of the Andromeda object. Note that this can be substanti
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -141,12 +141,12 @@ automatically closed by saving it to disk. This is due to a limitation of the un
 create a temporary copy of the <code><a href='Andromeda-class.html'>Andromeda</a></code> object. Note that this can be substantially slower.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>saveAndromeda</span>(
-  <span class='no'>andromeda</span>,
-  <span class='no'>fileName</span>,
-  <span class='kw'>maintainConnection</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>saveAndromeda</span><span class='op'>(</span>
+  <span class='va'>andromeda</span>,
+  <span class='va'>fileName</span>,
+  maintainConnection <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  overwrite <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -181,14 +181,17 @@ exists, an error will be thrown.</p></td>
 <p><code><a href='loadAndromeda.html'>loadAndromeda()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda_constructor.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>)
+    <pre class="examples"><div class='input'><span class='va'>andr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='andromeda.html'>andromeda</a></span><span class='op'>(</span>cars <span class='op'>=</span> <span class='va'>cars</span><span class='op'>)</span>
 
 <span class='co'># For this example we'll use a temporary file location:</span>
-<span class='no'>fileName</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
+<span class='va'>fileName</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>saveAndromeda</span>(<span class='no'>andr</span>, <span class='no'>fileName</span>)</div><div class='output co'>#&gt; Disconnected Andromeda. This data object can no longer be used</div><div class='input'>
+<span class='fu'>saveAndromeda</span><span class='op'>(</span><span class='va'>andr</span>, <span class='va'>fileName</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Disconnected Andromeda. This data object can no longer be used</span></div><div class='input'>
 <span class='co'># Cleaning up the file used in this example:</span>
-<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span>(<span class='no'>fileName</span>)</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='va'>fileName</span><span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -204,7 +207,7 @@ exists, an error will be thrown.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

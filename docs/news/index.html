@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -129,13 +129,18 @@
       <small>Source: <a href='https://github.com/OHDSI/Andromeda/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="andromeda-032" class="section level1">
-<h1 class="page-header" data-toc-text="0.3.2">
-<a href="#andromeda-032" class="anchor"></a>Andromeda 0.3.2<small> Unreleased </small>
+    <div id="andromeda-040" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.0">
+<a href="#andromeda-040" class="anchor"></a>Andromeda 0.4.0<small> Unreleased </small>
 </h1>
+<p>Changes</p>
+<ul>
+<li>Added the <code>createIndex</code>, <code>listIndices</code>, and <code>removeIndex</code> functions.</li>
+</ul>
 <p>Bug fixes</p>
 <ul>
-<li>Setting SQLite temp_store_directory to Andromeda temp folder as well to prevent running out of space in default drive.</li>
+<li><p>Setting SQLite temp_store_directory to Andromeda temp folder as well to prevent running out of space in default drive.</p></li>
+<li><p>Normalizing path before querying available disk space to avoid errors when using tilde in the path.</p></li>
 </ul>
 </div>
     <div id="andromeda-031" class="section level1">
@@ -238,7 +243,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

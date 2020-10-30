@@ -77,7 +77,7 @@ therefore be identical (but not necessarily in the same order)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -145,7 +145,7 @@ than when appending data from within the same <code><a href='Andromeda-class.htm
 therefore be identical (but not necessarily in the same order).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>appendToTable</span>(<span class='no'>tbl</span>, <span class='no'>data</span>)</pre>
+    <pre class="usage"><span class='fu'>appendToTable</span><span class='op'>(</span><span class='va'>tbl</span>, <span class='va'>data</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -165,16 +165,21 @@ therefore be identical (but not necessarily in the same order).</p>
     <p>Returns no value. Executed for the side-effect of appending the data to the table.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda_constructor.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>andr</span>$<span class='no'>cars</span>)</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='co'># [1] 50</span>
+    <pre class="examples"><div class='input'><span class='va'>andr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='andromeda.html'>andromeda</a></span><span class='op'>(</span>cars <span class='op'>=</span> <span class='va'>cars</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>andr</span><span class='op'>$</span><span class='va'>cars</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='co'># [1] 50</span>
 
-<span class='fu'>appendToTable</span>(<span class='no'>andr</span>$<span class='no'>cars</span>, <span class='no'>cars</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>andr</span>$<span class='no'>cars</span>)</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='co'># [1] 100</span>
+<span class='fu'>appendToTable</span><span class='op'>(</span><span class='va'>andr</span><span class='op'>$</span><span class='va'>cars</span>, <span class='va'>cars</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>andr</span><span class='op'>$</span><span class='va'>cars</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='co'># [1] 100</span>
 
-<span class='fu'>appendToTable</span>(<span class='no'>andr</span>$<span class='no'>cars</span>, <span class='no'>andr</span>$<span class='no'>cars</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span>(<span class='no'>speed</span> <span class='kw'>&gt;</span> <span class='fl'>10</span>))
-<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>andr</span>$<span class='no'>cars</span>)</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='co'># [1] 182</span>
+<span class='fu'>appendToTable</span><span class='op'>(</span><span class='va'>andr</span><span class='op'>$</span><span class='va'>cars</span>, <span class='va'>andr</span><span class='op'>$</span><span class='va'>cars</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>speed</span> <span class='op'>&gt;</span> <span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>andr</span><span class='op'>$</span><span class='va'>cars</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='co'># [1] 182</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>andr</span>)</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span><span class='op'>(</span><span class='va'>andr</span><span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -190,7 +195,7 @@ therefore be identical (but not necessarily in the same order).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

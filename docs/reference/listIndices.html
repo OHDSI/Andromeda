@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Load Andromeda from file — loadAndromeda • Andromeda</title>
+<title>List all indices on an Andromeda table — listIndices • Andromeda</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Load Andromeda from file — loadAndromeda" />
-<meta property="og:description" content="Load Andromeda from file" />
+<meta property="og:title" content="List all indices on an Andromeda table — listIndices" />
+<meta property="og:description" content="List all indices on an Andromeda table" />
 
 
 
@@ -126,50 +126,53 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Load Andromeda from file</h1>
-    <small class="dont-index">Source: <a href='https://github.com/OHDSI/Andromeda/blob/master/R/LoadingSaving.R'><code>R/LoadingSaving.R</code></a></small>
-    <div class="hidden name"><code>loadAndromeda.Rd</code></div>
+    <h1>List all indices on an Andromeda table</h1>
+    <small class="dont-index">Source: <a href='https://github.com/OHDSI/Andromeda/blob/master/R/Indices.R'><code>R/Indices.R</code></a></small>
+    <div class="hidden name"><code>listIndices.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Load Andromeda from file</p>
+    <p>List all indices on an Andromeda table</p>
     </div>
 
-    <pre class="usage"><span class='fu'>loadAndromeda</span><span class='op'>(</span><span class='va'>fileName</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>listIndices</span><span class='op'>(</span><span class='va'>tbl</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>fileName</th>
-      <td><p>The path where the object was saved using <code><a href='saveAndromeda.html'>saveAndromeda()</a></code>.</p></td>
+      <th>tbl</th>
+      <td><p>An <code><a href='Andromeda-class.html'>Andromeda</a></code> table (or any other 'DBI' table).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An <code><a href='Andromeda-class.html'>Andromeda</a></code> object.</p>
+    <p>Returns a tibble listing the indices, indexed columns, and whether the index is unique.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Lists any indices that may have been created using the  <code><a href='createIndex.html'>createIndex()</a></code> function.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='saveAndromeda.html'>saveAndromeda()</a></code></p></div>
+    <div class='dont-index'><p><code><a href='createIndex.html'>createIndex()</a></code>, <code><a href='removeIndex.html'>removeIndex()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># For this example we create an Andromeda object and save it to</span>
-<span class='co'># a temporary file locationL</span>
-<span class='va'>fileName</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='va'>andr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='andromeda.html'>andromeda</a></span><span class='op'>(</span>cars <span class='op'>=</span> <span class='va'>cars</span><span class='op'>)</span>
-<span class='fu'><a href='saveAndromeda.html'>saveAndromeda</a></span><span class='op'>(</span><span class='va'>andr</span>, <span class='va'>fileName</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Disconnected Andromeda. This data object can no longer be used</span></div><div class='input'>
-<span class='co'># Using loadAndromeda to load the object back:</span>
-<span class='va'>andr</span> <span class='op'>&lt;-</span> <span class='fu'>loadAndromeda</span><span class='op'>(</span><span class='va'>fileName</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='va'>andr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='andromeda.html'>andromeda</a></span><span class='op'>(</span>cars <span class='op'>=</span> <span class='va'>cars</span><span class='op'>)</span>
 
-<span class='co'># Don't forget to close Andromeda when you are done:</span>
+<span class='fu'><a href='createIndex.html'>createIndex</a></span><span class='op'>(</span><span class='va'>andr</span><span class='op'>$</span><span class='va'>cars</span>, <span class='st'>"speed"</span><span class='op'>)</span>
+
+<span class='fu'>listIndices</span><span class='op'>(</span><span class='va'>andr</span><span class='op'>$</span><span class='va'>cars</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 5</span><span>
+#&gt;   indexSequenceId indexName                unique columnSequenceId columnName
+#&gt;             </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                    </span><span style='color: #555555;font-style: italic;'>&lt;lgl&gt;</span><span>             </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     
+#&gt; </span><span style='color: #555555;'>1</span><span>               0 idx_78yvkgufi6j3bqta2xn9 FALSE                 0 speed     </div><div class='input'><span class='co'># # A tibble: 1 x 5</span>
+<span class='co'># indexSequenceId indexName                unique columnSequenceId columnName</span>
+<span class='co'>#           &lt;int&gt; &lt;chr&gt;                    &lt;lgl&gt;             &lt;int&gt; &lt;chr&gt;     </span>
+<span class='co'>#1              0 idx_ocy8we9j2i7ld0rshgb4 FALSE                 0 speed           </span>
+
 <span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span><span class='op'>(</span><span class='va'>andr</span><span class='op'>)</span>
 
-<span class='co'># Cleaning up the file used in this example:</span>
-<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='va'>fileName</span><span class='op'>)</span>
-
-</div></pre>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

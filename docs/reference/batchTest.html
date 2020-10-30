@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -135,7 +135,7 @@
     <p>Apply a boolean test to batches of data in an Andromeda table and terminate early</p>
     </div>
 
-    <pre class="usage"><span class='fu'>batchTest</span>(<span class='no'>tbl</span>, <span class='no'>fun</span>, <span class='no'>...</span>, <span class='kw'>batchSize</span> <span class='kw'>=</span> <span class='fl'>1e+05</span>)</pre>
+    <pre class="usage"><span class='fu'>batchTest</span><span class='op'>(</span><span class='va'>tbl</span>, <span class='va'>fun</span>, <span class='va'>...</span>, batchSize <span class='op'>=</span> <span class='fl'>1e+05</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -167,17 +167,20 @@
 data and terminates at the first <code>FALSE</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>andr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='andromeda_constructor.html'>andromeda</a></span>(<span class='kw'>cars</span> <span class='kw'>=</span> <span class='no'>cars</span>)
+    <pre class="examples"><div class='input'><span class='va'>andr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='andromeda.html'>andromeda</a></span><span class='op'>(</span>cars <span class='op'>=</span> <span class='va'>cars</span><span class='op'>)</span>
 
-<span class='no'>fun</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>x</span>) {
-  <span class='fu'><a href='https://rdrr.io/r/base/is.unsorted.html'>is.unsorted</a></span>(<span class='no'>x</span> <span class='kw'>%&gt;%</span> <span class='fu'>select</span>(<span class='no'>speed</span>) <span class='kw'>%&gt;%</span> <span class='fu'>collect</span>())
-}
+<span class='va'>fun</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/is.unsorted.html'>is.unsorted</a></span><span class='op'>(</span><span class='va'>x</span> <span class='op'>%&gt;%</span> <span class='fu'>select</span><span class='op'>(</span><span class='va'>speed</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>collect</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>   
+<span class='op'>}</span>
 
-<span class='no'>result</span> <span class='kw'>&lt;-</span> <span class='fu'>batchTest</span>(<span class='no'>andr</span>$<span class='no'>cars</span>, <span class='no'>fun</span>, <span class='kw'>batchSize</span> <span class='kw'>=</span> <span class='fl'>25</span>)
+<span class='va'>result</span> <span class='op'>&lt;-</span> <span class='fu'>batchTest</span><span class='op'>(</span><span class='va'>andr</span><span class='op'>$</span><span class='va'>cars</span>, <span class='va'>fun</span>, batchSize <span class='op'>=</span> <span class='fl'>25</span><span class='op'>)</span>
 
-<span class='no'>result</span></div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='co'># [1] FALSE </span>
+<span class='va'>result</span>
+</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='co'># [1] FALSE </span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>andr</span>)</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span><span class='op'>(</span><span class='va'>andr</span><span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -193,7 +196,7 @@ data and terminates at the first <code>FALSE</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

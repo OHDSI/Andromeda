@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -82,13 +82,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="UsingAndromeda_files/header-attrs-2.4/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using Andromeda</h1>
                         <h4 class="author">Martijn J. Schuemie</h4>
             
-            <h4 class="date">2020-07-16</h4>
+            <h4 class="date">2020-10-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/Andromeda/blob/master/vignettes/UsingAndromeda.Rmd"><code>vignettes/UsingAndromeda.Rmd</code></a></small>
       <div class="hidden name"><code>UsingAndromeda.Rmd</code></div>
@@ -116,42 +116,51 @@
 <h1 class="hasAnchor">
 <a href="#creating-an-andromeda-object" class="anchor"></a>Creating an Andromeda object</h1>
 <p>Creating a empty <code>Andromeda</code> object is easy:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">Andromeda</span>)
-<span class="no">andr</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/andromeda_constructor.html">andromeda</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ohdsi.github.io/Andromeda/">Andromeda</a></span><span class="op">)</span>
+<span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/andromeda.html">andromeda</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 <p>We can add new tables to the <code>Andromeda</code> environment like this:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">andr</span>$<span class="no">cars</span> <span class="kw">&lt;-</span> <span class="no">cars</span>
-<span class="no">andr</span></pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">&lt;-</span> <span class="va">cars</span>
+<span class="va">andr</span></pre></div>
 <pre><code>## # Andromeda object
-## # Physical location:  C:\Users\mschuemi\AppData\Local\Temp\RtmpqeTi10\file1e0c3a55dc.sqlite
+## # Physical location:  C:\Users\mschuemi\AppData\Local\Temp\RtmpmUph72\file502427031fc8.sqlite
 ## 
 ## Tables:
 ## $cars (speed, dist)</code></pre>
 <p>We could have achieved the same by adding the table when creating the <code>Andromeda</code> object:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">andr</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/andromeda_constructor.html">andromeda</a></span>(<span class="kw">cars</span> <span class="kw">=</span> <span class="no">cars</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/andromeda.html">andromeda</a></span><span class="op">(</span>cars <span class="op">=</span> <span class="va">cars</span><span class="op">)</span></pre></div>
 <p>Of course, we probably want to add data to the <code>Andromeda</code> environment that is much larger than can fit in memory. One way to achieve this is by iteratively adding more and more data to the same table. As an example here we simply add the same data to the existing table:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/appendToTable.html">appendToTable</a></span>(<span class="no">andr</span>$<span class="no">cars</span>, <span class="no">cars</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="fu"><a href="../reference/appendToTable.html">appendToTable</a></span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span>, <span class="va">cars</span><span class="op">)</span></pre></div>
 <p>The data to append should have the same columns as the existing data, or else an error will be thrown.</p>
 <p>Data can be copied from one Andromeda to another:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">andr2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/andromeda_constructor.html">andromeda</a></span>()
-<span class="no">andr2</span>$<span class="no">cars</span> <span class="kw">&lt;-</span> <span class="no">andr</span>$<span class="no">cars</span></pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="va">andr2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/andromeda.html">andromeda</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">andr2</span><span class="op">$</span><span class="va">cars</span> <span class="op">&lt;-</span> <span class="va">andr</span><span class="op">$</span><span class="va">cars</span></pre></div>
 <p>For very large tables this may be slow. A faster option might be to copy the entire <code>Andromeda</code> object:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">andr3</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/copyAndromeda.html">copyAndromeda</a></span>(<span class="no">andr</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="va">andr3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/copyAndromeda.html">copyAndromeda</a></span><span class="op">(</span><span class="va">andr</span><span class="op">)</span></pre></div>
 <div id="closing-andromeda-objects" class="section level2">
 <h2 class="hasAnchor">
 <a href="#closing-andromeda-objects" class="anchor"></a>Closing Andromeda objects</h2>
 <p>Every <code>Andromeda</code> object will have a corresponding data file in a temporary location on your local file system. This file will be automatically deleted when the <code>Andromeda</code> object is no longer used. It is best practice not to rely on R to decide when to do this, but explicitly cause the file to be cleaned up by calling the <code>close</code> statement:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span>(<span class="no">andr</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span>(<span class="no">andr2</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span>(<span class="no">andr3</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span><span class="op">(</span><span class="va">andr</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span><span class="op">(</span><span class="va">andr2</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span><span class="op">(</span><span class="va">andr3</span><span class="op">)</span></pre></div>
 <p>Once an <code>Andromeda</code> is closed the underlying file is deleted, and it can no longer be used. You can check whether an Andromeda object is still valid:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="../reference/isValidAndromeda.html">isValidAndromeda</a></span>(<span class="no">andr</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="fu"><a href="../reference/isValidAndromeda.html">isValidAndromeda</a></span><span class="op">(</span><span class="va">andr</span><span class="op">)</span></pre></div>
 <pre><code>## [1] FALSE</code></pre>
 </div>
 <div id="temporary-file-location" class="section level2">
 <h2 class="hasAnchor">
 <a href="#temporary-file-location" class="anchor"></a>Temporary file location</h2>
 <p>By default <code>Andromeda</code> uses the default temporary file location of your operating system to store the Andromeda objects while your are working on them. You can override the location by setting the <code>andromedaTempFolder</code> option:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span>(<span class="kw">andromedaTempFolder</span> <span class="kw">=</span> <span class="st">"c:/andromedaTemp"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>andromedaTempFolder <span class="op">=</span> <span class="st">"c:/andromedaTemp"</span><span class="op">)</span></pre></div>
 <p>This only applies to <code>Andromeda</code> objects that are created from that point onward. Prior objects will stay where they are.</p>
 </div>
 </div>
@@ -159,33 +168,38 @@
 <h1 class="hasAnchor">
 <a href="#querying-data-from-an-andromeda-object" class="anchor"></a>Querying data from an Andromeda object</h1>
 <p><code>Andromeda</code> relies on <code>dbplyr</code>, a <code>dplyr</code> implementation, for querying the data. A key aspect of <code>dbplyr</code> is lazy execution. This means that we can define a query, but the query will not be executed until we explicitly request so using the <code>collect()</code> statement. For example, we may want to know the number of cars that can go faster than 10:</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">andr</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/andromeda_constructor.html">andromeda</a></span>(<span class="kw">cars</span> <span class="kw">=</span> <span class="no">cars</span>)
-<span class="no">andr</span>$<span class="no">cars</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="no">speed</span> <span class="kw">&gt;</span> <span class="fl">10</span>) <span class="kw">%&gt;%</span>
-  <span class="fu">count</span>() <span class="kw">%&gt;%</span>
-  <span class="fu">collect</span>()</pre></body></html></div>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/andromeda.html">andromeda</a></span><span class="op">(</span>cars <span class="op">=</span> <span class="va">cars</span><span class="op">)</span>
+<span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">count</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">collect</span><span class="op">(</span><span class="op">)</span></pre></div>
 <pre><code>## # A tibble: 1 x 1
 ##       n
 ##   &lt;int&gt;
 ## 1    41</code></pre>
 <p>Here we first filter the table to those rows where <code>speed &gt; 10</code>, after which we count the number of remaining records. This query is not executed until we call <code>collect()</code>. We can also have <code>Andromeda</code> call <code>collect</code> for us, by assigning the query to a table:</p>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">andr</span>$<span class="no">fastCars</span> <span class="kw">&lt;-</span> <span class="no">andr</span>$<span class="no">cars</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="no">speed</span> <span class="kw">&gt;</span> <span class="fl">10</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="va">andr</span><span class="op">$</span><span class="va">fastCars</span> <span class="op">&lt;-</span> <span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span></pre></div>
 <p>This way the query result does not have to pass through memory, but instead is directly stored in Andromeda.</p>
 <div id="simple-meta-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#simple-meta-data" class="anchor"></a>Simple meta-data</h2>
 <p>If we wish to know the tables that exist in an <code>Andromeda</code> object, we can call the generic <code>names</code> function. Similarly, we can call <code>colnames</code> to get the names of the columns in a table:</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">andr</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb15"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">andr</span><span class="op">)</span></pre></div>
 <pre><code>## [1] "cars"     "fastCars"</code></pre>
-<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">andr</span>$<span class="no">cars</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb17"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span><span class="op">)</span></pre></div>
 <pre><code>## [1] "speed" "dist"</code></pre>
 </div>
 <div id="using-sql" class="section level2">
 <h2 class="hasAnchor">
 <a href="#using-sql" class="anchor"></a>Using SQL</h2>
 <p>In the end, an <code>Andromeda</code> is still an <code>RSQLite</code> database, and can be queried using SQL:</p>
-<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="kw pkg">RSQLite</span><span class="kw ns">::</span><span class="fu">dbGetQuery</span>(<span class="no">andr</span>, <span class="st">"SELECT * FROM cars LIMIT 5;"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb19"><pre class="downlit">
+<span class="fu">RSQLite</span><span class="fu">::</span><span class="fu">dbGetQuery</span><span class="op">(</span><span class="va">andr</span>, <span class="st">"SELECT * FROM cars LIMIT 5;"</span><span class="op">)</span></pre></div>
 <pre><code>##   speed dist
 ## 1     4    2
 ## 2     4   10
@@ -198,17 +212,18 @@
 <h2 class="hasAnchor">
 <a href="#dates-and-times" class="anchor"></a>Dates and times</h2>
 <p>One limitation of SQLite - the technology underlying Andromeda - is that it does not support date and time formats. Dates and times are automatically converted to numeric values when adding them to an Andromeda table. Converting them back needs to be done manually:</p>
-<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="no">myData</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">someTime</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"2000-01-01 10:00"</span>,
-                                             <span class="st">"2001-01-31 11:00"</span>,
-                                             <span class="st">"2004-12-31 12:00"</span>)),
-                     <span class="kw">someDate</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"2000-01-01"</span>,
-                                          <span class="st">"2001-01-31"</span>,
-                                          <span class="st">"2004-12-31"</span>)))
-<span class="no">andr</span>$<span class="no">myData</span> <span class="kw">&lt;-</span> <span class="no">myData</span>
-<span class="no">andr</span>$<span class="no">myData</span> <span class="kw">%&gt;%</span>
-  <span class="fu">collect</span>() <span class="kw">%&gt;%</span>
-  <span class="fu">mutate</span>(<span class="kw">someTime</span> <span class="kw">=</span> <span class="fu"><a href="../reference/restorePosixct.html">restorePosixct</a></span>(<span class="no">someTime</span>),
-         <span class="kw">someDate</span> <span class="kw">=</span> <span class="fu"><a href="../reference/restoreDate.html">restoreDate</a></span>(<span class="no">someDate</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb21"><pre class="downlit">
+<span class="va">myData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>someTime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"2000-01-01 10:00"</span>, 
+                                             <span class="st">"2001-01-31 11:00"</span>, 
+                                             <span class="st">"2004-12-31 12:00"</span><span class="op">)</span><span class="op">)</span>,
+                     someDate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"2000-01-01"</span>, 
+                                          <span class="st">"2001-01-31"</span>, 
+                                          <span class="st">"2004-12-31"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">andr</span><span class="op">$</span><span class="va">myData</span> <span class="op">&lt;-</span> <span class="va">myData</span>
+<span class="va">andr</span><span class="op">$</span><span class="va">myData</span> <span class="op">%&gt;%</span> 
+  <span class="fu">collect</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>someTime <span class="op">=</span> <span class="fu"><a href="../reference/restorePosixct.html">restorePosixct</a></span><span class="op">(</span><span class="va">someTime</span><span class="op">)</span>,
+         someDate <span class="op">=</span> <span class="fu"><a href="../reference/restoreDate.html">restoreDate</a></span><span class="op">(</span><span class="va">someDate</span><span class="op">)</span><span class="op">)</span></pre></div>
 <pre><code>## # A tibble: 3 x 2
 ##   someTime            someDate  
 ##   &lt;dttm&gt;              &lt;date&gt;    
@@ -221,23 +236,25 @@
 <h1 class="hasAnchor">
 <a href="#batch-operations" class="anchor"></a>Batch operations</h1>
 <p>Often we’ll need to perform some action against the data that is not supported by <code>dplyr.</code> For example, we may want to write to data to a CSV file, or perform some complex computation. Since we cannot assume an entire table (or query result) will fit in memory, we must assume we should do this batch-wise. For this the <code>Andromeda</code> package provides two functions: <code>batchApply</code> and <code>groupApply</code>. The former executes a function on batches of predefined length. We can specify the batch size by setting the <code>batchSize</code> argument, which defaults to 100,000. Here is a silly example, where take the number of rows in a batch, and multiply it by some number:</p>
-<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="no">doSomething</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">batch</span>, <span class="no">multiplier</span>) {
-  <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">batch</span>) * <span class="no">multiplier</span>)
-}
-<span class="no">result</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/batchApply.html">batchApply</a></span>(<span class="no">andr</span>$<span class="no">cars</span>, <span class="no">doSomething</span>, <span class="kw">multiplier</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">batchSize</span> <span class="kw">=</span> <span class="fl">10</span>)
-<span class="no">result</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="no">result</span>)
-<span class="no">result</span></pre></body></html></div>
+<div class="sourceCode" id="cb23"><pre class="downlit">
+<span class="va">doSomething</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">batch</span>, <span class="va">multiplier</span><span class="op">)</span> <span class="op">{</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">batch</span><span class="op">)</span> <span class="op">*</span> <span class="va">multiplier</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/batchApply.html">batchApply</a></span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span>, <span class="va">doSomething</span>, multiplier <span class="op">=</span> <span class="fl">2</span>, batchSize <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
+<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
+<span class="va">result</span></pre></div>
 <pre><code>## [1] 20 20 20 20 20</code></pre>
 <p>Alternatively, using <code>groupApply</code> we can execute a function on groups of rows, defined by the value in some variable in the table. In this example, we first filter to fast cars, and then perform the same meaningless computation as in the previous example, this time on groups of rows defined by having the same speed:</p>
-<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="no">doSomething</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">batch</span>, <span class="no">multiplier</span>) {
-  <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">batch</span>) * <span class="no">multiplier</span>)
-}
-<span class="no">result</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/groupApply.html">groupApply</a></span>(<span class="no">andr</span>$<span class="no">cars</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="no">speed</span> <span class="kw">&gt;</span> <span class="fl">10</span>),
-                     <span class="no">doSomething</span>,
-                     <span class="kw">groupVariable</span> <span class="kw">=</span> <span class="st">"speed"</span>,
-                     <span class="kw">multiplier</span> <span class="kw">=</span> <span class="fl">2</span>)
-<span class="no">result</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="no">result</span>)
-<span class="no">result</span></pre></body></html></div>
+<div class="sourceCode" id="cb25"><pre class="downlit">
+<span class="va">doSomething</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">batch</span>, <span class="va">multiplier</span><span class="op">)</span> <span class="op">{</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">batch</span><span class="op">)</span> <span class="op">*</span> <span class="va">multiplier</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/groupApply.html">groupApply</a></span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span>, 
+                     <span class="va">doSomething</span>, 
+                     groupVariable <span class="op">=</span> <span class="st">"speed"</span>, 
+                     multiplier <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
+<span class="va">result</span></pre></div>
 <pre><code>## 11 12 13 14 15 16 17 18 19 20 22 23 24 25 
 ##  4  8  8  8  6  4  6  8  6 10  2  2  8  2</code></pre>
 <p>(For example, there were 2 rows where <code>speed = 11</code>, and multiplied by 2 this gives 4 for item 11.)</p>
@@ -245,30 +262,34 @@
 <h2 class="hasAnchor">
 <a href="#safe-mode" class="anchor"></a>Safe mode</h2>
 <p>For technical reasons it is not possible to write to the same <code>Andromeda</code> while reading from it. Writing to an <code>Andromeda</code> environment while inside a <code>batchApply</code> or <code>groupApply</code> on the that same Andromeda environment will therefore result in an error message. To avoid this, you can set the <code>safe</code> argument to <code>TRUE</code>. This will cause the table to first be copied to a temporary <code>Andromeda</code> before executing the function. However, this might not be very fast:</p>
-<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="no">doSomething</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">batch</span>) {
-    <span class="no">batch</span>$<span class="no">speedSquared</span> <span class="kw">&lt;-</span> <span class="no">batch</span>$<span class="no">speed</span>^<span class="fl">2</span>
-    <span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">andr</span>$<span class="no">cars2</span>)) {
-      <span class="no">andr</span>$<span class="no">cars2</span> <span class="kw">&lt;-</span> <span class="no">batch</span>
-    } <span class="kw">else</span> {
-      <span class="fu"><a href="../reference/appendToTable.html">appendToTable</a></span>(<span class="no">andr</span>$<span class="no">cars2</span>, <span class="no">batch</span>)
-    }
-  }
-  <span class="fu"><a href="../reference/batchApply.html">batchApply</a></span>(<span class="no">andr</span>$<span class="no">cars</span>, <span class="no">doSomething</span>, <span class="kw">safe</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb27"><pre class="downlit">
+<span class="va">doSomething</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">batch</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">batch</span><span class="op">$</span><span class="va">speedSquared</span> <span class="op">&lt;-</span> <span class="va">batch</span><span class="op">$</span><span class="va">speed</span><span class="op">^</span><span class="fl">2</span>
+    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars2</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+      <span class="va">andr</span><span class="op">$</span><span class="va">cars2</span> <span class="op">&lt;-</span> <span class="va">batch</span>
+    <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
+      <span class="fu"><a href="../reference/appendToTable.html">appendToTable</a></span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars2</span>, <span class="va">batch</span><span class="op">)</span>
+    <span class="op">}</span>
+  <span class="op">}</span>
+  <span class="fu"><a href="../reference/batchApply.html">batchApply</a></span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span>, <span class="va">doSomething</span>, safe <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
 <p>Note that this only a restriction of <code>batchApply</code> and <code>groupApply</code>. We could have achieved the same task as the example above much faster using only <code>dplyr</code>:</p>
-<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="no">andr</span>$<span class="no">cars2</span> <span class="kw">&lt;-</span>
-  <span class="no">andr</span>$<span class="no">cars</span> <span class="kw">%&gt;%</span>
-  <span class="fu">mutate</span>(<span class="kw">speedSquared</span> <span class="kw">=</span> <span class="no">speed</span>^<span class="fl">2</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb28"><pre class="downlit">
+<span class="va">andr</span><span class="op">$</span><span class="va">cars2</span> <span class="op">&lt;-</span>
+  <span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>speedSquared <span class="op">=</span> <span class="va">speed</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></pre></div>
 </div>
 </div>
 <div id="saving-and-loading-andromeda-objects" class="section level1">
 <h1 class="hasAnchor">
 <a href="#saving-and-loading-andromeda-objects" class="anchor"></a>Saving and loading Andromeda objects</h1>
 <p>To reuse an <code>Andromeda</code> at a later point in time, we can save it to a permanent location:</p>
-<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="fu"><a href="../reference/saveAndromeda.html">saveAndromeda</a></span>(<span class="no">andr</span>, <span class="st">"c:/temp/andromeda.zip"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb29"><pre class="downlit">
+<span class="fu"><a href="../reference/saveAndromeda.html">saveAndromeda</a></span><span class="op">(</span><span class="va">andr</span>, <span class="st">"c:/temp/andromeda.zip"</span><span class="op">)</span></pre></div>
 <pre><code>## Disconnected Andromeda. This data object can no longer be used</code></pre>
 <p>For technical reasons, saving an Andromeda object closes it. If we want to continue using the Andromeda object, we can set <code>maintainConnection</code> to <code>TRUE</code> when calling <code>saveAndromeda</code>. This causes a temporary copy to be created first, which is then saved and closed. Obviously this will take additional time, so if you know you will no longer need the object in R after saving, it is best not to use this option.</p>
 <p>We can load the object again using:</p>
-<div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="no">andr</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/loadAndromeda.html">loadAndromeda</a></span>(<span class="st">"c:/temp/andromeda.zip"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb31"><pre class="downlit">
+<span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadAndromeda.html">loadAndromeda</a></span><span class="op">(</span><span class="st">"c:/temp/andromeda.zip"</span><span class="op">)</span></pre></div>
 </div>
 <div id="using-andromeda-in-your-packages" class="section level1">
 <h1 class="hasAnchor">
@@ -283,24 +304,28 @@
 <h2 class="hasAnchor">
 <a href="#import--data-from-rlang" class="anchor"></a>Import .data from rlang</h2>
 <p>If we reference variables in our <code>dplyr</code> function calls we should precede them with <code>.data$</code> to avoid R check warnings about using an unknown variable. For example, instead of</p>
-<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="no">andr</span>$<span class="no">cars</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="no">speed</span> <span class="kw">&gt;</span> <span class="fl">10</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb32"><pre class="downlit">
+<span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span></pre></div>
 <p>we should write</p>
-<div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="no">andr</span>$<span class="no">cars</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="no">.data</span>$<span class="no">speed</span> <span class="kw">&gt;</span> <span class="fl">10</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb33"><pre class="downlit">
+<span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span></pre></div>
 <p>to avoid R check warnings about <code>speed</code> being an unknown variable.</p>
 </div>
 <div id="beware-of-variable-name-confusion" class="section level2">
 <h2 class="hasAnchor">
 <a href="#beware-of-variable-name-confusion" class="anchor"></a>Beware of variable name confusion</h2>
 <p><code>dplyr</code> sometimes confuses variable names, so we have to help. For example, this code:</p>
-<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="no">speed</span> <span class="kw">&lt;-</span> <span class="fl">10</span>
-<span class="no">andr</span>$<span class="no">cars</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="no">.data</span>$<span class="no">speed</span> <span class="kw">==</span> <span class="no">speed</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb34"><pre class="downlit">
+<span class="va">speed</span> <span class="op">&lt;-</span> <span class="fl">10</span>
+<span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">speed</span> <span class="op">==</span> <span class="va">speed</span><span class="op">)</span></pre></div>
 <p>will not actually filter anything, because the second <code>speed</code> variable in the filter statement is interpreted to refer to the <code>speed</code> field in the data, not the variable we defined earlier. One way to avoid this is by forcing early evaluation of the variable:</p>
-<div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="no">speed</span> <span class="kw">&lt;-</span> <span class="fl">10</span>
-<span class="no">andr</span>$<span class="no">cars</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="no">.data</span>$<span class="no">speed</span> <span class="kw">==</span> !!<span class="no">speed</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb35"><pre class="downlit">
+<span class="va">speed</span> <span class="op">&lt;-</span> <span class="fl">10</span>
+<span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">speed</span> <span class="op">==</span> <span class="op">!</span><span class="op">!</span><span class="va">speed</span><span class="op">)</span></pre></div>
 </div>
 </div>
   </div>
@@ -320,7 +345,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
