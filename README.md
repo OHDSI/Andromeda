@@ -58,7 +58,7 @@ devtools::install_github("ohdsi/Andromeda")
 
 User Documentation
 ==================
-Documentation can be found on the [package website](https://ohdsi.github.io/Andromeda).
+Documentation can be found on the [package website](https://ohdsi.github.io/Andromeda/).
 
 PDF versions of the documentation are also available:
 * Vignette: [Using Andromeda](https://raw.githubusercontent.com/OHDSI/Andromeda/master/inst/doc/UsingAndromeda.pdf)
