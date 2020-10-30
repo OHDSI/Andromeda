@@ -71,24 +71,23 @@ test_that("saveAndromeda perfroms tilde expansion", {
 
 test_that("getAndromedaTempDiskSpace works", {
   space <- getAndromedaTempDiskSpace()
-  expect_true(is.numeric(space) && space > 0)
+  expect_true(is.na(space) || (is.numeric(space) && space > 0))
   
   andromeda <- andromeda(cars = cars)
   space <- getAndromedaTempDiskSpace(andromeda)
-  expect_true(is.numeric(space) && space > 0)
+  expect_true(is.na(space) || (is.numeric(space) && space > 0))
 })
 
 test_that(".checkAvailableSpace works", {
-  # check that there is no error
-  expect_error(.checkAvailableSpace(), NA)
-  
-  andromeda <- andromeda(cars = cars)
-  expect_error(.checkAvailableSpace(andromeda), NA)
-  
-  oldOption <- getOption("warnDiskSpaceThreshold")
-  options(warnDiskSpaceThreshold = 1e15)
-  expect_warning(.checkAvailableSpace(), "Low disk space")
-  # Checking the same location again should not produce a warning
-  expect_warning(.checkAvailableSpace(), NA)
-  options(warnDiskSpaceThreshold = oldOption)
+  space <- getAndromedaTempDiskSpace()
+  if (!is.na(space)) {
+    # rJava is installed, so we can test:
+    
+    oldOption <- getOption("warnDiskSpaceThreshold")
+    options(warnDiskSpaceThreshold = 1e15)
+    expect_warning(.checkAvailableSpace(), "Low disk space")
+    # Checking the same location again should not produce a warning
+    expect_warning(.checkAvailableSpace(), NA)
+    options(warnDiskSpaceThreshold = oldOption)
+  }
 })
