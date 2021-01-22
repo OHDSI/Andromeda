@@ -1,7 +1,7 @@
 Andromeda
 =========
 
-[![Build Status](https://travis-ci.org/OHDSI/CaseControl.svg?branch=master)](https://travis-ci.org/OHDSI/Andromeda)
+[![Build Status](https://github.com/OHDSI/Andromeda/workflows/R-CMD-check/badge.svg)](https://github.com/OHDSI/Andromeda/actions?query=workflow%3AR-CMD-check)
 [![codecov.io](https://codecov.io/github/OHDSI/Andromeda/coverage.svg?branch=master)](https://codecov.io/github/OHDSI/Andromeda?branch=master)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/Andromeda)](https://cran.r-project.org/package=Andromeda)
 [![CRAN_Status_Badge](http://cranlogs.r-pkg.org/badges/Andromeda)](https://cran.r-project.org/package=Andromeda)
