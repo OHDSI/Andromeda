@@ -159,3 +159,7 @@ test_that("Warning when disk space low", {
   close(andromeda)
   options(warnDiskSpaceThreshold = NULL)
 })
+
+test_that("The only cached class is Andromeda", {
+  expect_true(all(getClasses(asNamespace("Andromeda"), inherits = F) == "Andromeda"))
+})

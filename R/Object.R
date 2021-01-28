@@ -45,6 +45,7 @@
 #' @aliases Andromeda
 #' @seealso [`andromeda()`]
 #' @import RSQLite
+#' @importClassesFrom DBI DBIObject DBIConnection
 #' @export
 setClass("Andromeda", contains = "SQLiteConnection")
 
