@@ -130,7 +130,8 @@ copyAndromeda <- function(andromeda) {
 .createAndromeda <- function() {
   tempFolder <- .getAndromedaTempFolder()
   andromeda <- RSQLite::dbConnect(RSQLite::SQLite(),
-                                  tempfile(tmpdir = tempFolder, fileext = ".sqlite"))
+                                  tempfile(tmpdir = tempFolder, fileext = ".sqlite"),
+                                  extended_types = TRUE)
   class(andromeda) <- "Andromeda"
   attr(class(andromeda),"package") <- "Andromeda"
   finalizer <- function(ptr) {
