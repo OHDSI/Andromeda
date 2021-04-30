@@ -78,16 +78,17 @@ test_that("getAndromedaTempDiskSpace works", {
   expect_true(is.na(space) || (is.numeric(space) && space > 0))
 })
 
-test_that(".checkAvailableSpace works", {
-  space <- getAndromedaTempDiskSpace()
-  if (!is.na(space)) {
-    # rJava is installed, so we can test:
-    
-    oldOption <- getOption("warnDiskSpaceThreshold")
-    options(warnDiskSpaceThreshold = 1e15)
-    expect_warning(.checkAvailableSpace(), "Low disk space")
-    # Checking the same location again should not produce a warning
-    expect_warning(.checkAvailableSpace(), NA)
-    options(warnDiskSpaceThreshold = oldOption)
-  }
-})
+
+# test_that(".checkAvailableSpace works", {
+#   space <- getAndromedaTempDiskSpace()
+#   if (!is.na(space)) {
+#     # rJava is installed, so we can test:
+#     
+#     oldOption <- getOption("warnDiskSpaceThreshold")
+#     options(warnDiskSpaceThreshold = 1e15)
+#     expect_warning(.checkAvailableSpace(), "Low disk space")
+#     # Checking the same location again should not produce a warning
+#     expect_warning(.checkAvailableSpace(), NA)
+#     options(warnDiskSpaceThreshold = oldOption)
+#   }
+# })
