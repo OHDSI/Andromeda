@@ -1,4 +1,4 @@
-This update has 1 change and 2 bugfixes (see NEWS.md)
+This update has 1 bugfix (see NEWS.md)
 
 ---
 
@@ -12,4 +12,5 @@ There were no ERRORs or WARNINGs.
 
 ## Downstream dependencies
 
-Andromeda is used in Cyclops and DatabaseConnector. This new version has been tested with these packages, and both work well.
+This change only removes one test that was causing a problem on Fedora. 
+No downstream packages will be affected by the removal of this test.

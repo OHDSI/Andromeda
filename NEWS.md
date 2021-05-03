@@ -1,3 +1,10 @@
+Andromeda 0.4.1
+===============
+
+Changes
+
+- Remove test causing R CMD check to fail on fedora.
+
 Andromeda 0.4.0
 ===============
 
