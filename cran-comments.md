@@ -1,14 +1,17 @@
-This update has 1 bugfix (see NEWS.md)
-
+Andromeda v0.4.1
 ---
+
+This update has 1 bugfix related to an issue with R CMD CHECK on one of CRAN's servers.
+The maintainer has been changed from Martijn Schuemie to Adam Black.
 
 ## Test environments
 * Ubuntu 16.04.6 LTS (Travis), R 4.0.3
 * Windows 10, R 4.0.3
+* winbuilder devel
 
 ## R CMD check results
 
-There were no ERRORs or WARNINGs. 
+There were no ERRORs or WARNINGs or NOTEs. 
 
 ## Downstream dependencies
 
