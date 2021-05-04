@@ -2,6 +2,7 @@ Andromeda v0.4.1
 ---
 
 This update has 1 bugfix related to an issue with R CMD CHECK on one of CRAN's servers.
+
 The maintainer has been changed from Martijn Schuemie to Adam Black.
 
 ## Test environments
@@ -11,7 +12,9 @@ The maintainer has been changed from Martijn Schuemie to Adam Black.
 
 ## R CMD check results
 
-There were no ERRORs or WARNINGs or NOTEs. 
+There were no ERRORs or WARNINGs.
+
+There was 1 NOTE related to the change of maintainer.
 
 ## Downstream dependencies
 
