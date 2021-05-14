@@ -18,3 +18,5 @@ docs
 compare_versions
 _pkgdown.yml
 ^CRAN-RELEASE$
+^doc$
+^Meta$
