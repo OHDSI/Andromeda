@@ -9,3 +9,5 @@
 
 work/*
 revdep/*
+/doc/
+/Meta/

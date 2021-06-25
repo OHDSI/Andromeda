@@ -18,6 +18,7 @@ docs
 compare_versions
 _pkgdown.yml
 ^CRAN-RELEASE$
-.github/*
 work/*
 revdep/*
+^doc$
+^Meta$
