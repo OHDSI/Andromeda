@@ -10,7 +10,8 @@ test_that("Saving and loading", {
 
   fileName <- tempfile(fileext = ".zip")
   
-  # saveAndromeda writes to stdout which we want to supress when testing
+  # saveAndromeda writes to stdout which we want to suppress when testing
+  # Note: expect_error(expression, NA) => expect no error
   expect_error(
     capture.output(
       saveAndromeda(andromeda, fileName, maintainConnection = FALSE)
@@ -18,6 +19,7 @@ test_that("Saving and loading", {
   NA)
   
   expect_error(saveAndromeda(andromeda, fileName), "closed")
+  expect_error(saveAndromeda(andromeda, fileName, overwrite = FALSE), "already exists")
 
   expect_error(andromeda2 <- loadAndromeda(fileName), NA)
   expect_true("table" %in% names(andromeda2))
@@ -27,7 +29,14 @@ test_that("Saving and loading", {
   expect_equivalent(iris1, iris2)
   expect_false(is.null(attr(andromeda, "metaData")))
   expect_equal(attr(andromeda, "metaData")$x, 1)
+  
+  expect_error(
+    capture.output(
+      saveAndromeda(andromeda2, fileName, maintainConnection = TRUE, overwrite = TRUE)
+    ),
+    NA)
 
+  expect_error(checkIfValid(andromeda2), NA)
   close(andromeda2)
   unlink(fileName)
 })
@@ -59,6 +68,9 @@ test_that("saveAndromeda handles bad file paths and tilde expansion", {
   andromeda <- andromeda(cars = cars)
   expect_error(saveAndromeda(andromeda, "/some/non/exist/ant/path.zip"))
   close(andromeda)
+  
+  expect_error(loadAndromeda("/some/non/exist/ant/path.zip"), "does not exist")
+  
 })
 
 test_that("saveAndromeda perfroms tilde expansion", {
@@ -76,6 +88,8 @@ test_that("getAndromedaTempDiskSpace works", {
   andromeda <- andromeda(cars = cars)
   space <- getAndromedaTempDiskSpace(andromeda)
   expect_true(is.na(space) || (is.numeric(space) && space > 0))
+  
+  expect_error(getAndromedaTempDiskSpace(cars), "Andromeda argument must be of type 'Andromeda'")
 })
 
 test_that(".checkAvailableSpace works", {

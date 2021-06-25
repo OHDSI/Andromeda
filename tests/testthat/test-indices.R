@@ -42,3 +42,9 @@ test_that("Index creation. listing, and removal using index name", {
   close(andromeda)
 })
 
+test_that("index functions check argument types", {
+  expect_error(createIndex(iris, "Species"))
+  expect_error(listIndices(iris))
+  expect_error(removeIndex(iris, "Species"))
+})
+
