@@ -297,10 +297,10 @@ batchTest <- function(tbl, fun, ..., batchSize = 100000) {
   return(output)
 }
 
-#' Restore dates
+#' Restore dates 
 #' 
 #' @description 
-#' Restores dates that were converted by Andromeda to numeric values back to dates.
+#' This function has been deprecated since Andromeda v0.5 preserves dates.
 #'
 #' @param x  A numeric vector representing dates.
 #' 
@@ -327,13 +327,19 @@ batchTest <- function(tbl, fun, ..., batchSize = 100000) {
 #' 
 #' @export
 restoreDate <- function(x) { 
-  return(as.Date(x, origin = "1970-01-01"))
+  rlang::warn("restoreDate has been deprecated since Andromeda v0.5 preserves dates.\nPlease do not use this function.")
+  if(inherits(x, "Date")) {
+    rlang::warn("Input to restoreDate is already a Date.")
+    return(x)
+  } else {
+    return(as.Date(x, origin = "1970-01-01"))
+  }
 }
 
 #' Restore timestamps
 #' 
 #' @description 
-#' Restores dates that were converted by Andromeda to numeric values back to dates.
+#' This function has been deprecated since Andromeda v0.5 preserves POSIXct datetimes.
 #'
 #' @param x  A numeric vector representing timestamps
 #' 
@@ -362,5 +368,11 @@ restoreDate <- function(x) {
 #' 
 #' @export
 restorePosixct <- function(x) { 
-  return(as.POSIXct(x, origin = "1970-01-01"))
+  rlang::warn("restorePosixct has been deprecated since Andromeda v0.5 preserves datetimes.\nPlease do not use this function.")
+  if(inherits(x, "POSIXct")) {
+    rlang::warn("Input to restorePosixct is already Posixct")
+    return(x)
+  } else {
+    return(as.POSIXct(x, origin = "1970-01-01"))
+  }
 }
