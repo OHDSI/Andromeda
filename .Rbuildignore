@@ -20,3 +20,4 @@ _pkgdown.yml
 ^CRAN-RELEASE$
 .github/*
 work/*
+revdep/*
