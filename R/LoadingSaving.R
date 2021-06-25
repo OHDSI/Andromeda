@@ -121,7 +121,7 @@ loadAndromeda <- function(fileName) {
   if (!file.exists(fileName)) {
     abort(sprintf("File %s does not exist", fileName))
   }
-  fileNamesInZip <- zip::zip_list(fileName)$filename
+  fileNamesInZip <- utils::unzip(fileName, list = TRUE)$Name
   sqliteFilenameInZip <- fileNamesInZip[grepl(".sqlite$", fileNamesInZip)]
   rdsFilenameInZip <- fileNamesInZip[grepl(".rds$", fileNamesInZip)]
   
