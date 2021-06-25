@@ -41,7 +41,7 @@ close(bigData)
 
 Technology
 ==========
-The Andromeda package is an R package wrapped around RSQlite.
+The Andromeda package is an R package wrapped around RSQLite.
 
 System Requirements
 ===================
