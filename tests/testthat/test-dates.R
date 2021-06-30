@@ -15,6 +15,13 @@ test_that("Dates are preserved", {
   
   expect_equal(data$startDate, data2$startDate)
   
+  # save and reload dates
+  filename <- tempfile()
+  saveAndromeda(andromeda, filename)
+  andromeda <- loadAndromeda(filename)
+  expect_is(pull(andromeda$data, startDate), "Date")
+  expect_equal(pull(andromeda$data, startDate), data$startDate)
+  
   close(andromeda)
 })
 
@@ -33,6 +40,13 @@ test_that("Times are preserved", {
   expect_is(data2$startTime, "POSIXct")
   
   expect_equal(data$startTime, data2$startTime)
+  
+  # save and reload datetimes
+  filename <- tempfile()
+  saveAndromeda(andromeda, filename)
+  andromeda <- loadAndromeda(filename)
+  expect_is(pull(andromeda$data, startTime), "POSIXct")
+  expect_equal(pull(andromeda$data, startTime), data$startTime)
   
   close(andromeda)
 })

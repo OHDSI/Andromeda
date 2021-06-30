@@ -138,7 +138,7 @@ loadAndromeda <- function(fileName) {
   newFileName <- tempfile(tmpdir = andromedaTempFolder, fileext = ".sqlite")
   file.rename(file.path(tempDir, sqliteFilenameInZip), newFileName)
   attributes <- readRDS(file.path(tempDir, rdsFilenameInZip))
-  andromeda <- RSQLite::dbConnect(RSQLite::SQLite(), newFileName)
+  andromeda <- RSQLite::dbConnect(RSQLite::SQLite(), newFileName, extended_types = TRUE)
   finalizer <- function(ptr) {
     # Suppress R Check note:
     missing(ptr)
