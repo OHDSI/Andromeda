@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Restore timestamps — restorePosixct" />
-<meta property="og:description" content="Restores dates that were converted by Andromeda to numeric values back to dates." />
+<meta property="og:description" content="This function has been deprecated since Andromeda v0.5 preserves POSIXct datetimes." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -109,7 +109,7 @@
 </li>
 <li>
   <a href="https://github.com/OHDSI/Andromeda/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -132,7 +132,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Restores dates that were converted by Andromeda to numeric values back to dates.</p>
+    <p>This function has been deprecated since Andromeda v0.5 preserves POSIXct datetimes.</p>
     </div>
 
     <pre class="usage"><span class='fu'>restorePosixct</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
@@ -162,12 +162,13 @@
 <span class='va'>andr</span><span class='op'>$</span><span class='va'>myData</span> <span class='op'>%&gt;%</span> 
   <span class='fu'>collect</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>mutate</span><span class='op'>(</span>startTime <span class='op'>=</span> <span class='fu'>restorePosixct</span><span class='op'>(</span><span class='va'>startTime</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 3 x 1</span><span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: restorePosixct has been deprecated since Andromeda v0.5 preserves datetimes.</span>
+#&gt; <span class='warning'>Please do not use this function.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Input to restorePosixct is already Posixct</span></div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 3 x 1</span>
 #&gt;   startTime          
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;dttm&gt;</span><span>             
-#&gt; </span><span style='color: #555555;'>1</span><span> 2000-01-01 </span><span style='color: #555555;'>10:00:00</span><span>
-#&gt; </span><span style='color: #555555;'>2</span><span> 2001-01-31 </span><span style='color: #555555;'>11:00:00</span><span>
-#&gt; </span><span style='color: #555555;'>3</span><span> 2004-12-31 </span><span style='color: #555555;'>12:00:00</span><span></div><div class='input'><span class='co'># # A tibble: 3 x 1</span>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;dttm&gt;</span>             
+#&gt; <span style='color: #BCBCBC;'>1</span> 2000-01-01 <span style='color: #949494;'>15:00:00</span>
+#&gt; <span style='color: #BCBCBC;'>2</span> 2001-01-31 <span style='color: #949494;'>16:00:00</span>
+#&gt; <span style='color: #BCBCBC;'>3</span> 2004-12-31 <span style='color: #949494;'>17:00:00</span></div><div class='input'><span class='co'># # A tibble: 3 x 1</span>
 <span class='co'># startTime          </span>
 <span class='co'># &lt;dttm&gt;             </span>
 <span class='co'># 1 2000-01-01 10:00:00</span>
@@ -176,7 +177,7 @@
 
 <span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span><span class='op'>(</span><span class='va'>andr</span><span class='op'>)</span>
 
-</div></span></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -188,7 +189,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Martijn Schuemie, Marc A. Suchard.</p>
+  <p>Developed by Adam Black, Martijn Schuemie, Marc A. Suchard.</p>
 </div>
 
 <div class="pkgdown">

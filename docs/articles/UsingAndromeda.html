@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -68,7 +68,7 @@
 </li>
 <li>
   <a href="https://github.com/OHDSI/Andromeda/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -82,13 +82,13 @@
 
       
 
-      </header><script src="UsingAndromeda_files/header-attrs-2.3/header-attrs.js"></script><div class="row">
+      </header><script src="UsingAndromeda_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using Andromeda</h1>
                         <h4 class="author">Martijn J. Schuemie</h4>
             
-            <h4 class="date">2021-05-02</h4>
+            <h4 class="date">2021-07-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/Andromeda/blob/master/vignettes/UsingAndromeda.Rmd"><code>vignettes/UsingAndromeda.Rmd</code></a></small>
       <div class="hidden name"><code>UsingAndromeda.Rmd</code></div>
@@ -124,7 +124,7 @@
 <code class="sourceCode R"><span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">&lt;-</span> <span class="va">cars</span>
 <span class="va">andr</span></code></pre></div>
 <pre><code>## # Andromeda object
-## # Physical location:  C:\Users\ablac\AppData\Local\Temp\Rtmpcbgypq\file55c814dd563c.sqlite
+## # Physical location:  C:\Users\ADAM~1.DES\AppData\Local\Temp\RtmpqeVNHA\file415c36bf6a44.sqlite
 ## 
 ## Tables:
 ## $cars (speed, dist)</code></pre>
@@ -224,19 +224,25 @@
   <span class="fu">collect</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">mutate</span><span class="op">(</span>someTime <span class="op">=</span> <span class="fu"><a href="../reference/restorePosixct.html">restorePosixct</a></span><span class="op">(</span><span class="va">someTime</span><span class="op">)</span>,
          someDate <span class="op">=</span> <span class="fu"><a href="../reference/restoreDate.html">restoreDate</a></span><span class="op">(</span><span class="va">someDate</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## Warning: restorePosixct has been deprecated since Andromeda v0.5 preserves datetimes.
+## Please do not use this function.</code></pre>
+<pre><code>## Warning: Input to restorePosixct is already Posixct</code></pre>
+<pre><code>## Warning: restoreDate has been deprecated since Andromeda v0.5 preserves dates.
+## Please do not use this function.</code></pre>
+<pre><code>## Warning: Input to restoreDate is already a Date.</code></pre>
 <pre><code>## # A tibble: 3 x 2
 ##   someTime            someDate  
 ##   &lt;dttm&gt;              &lt;date&gt;    
-## 1 2000-01-01 10:00:00 2000-01-01
-## 2 2001-01-31 11:00:00 2001-01-31
-## 3 2004-12-31 12:00:00 2004-12-31</code></pre>
+## 1 2000-01-01 15:00:00 2000-01-01
+## 2 2001-01-31 16:00:00 2001-01-31
+## 3 2004-12-31 17:00:00 2004-12-31</code></pre>
 </div>
 </div>
 <div id="batch-operations" class="section level1">
 <h1 class="hasAnchor">
 <a href="#batch-operations" class="anchor"></a>Batch operations</h1>
 <p>Often we’ll need to perform some action against the data that is not supported by <code>dplyr.</code> For example, we may want to write to data to a CSV file, or perform some complex computation. Since we cannot assume an entire table (or query result) will fit in memory, we must assume we should do this batch-wise. For this the <code>Andromeda</code> package provides two functions: <code>batchApply</code> and <code>groupApply</code>. The former executes a function on batches of predefined length. We can specify the batch size by setting the <code>batchSize</code> argument, which defaults to 100,000. Here is a silly example, where take the number of rows in a batch, and multiply it by some number:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">doSomething</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">batch</span>, <span class="va">multiplier</span><span class="op">)</span> <span class="op">{</span>
   <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">batch</span><span class="op">)</span> <span class="op">*</span> <span class="va">multiplier</span><span class="op">)</span>
 <span class="op">}</span>
@@ -245,7 +251,7 @@
 <span class="va">result</span></code></pre></div>
 <pre><code>## [1] 20 20 20 20 20</code></pre>
 <p>Alternatively, using <code>groupApply</code> we can execute a function on groups of rows, defined by the value in some variable in the table. In this example, we first filter to fast cars, and then perform the same meaningless computation as in the previous example, this time on groups of rows defined by having the same speed:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">doSomething</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">batch</span>, <span class="va">multiplier</span><span class="op">)</span> <span class="op">{</span>
   <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">batch</span><span class="op">)</span> <span class="op">*</span> <span class="va">multiplier</span><span class="op">)</span>
 <span class="op">}</span>
@@ -262,7 +268,7 @@
 <h2 class="hasAnchor">
 <a href="#safe-mode" class="anchor"></a>Safe mode</h2>
 <p>For technical reasons it is not possible to write to the same <code>Andromeda</code> while reading from it. Writing to an <code>Andromeda</code> environment while inside a <code>batchApply</code> or <code>groupApply</code> on the that same Andromeda environment will therefore result in an error message. To avoid this, you can set the <code>safe</code> argument to <code>TRUE</code>. This will cause the table to first be copied to a temporary <code>Andromeda</code> before executing the function. However, this might not be very fast:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">doSomething</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">batch</span><span class="op">)</span> <span class="op">{</span>
     <span class="va">batch</span><span class="op">$</span><span class="va">speedSquared</span> <span class="op">&lt;-</span> <span class="va">batch</span><span class="op">$</span><span class="va">speed</span><span class="op">^</span><span class="fl">2</span>
     <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars2</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
@@ -273,7 +279,7 @@
   <span class="op">}</span>
   <span class="fu"><a href="../reference/batchApply.html">batchApply</a></span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span>, <span class="va">doSomething</span>, safe <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Note that this only a restriction of <code>batchApply</code> and <code>groupApply</code>. We could have achieved the same task as the example above much faster using only <code>dplyr</code>:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">andr</span><span class="op">$</span><span class="va">cars2</span> <span class="op">&lt;-</span>
   <span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span>
   <span class="fu">mutate</span><span class="op">(</span>speedSquared <span class="op">=</span> <span class="va">speed</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
@@ -283,12 +289,12 @@
 <h1 class="hasAnchor">
 <a href="#saving-and-loading-andromeda-objects" class="anchor"></a>Saving and loading Andromeda objects</h1>
 <p>To reuse an <code>Andromeda</code> at a later point in time, we can save it to a permanent location:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/saveAndromeda.html">saveAndromeda</a></span><span class="op">(</span><span class="va">andr</span>, <span class="st">"c:/temp/andromeda.zip"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Disconnected Andromeda. This data object can no longer be used</code></pre>
 <p>For technical reasons, saving an Andromeda object closes it. If we want to continue using the Andromeda object, we can set <code>maintainConnection</code> to <code>TRUE</code> when calling <code>saveAndromeda</code>. This causes a temporary copy to be created first, which is then saved and closed. Obviously this will take additional time, so if you know you will no longer need the object in R after saving, it is best not to use this option.</p>
 <p>We can load the object again using:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loadAndromeda.html">loadAndromeda</a></span><span class="op">(</span><span class="st">"c:/temp/andromeda.zip"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="using-andromeda-in-your-packages" class="section level1">
@@ -304,11 +310,11 @@
 <h2 class="hasAnchor">
 <a href="#import--data-from-rlang" class="anchor"></a>Import .data from rlang</h2>
 <p>If we reference variables in our <code>dplyr</code> function calls we should precede them with <code>.data$</code> to avoid R check warnings about using an unknown variable. For example, instead of</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <p>we should write</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <p>to avoid R check warnings about <code>speed</code> being an unknown variable.</p>
@@ -317,12 +323,12 @@
 <h2 class="hasAnchor">
 <a href="#beware-of-variable-name-confusion" class="anchor"></a>Beware of variable name confusion</h2>
 <p><code>dplyr</code> sometimes confuses variable names, so we have to help. For example, this code:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">speed</span> <span class="op">&lt;-</span> <span class="fl">10</span>
 <span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">speed</span> <span class="op">==</span> <span class="va">speed</span><span class="op">)</span></code></pre></div>
 <p>will not actually filter anything, because the second <code>speed</code> variable in the filter statement is interpreted to refer to the <code>speed</code> field in the data, not the variable we defined earlier. One way to avoid this is by forcing early evaluation of the variable:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">speed</span> <span class="op">&lt;-</span> <span class="fl">10</span>
 <span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">speed</span> <span class="op">==</span> <span class="op">!</span><span class="op">!</span><span class="va">speed</span><span class="op">)</span></code></pre></div>
@@ -341,7 +347,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Martijn Schuemie, Marc A. Suchard.</p>
+  <p>Developed by Adam Black, Martijn Schuemie, Marc A. Suchard.</p>
 </div>
 
 <div class="pkgdown">
