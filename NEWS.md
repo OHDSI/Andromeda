@@ -1,3 +1,14 @@
+Andromeda 0.5.0
+===============
+
+Changes
+
+- Andromeda now supports dates and datetimes ([link](https://github.com/OHDSI/Andromeda/issues/11)).
+
+Bug Fixes
+
+- Fix issue when loading loading large Andromeda files from disk ([link](https://github.com/OHDSI/Andromeda/issues/21)).
+
 Andromeda 0.4.1
 ===============
 

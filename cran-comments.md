@@ -1,22 +1,20 @@
-Andromeda v0.4.1
+Andromeda v0.5.0
 ---
 
-This update has 1 bugfix related to an issue with R CMD CHECK on one of CRAN's servers.
-
-The maintainer has been changed from Martijn Schuemie to Adam Black.
-
 ## Test environments
-* Ubuntu 16.04.6 LTS (Travis), R 4.0.3
-* Windows 10, R 4.0.3
+* Windows 10, R 4.0.5 (local)
+* Windows-latest, R-release (Github Actions)
+* macOS-latest, R-release (Github Actions)
+* Ubuntu-20.04, R-release (Github Actions)
+* Ubuntu-20.04, R-devel (Github Actions)
 * winbuilder devel
 
 ## R CMD check results
 
-There were no ERRORs or WARNINGs.
+There were no ERRORs or WARNINGs on any platform.
 
-There was 1 NOTE related to the change of maintainer.
 
 ## Downstream dependencies
 
-This change only removes one test that was causing a problem on Fedora. 
-No downstream packages will be affected by the removal of this test.
+We successfully checked 2 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
