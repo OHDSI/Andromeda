@@ -59,7 +59,7 @@ createIndex <- function(tbl, columnNames, unique = FALSE, indexName = NULL) {
                        as.character(dbplyr::remote_name(tbl)), 
                        paste(columnNames, collapse = ", "))
   
-  RSQLite::dbExecute(conn = dbplyr::remote_con(tbl), statement = statement)
+  DBI::dbExecute(conn = dbplyr::remote_con(tbl), statement = statement)
   invisible(tbl)
 }
 
@@ -91,19 +91,20 @@ createIndex <- function(tbl, columnNames, unique = FALSE, indexName = NULL) {
 #'
 #' @export
 listIndices <- function(tbl) {
+  stop("listIndicies is not yet supported with duckdb")
   if (!inherits(tbl, "tbl_dbi"))
     abort("Argument must be an Andromeda (or DBI) table")
   
   tableName <- as.character(dbplyr::remote_name(tbl))
   connection <- dbplyr::remote_con(tbl)
-  indices <- RSQLite::dbGetQuery(conn = connection, 
+  indices <- DBI::dbGetQuery(conn = connection, 
                                  statement = sprintf("PRAGMA index_list('%s');", tableName)) %>%
     dplyr::as_tibble()
   if (nrow(indices) == 0) {
     return(dplyr::tibble())
   }
   getIndexInfo <- function(indexName) {
-    indexInfo <- RSQLite::dbGetQuery(conn = connection, 
+    indexInfo <- DBI::dbGetQuery(conn = connection, 
                                      statement = sprintf("PRAGMA index_info('%s');", indexName)) %>%
       dplyr::as_tibble()
     indexInfo$indexName <- indexName
@@ -160,32 +161,34 @@ listIndices <- function(tbl) {
 removeIndex <- function(tbl, columnNames = NULL, indexName = NULL) {
   if (!inherits(tbl, "tbl_dbi"))
     abort("First argument must be an Andromeda (or DBI) table")
+  if (is.null(indexName))
+    abort("indexName cannot be null with duckdb yet.")
   
-  tableName <- as.character(dbplyr::remote_name(tbl))
-  connection <- dbplyr::remote_con(tbl)
-  indices <- RSQLite::dbGetQuery(conn = connection, 
-                                 statement = sprintf("PRAGMA index_list('%s');", tableName))
+  # tableName <- as.character(dbplyr::remote_name(tbl))
+  # connection <- dbplyr::remote_con(tbl)
+  # indices <- DBI::dbGetQuery(conn = connection, 
+  #                                statement = sprintf("PRAGMA index_list('%s');", tableName))
+  # 
+  # if (is.null(indexName)) {
+  #   for (indexName in indices$name) {
+  #     indexInfo <- DBI::dbGetQuery(conn = connection, 
+  #                                    statement = sprintf("PRAGMA index_info('%s');", indexName))
+  #     if (all(columnNames %in% indexInfo$name)) {
+  #       indexName <- indexName
+  #       break;
+  #     }
+  #   }
+  #   if (is.null(indexName)) {
+  #     abort(sprintf("Could not find an index on column(s) %s", paste(columnNames, collapse = ", ")))
+  #   }
+  # } else {
+  #   if (!indexName %in% indices$name) {
+  #     abort(sprintf("Index with name '%s' not found", indexName))
+  #   }
+  # }
   
-  if (is.null(indexName)) {
-    for (indexName in indices$name) {
-      indexInfo <- RSQLite::dbGetQuery(conn = connection, 
-                                     statement = sprintf("PRAGMA index_info('%s');", indexName))
-      if (all(columnNames %in% indexInfo$name)) {
-        indexName <- indexName
-        break;
-      }
-    }
-    if (is.null(indexName)) {
-      abort(sprintf("Could not find an index on column(s) %s", paste(columnNames, collapse = ", ")))
-    }
-  } else {
-    if (!indexName %in% indices$name) {
-      abort(sprintf("Index with name '%s' not found", indexName))
-    }
-  }
+  statement <- sprintf("DROP INDEX IF EXISTS %s;", indexName)
   
-  statement <- sprintf("DROP INDEX %s;", indexName)
-  
-  RSQLite::dbExecute(conn = dbplyr::remote_con(tbl), statement = statement)
+  DBI::dbExecute(conn = dbplyr::remote_con(tbl), statement = statement)
   invisible(tbl)
 }

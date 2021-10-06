@@ -27,7 +27,8 @@ Imports:
     cli,
     rlang,
     pillar,
-    hms
+    hms,
+    duckdb
 Suggests:
   testthat,
   stringr,
