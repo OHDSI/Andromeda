@@ -44,8 +44,9 @@
 #' @name Andromeda-class
 #' @aliases Andromeda
 #' @seealso [`andromeda()`]
-#' @import RSQLite
+#' @import duckdb
 #' @importClassesFrom DBI DBIObject DBIConnection
+#' @importClassesFrom duckdb duckdb_connection
 #' @export
 setClass("Andromeda", slots = c("dbname"="character"), contains = "duckdb_connection")
 
