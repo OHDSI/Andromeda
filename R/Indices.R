@@ -91,37 +91,38 @@ createIndex <- function(tbl, columnNames, unique = FALSE, indexName = NULL) {
 #'
 #' @export
 listIndices <- function(tbl) {
-  stop("listIndicies is not yet supported with duckdb")
+  # stop("listIndicies is not yet supported with duckdb")
   if (!inherits(tbl, "tbl_dbi"))
     abort("Argument must be an Andromeda (or DBI) table")
   
   tableName <- as.character(dbplyr::remote_name(tbl))
   connection <- dbplyr::remote_con(tbl)
   indices <- DBI::dbGetQuery(conn = connection, 
-                                 statement = sprintf("PRAGMA index_list('%s');", tableName)) %>%
+                                 # statement = sprintf("PRAGMA index_list('%s');", tableName)) %>%
+                                 statement = sprintf("select * from duckdb_indexes where table_name = '%s';", tableName)) %>%
     dplyr::as_tibble()
   if (nrow(indices) == 0) {
     return(dplyr::tibble())
   }
-  getIndexInfo <- function(indexName) {
-    indexInfo <- DBI::dbGetQuery(conn = connection, 
-                                     statement = sprintf("PRAGMA index_info('%s');", indexName)) %>%
-      dplyr::as_tibble()
-    indexInfo$indexName <- indexName
-    return(indexInfo)
-  }
-  indexInfo <- lapply(indices$name, getIndexInfo)
-  indexInfo <- bind_rows(indexInfo) %>% 
-    select(indexName = .data$indexName,
-           columnSequenceId = .data$seqno,
-           columnName = .data$name) 
+  # getIndexInfo <- function(indexName) {
+  #   indexInfo <- DBI::dbGetQuery(conn = connection, 
+  #                                    statement = sprintf("PRAGMA index_info('%s');", indexName)) %>%
+  #     dplyr::as_tibble()
+  #   indexInfo$indexName <- indexName
+  #   return(indexInfo)
+  # }
+  # indexInfo <- lapply(indices$name, getIndexInfo)
+  # indexInfo <- bind_rows(indexInfo) %>% 
+  #   select(indexName = .data$indexName,
+  #          columnSequenceId = .data$seqno,
+  #          columnName = .data$name) 
   
-  result <- indices %>%
-      mutate(unique = case_when(.data$unique == 1 ~ TRUE, TRUE ~ FALSE)) %>%
-      select(indexSequenceId = .data$seq,       
-             indexName = .data$name,
-             unique = .data$unique) %>%
-    inner_join(indexInfo, by = "indexName")
+  result <- indices #%>%
+    #   mutate(unique = case_when(.data$unique == 1 ~ TRUE, TRUE ~ FALSE)) %>%
+    #   select(indexSequenceId = .data$seq,       
+    #          indexName = .data$name,
+    #          unique = .data$unique) %>%
+    # inner_join(indexInfo, by = "indexName")
   
   return(result)
 }
@@ -162,7 +163,7 @@ removeIndex <- function(tbl, columnNames = NULL, indexName = NULL) {
   if (!inherits(tbl, "tbl_dbi"))
     abort("First argument must be an Andromeda (or DBI) table")
   if (is.null(indexName))
-    abort("indexName cannot be null with duckdb yet.")
+    abort("indexName cannot be null with duckdb.")
   
   # tableName <- as.character(dbplyr::remote_name(tbl))
   # connection <- dbplyr::remote_con(tbl)

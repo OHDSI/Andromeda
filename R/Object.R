@@ -123,16 +123,26 @@ andromeda <- function(...) {
 #' @export
 copyAndromeda <- function(andromeda) {
   stop("copyAndromeda not supported")
-  # checkIfValid(andromeda)
-  # newAndromeda <- .createAndromeda()
+  checkIfValid(andromeda)
+  
+  # assign()
+  
+  # Must disconnect from duckdb to copy. Not sure how to implement this since I can't disconnect and reconnect without overwriting the passed in connection.
+  dbname <- andromeda@dbname
+  duckdb::dbDisconnect(andromeda, shutdown = TRUE)
+  dbname2 <- tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".duckdb")
+  file.copy(dbname, dbname2)
+  newAndromeda <- .createAndromeda()
+  
   # RSQLite::sqliteCopyDatabase(andromeda, newAndromeda)
   # duckdb::copy
   # return(newAndromeda)
 }
 
-.createAndromeda <- function() {
-  tempFolder <- .getAndromedaTempFolder()
-  andromeda <- duckdb::dbConnect(duckdb::duckdb(), dbdir = tempfile(tmpdir = tempFolder, fileext = ".duckdb"))
+# By default .createAndromeda will create a new duckdb instance in a temp folder. However it can also use an existing duckdb file.
+.createAndromeda <- function(dbname = tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".duckdb")) {
+  # tempFolder <- .getAndromedaTempFolder()
+  andromeda <- duckdb::dbConnect(duckdb::duckdb(), dbdir = dbname)
   # andromeda <- RSQLite::dbConnect(RSQLite::SQLite(),
                                   # tempfile(tmpdir = tempFolder, fileext = ".sqlite"),
                                   # extended_types = TRUE)

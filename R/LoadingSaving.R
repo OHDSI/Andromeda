@@ -52,7 +52,6 @@
 #'
 #' @export
 saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overwrite = TRUE) {
-  if (maintainConnection) stop("maintainConnection is not yet supported with duckdb backend but shouldn't be hard to implement")
   if (!overwrite && file.exists(fileName)) {
     abort(sprintf("File %s already exists, and overwrite = FALSE", fileName))
   }
@@ -76,15 +75,16 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
   attributesFileName <- tempfile(fileext = ".rds")
   saveRDS(attribs, attributesFileName)
   
+  duckdb::dbDisconnect(andromeda, shutdown = TRUE)
+  zip::zipr(fileName, c(attributesFileName, tempFileName), compression_level = 2)
+    
   if (maintainConnection) {
-    # Can't zip while connected, so make copy:
-    tempFileName <- tempfile(fileext = ".sqlite")
-    # RSQLite::sqliteCopyDatabase(andromeda, tempFileName)
-    zip::zipr(fileName, c(attributesFileName, tempFileName), compression_level = 2)
-    unlink(tempFileName)
+    # create a new connection and restore attributes
+    andromeda <- .createAndromeda(dbname = andromeda@driver@dbdir)
+    for(name in names(attribs)) {
+      attr(andromeda, name) <- attribs[[name]]
+    }
   } else {
-    duckdb::dbDisconnect(andromeda, shutdown = TRUE)
-    zip::zipr(fileName, c(attributesFileName, andromeda@dbname), compression_level = 2)
     unlink(andromeda@driver@dbdir)
     inform("Disconnected Andromeda. This data object can no longer be used")
   }
@@ -140,17 +140,16 @@ loadAndromeda <- function(fileName) {
   file.rename(file.path(tempDir, duckdbFilenameInZip), newFileName)
   attributes <- readRDS(file.path(tempDir, rdsFilenameInZip))
   andromeda <- duckdb::dbConnect(duckdb::duckdb(), newFileName)
-  finalizer <- function(conn_ref) {
+  finalizer <- function(conn_ref) { browser()
     # Suppress R Check note:
     missing(conn_ref)
-    close(andromeda)
+    close(andromeda) # what does andromeda refer to here?
   }
   reg.finalizer(andromeda@conn_ref, finalizer, onexit = TRUE)
   for (name in names(attributes)) {
     attr(andromeda, name) <- attributes[[name]]
   }
-  # RSQLite::dbExecute(andromeda, "PRAGMA journal_mode = OFF") 
-  # RSQLite::dbExecute(andromeda, sprintf("PRAGMA temp_store_directory = '%s'", andromedaTempFolder)) 
+  
   class(andromeda) <- "Andromeda"
   attr(class(andromeda), "package") <- "Andromeda"
   return(andromeda)
@@ -252,4 +251,14 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
   installedVersion <- tryCatch(utils::packageVersion(pkg), 
                                error = function(e) NA)
   return(!is.na(installedVersion))
+}
+
+# get the user defined attributes of an andromeda object as a named list
+.userDefinedAttributes <- function(andromeda) {
+  attribs <- attributes(andromeda)
+  for (name in slotNames(andromeda)) {
+    attribs[[name]] <- NULL
+  }
+  attribs[["class"]] <- NULL
+  attribs
 }
