@@ -16,19 +16,19 @@ VignetteBuilder: knitr
 URL: https://ohdsi.github.io/Andromeda/, https://github.com/OHDSI/Andromeda
 BugReports: https://github.com/OHDSI/Andromeda/issues
 Depends:
-  dplyr
 Imports:
-    duckdb,
-    DBI,
-    zip,
-    methods,
-    dbplyr,
-    tidyselect,
-    cli,
-    rlang,
-    pillar,
-    hms,
-    duckdb
+  dm,
+  dplyr,
+  dbplyr,
+  duckdb,
+  DBI,
+  zip,
+  methods,
+  tidyselect,
+  cli,
+  rlang,
+  pillar,
+  hms
 Suggests:
   testthat,
   stringr,
@@ -38,5 +38,5 @@ Suggests:
   rJava
 LazyData: false
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8

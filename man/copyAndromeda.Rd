@@ -4,10 +4,15 @@
 \alias{copyAndromeda}
 \title{Copy Andromeda}
 \usage{
-copyAndromeda(andromeda)
+copyAndromeda(
+  andromeda,
+  dbname = tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".duckdb")
+)
 }
 \arguments{
 \item{andromeda}{The \code{\link{Andromeda}} object to copy.}
+
+\item{dbname}{The location where the new Andromeda object will be stored on disc. Defaults to temp directory.}
 }
 \value{
 The copied \code{\link{Andromeda}} object.
