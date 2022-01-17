@@ -17,16 +17,13 @@
 #' The Andromeda class
 #' 
 #' @description 
-#' The `Andromeda` class is an S3 object.
+#' The `Andromeda` class is an S4 object.
 #' 
 #' This class provides the ability to work with data objects in R that are too large to fit in memory. Instead, 
 #' these objects are stored on disk. This is slower than working from memory, but may be the only viable option. 
-#' The Andromeda object is a thin wrapper around a dm object from the 
-#' \href{https://krlmlr.github.io/dm/articles/dm.html}{(data models) package} but is restricted to the duckdb database
-#' backend.
 #' 
 #' @section Tables:
-#' An `Andromeda` object can have zero, one, or more tables. The list of table names can be retrieved using the [`names()`] 
+#' An `Andromeda` object has zero, one or more tables. The list of table names can be retrieved using the [`names()`] 
 #' method. Tables can be accessed using the dollar sign syntax, e.g. `andromeda$myTable`, or double-square-bracket 
 #' syntax, e.g. `andromeda[["myTable"]]`
 #'
@@ -40,13 +37,18 @@
 #' 
 #' @section Inheritance:
 #' 
-#' The `Andromeda` inherits directly from `dm` As such, it can be used as if it is a `SQLiteConnection`. 
-#' [`duckdb`] is an R wrapper around 'duckdb', a low-weight but very powerful single-user SQL database similar to 
-#' SQLite that can run from a single file on the local file system.
+#' The `Andromeda` inherits directly from `SQLiteConnection.` As such, it can be used as if it is a `SQLiteConnection`. 
+#' [`RSQLite`] is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run 
+#' from a single file on the local file system.
 #' 
 #' @name Andromeda-class
 #' @aliases Andromeda
 #' @seealso [`andromeda()`]
+#' @import duckdb
+#' @importClassesFrom DBI DBIObject DBIConnection
+#' @importClassesFrom duckdb duckdb_connection
+#' @export
+setClass("Andromeda", slots = c("dbname"="character"), contains = "duckdb_connection")
 
 #' Create an Andromeda object
 #'
@@ -82,89 +84,24 @@
 #' @rdname andromeda_constructor
 #'
 #' @export
-andromeda <- function(..., options) { 
+andromeda <- function(...) {
   arguments <- list(...)
   if (length(arguments) > 0) {
     if (is.null(names(arguments)) || any(names(arguments) == ""))
-      rlang::abort("All arguments must be named")
+      abort("All arguments must be named")
   }
-  
-  x <- .createAndromeda()
-  
+  andromeda <- .createAndromeda()
   if (length(arguments) > 0) {
-      for (name in names(arguments)) {
-        print(name)
-        x[[name]] <- arguments[[name]]
-      }
-  }
-  return(x)
-}
-
-#' @param x    An [`Andromeda`] object.
-#' @param i    The name of a table in the [`Andromeda`] object.
-#' @param value A data frame, [`Andromeda`] table, or other 'DBI' table.
-#' @export
-#' @rdname
-#' Andromeda-class
-# setMethod("[[<-", "Andromeda", function(x, i, value) {
-"[[<-.Andromeda" <- function(x, i, value) { 
-  # checkIfValid(x)
-  con <- attr(x, "conn_ref")
-  if (is.null(value)) {
-    if (i %in% names(x)) {
-      duckdb::dbRemoveTable(con, i)
+    for (name in names(arguments)) {
+      andromeda[[name]] <- arguments[[name]]
     }
-  } else if (inherits(value, "data.frame")) {
-    # .checkAvailableSpace(x)
-    duckdb::dbWriteTable(conn = con, name = i, value = value, overwrite = TRUE, append = FALSE)
-  } else if (inherits(value, "tbl_dbi")) {
-    # .checkAvailableSpace(x)
-    if (isTRUE(all.equal(con, dbplyr::remote_con(value)))) {
-      sql <- dbplyr::sql_render(value, con)
-      if (duckdb::dbExistsTable(con, i)) {
-        # Maybe we're copying data from a table into the same table. So write to temp
-        # table first, then drop old table, and rename temp to old name:
-        tempName <- paste(sample(letters, 16), collapse = "")
-        sql <- sprintf("CREATE TABLE %s AS %s", tempName, sql)
-        DBI::dbExecute(con, sql)
-        duckdb::dbRemoveTable(x, i)
-        sql <- sprintf("ALTER TABLE %s RENAME TO %s;", tempName, i)
-        DBI::dbExecute(con, sql)
-      } else {
-        sql <- sprintf("CREATE TABLE %s AS %s", i, sql)
-        DBI::dbExecute(con, sql)
-      }
-    } else {
-      if (duckdb::dbExistsTable(x, i)) {
-        duckdb::dbRemoveTable(x, i)
-      }
-      doBatchedAppend <- function(batch) {
-        duckdb::dbWriteTable(conn = x, name = i, value = batch, overwrite = FALSE, append = TRUE)
-        return(TRUE)
-      }
-      dummy <- batchApply(value, doBatchedAppend)
-      if (length(dummy) == 0) {
-        duckdb::dbWriteTable(conn = x, name = i, value = dplyr::collect(value), overwrite = FALSE, append = TRUE)
-      }
-    }
-  } else {
-    abort("Table must be a data frame or dplyr table")
   }
-  x <- dm::dm_add_tbl(x, !!i := dm::tbl(con, i))
-  # restore andromeda attributes
-  class(x) <- c("Andromeda", class(x))
-  attr(class(x), "package") <- "Andromeda" 
-  attr(x, "dbname") <- con@driver@dbdir
-  attr(x, "conn_ref") <- con
-  x
+  return(andromeda)
 }
-
-
 
 #' Copy Andromeda
 #'
 #' @param andromeda   The [`Andromeda`] object to copy.
-#' @param dbname The location where the new Andromeda object will be stored on disc. Defaults to temp directory.
 #'
 #' @description
 #' Creates a complete copy of an [`Andromeda`] object. Object attributes are not copied.
@@ -185,30 +122,42 @@ andromeda <- function(..., options) {
 #'
 #' @export
 copyAndromeda <- function(andromeda) {
-  # checkIfValid(andromeda)
-  x <- .createAndromeda()
-  dm::copy_dm_to(attr(x, "conn_ref"), andromeda)
+  stop("copyAndromeda not supported")
+  checkIfValid(andromeda)
+  
+  # assign()
+  
+  # Must disconnect from duckdb to copy. Not sure how to implement this since I can't disconnect and reconnect without overwriting the passed in connection.
+  dbname <- andromeda@dbname
+  duckdb::dbDisconnect(andromeda, shutdown = TRUE)
+  dbname2 <- tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".duckdb")
+  file.copy(dbname, dbname2)
+  newAndromeda <- .createAndromeda()
+  
+  # RSQLite::sqliteCopyDatabase(andromeda, newAndromeda)
+  # duckdb::copy
+  # return(newAndromeda)
 }
 
-
-# By default .createAndromeda will create a new duckdb instance in a temp folder. 
-# However it can also use an existing duckdb file.
+# By default .createAndromeda will create a new duckdb instance in a temp folder. However it can also use an existing duckdb file.
 .createAndromeda <- function(dbname = tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".duckdb")) {
-  dbname = tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".duckdb")
-  con <- duckdb::dbConnect(duckdb::duckdb(), dbdir = dbname)
-  
-  x <- dm::dm_from_src(con, learn_keys = FALSE)
-  class(x) <- c("Andromeda", class(x))
-  attr(class(x), "package") <- "Andromeda" # TODO why do we need this?
-  attr(x, "dbname") <- con@driver@dbdir
-  attr(x, "conn_ref") <- con # TODO support connection to andromeda through DBI or database connector interface.
-  # finalizer <- function(conn_ref) {
-  #   # Suppress R Check note:
-  #   missing(conn_ref) # TODO what is the purpose of this line?
-  #   close(andromeda)
-  # }
-  # reg.finalizer(attr(andromeda, "conn_ref"), finalizer, onexit = TRUE)
-  return(x)
+  # tempFolder <- .getAndromedaTempFolder()
+  andromeda <- duckdb::dbConnect(duckdb::duckdb(), dbdir = dbname)
+  # andromeda <- RSQLite::dbConnect(RSQLite::SQLite(),
+                                  # tempfile(tmpdir = tempFolder, fileext = ".sqlite"),
+                                  # extended_types = TRUE)
+  class(andromeda) <- "Andromeda"
+  attr(class(andromeda),"package") <- "Andromeda"
+  andromeda@dbname <- andromeda@driver@dbdir
+  finalizer <- function(conn_ref) {
+    # Suppress R Check note:
+    missing(conn_ref)
+    close(andromeda)
+  }
+  reg.finalizer(andromeda@conn_ref, finalizer, onexit = TRUE)
+  # RSQLite::dbExecute(andromeda, "PRAGMA journal_mode = OFF") # turn off rollback journal in sqlite https://www.sqlite.org/pragma.html#pragma_journal_mode
+  # RSQLite::dbExecute(andromeda, sprintf("PRAGMA temp_store_directory = '%s'", tempFolder)) # depricated by sqlite https://www.sqlite.org/pragma.html#pragma_temp_store
+  return(andromeda)
 }
 
 .getAndromedaTempFolder <- function() {
@@ -224,14 +173,168 @@ copyAndromeda <- function(andromeda) {
   return(tempFolder)
 }
 
+#' @param object  An [`Andromeda`] object.
+#' @export
+#' @rdname
+#' Andromeda-class
+setMethod("show", "Andromeda", function(object) {
+  cli::cat_line(pillar::style_subtle("# Andromeda object"))
 
+  if (duckdb::dbIsValid(object)) {
+    cli::cat_line(pillar::style_subtle(paste("# Physical location: ", object@driver@dbdir)))
+    cli::cat_line("")
+    cli::cat_line("Tables:")
+    for (name in duckdb::dbListTables(object)) {
+      cli::cat_line(paste0("$",
+                           name,
+                           " (",
+                           paste(duckdb::dbListFields(object, name), collapse = ", "),
+                           ")"))
+    }
+  } else {
+    cli::cli_alert_danger("Connection closed")
+  }
+  invisible(NULL)
+})
 
+#' @param x     An [`Andromeda`] object.
+#' @param name  The name of a table in the [`Andromeda`] object.
+#' @export
+#' @rdname
+#' Andromeda-class
+setMethod("$", "Andromeda", function(x, name) {
+  return(x[[name]])
 
-checkIfValid <- function(x) {
-  if (!isValidAndromeda(x))
-    abort("Andromeda object is no longer valid. Perhaps it was saved without maintainConnection = TRUE, or R has been restarted?")
+})
+
+#' @param x     An [`Andromeda`] object.
+#' @param name  The name of a table in the [`Andromeda`] object.
+#' @param value A data frame, [`Andromeda`] table, or other 'DBI' table.
+#' @export
+#' @rdname
+#' Andromeda-class
+setMethod("$<-", "Andromeda", function(x, name, value) {
+  x[[name]] <- value
+  return(x)
+})
+
+#' @param x    An [`Andromeda`] object.
+#' @param i    The name of a table in the [`Andromeda`] object.
+#' @param value A data frame, [`Andromeda`] table, or other 'DBI' table.
+#' @export
+#' @rdname
+#' Andromeda-class
+setMethod("[[<-", "Andromeda", function(x, i, value) { 
+  checkIfValid(x)
+  if (is.null(value)) {
+    if (i %in% names(x)) {
+      duckdb::dbRemoveTable(x, i)
+    }
+  } else if (inherits(value, "data.frame")) {
+    .checkAvailableSpace(x)
+    duckdb::dbWriteTable(conn = x, name = i, value = value, overwrite = TRUE, append = FALSE)
+  } else if (inherits(value, "tbl_dbi")) {
+    .checkAvailableSpace(x)
+    if (isTRUE(all.equal(x, dbplyr::remote_con(value)))) {
+      sql <- dbplyr::sql_render(value, x)
+      if (duckdb::dbExistsTable(x, i)) {
+        # Maybe we're copying data from a table into the same table. So write to temp
+        # table first, then drop old table, and rename temp to old name:
+        tempName <- paste(sample(letters, 16), collapse = "")
+        sql <- sprintf("CREATE TABLE %s AS %s", tempName, sql)
+        DBI::dbExecute(x, sql)
+        duckdb::dbRemoveTable(x, i) 
+        sql <- sprintf("ALTER TABLE %s RENAME TO %s;", tempName, i)
+        DBI::dbExecute(x, sql)
+      } else {
+        sql <- sprintf("CREATE TABLE %s AS %s", i, sql)
+        DBI::dbExecute(x, sql)
+      }
+    } else {
+      if (duckdb::dbExistsTable(x, i)) {
+        duckdb::dbRemoveTable(x, i)
+      }
+      doBatchedAppend <- function(batch) {
+        duckdb::dbWriteTable(conn = x, name = i, value = batch, overwrite = FALSE, append = TRUE)
+        return(TRUE)
+      }
+      dummy <- batchApply(value, doBatchedAppend)
+      if (length(dummy) == 0) {
+        duckdb::dbWriteTable(conn = x, name = i, value = dplyr::collect(value), overwrite = FALSE, append = TRUE)
+      }
+    }
+  } else {
+    abort("Table must be a data frame or dplyr table")
+  }
+  x
+})
+
+#' @param x    An [`Andromeda`] object.
+#' @param i    The name of a table in the [`Andromeda`] object.
+#' @export
+#' @rdname
+#' Andromeda-class
+setMethod("[[", "Andromeda", function(x, i) {
+  checkIfValid(x)
+  if (duckdb::dbExistsTable(x, i)) {
+    return(dplyr::tbl(x, i))
+  } else {
+    return(NULL)
+  }
+})
+
+#' names
+#'
+#' @description
+#' Show the names of the tables in an Andromeda object.
+#'
+#' @param x    An [`Andromeda`] object.
+#' 
+#' @return 
+#' A vector of names.
+#'
+#' @examples
+#' andr <- andromeda(cars = cars, iris = iris)
+#'
+#' names(andr)
+#' # [1] 'cars' 'iris'
+#'
+#' close(andr)
+#'
+#' @rdname
+#' Andromeda-class
+#' 
+#' @export
+setMethod("names", "Andromeda", function(x) {
+  if (duckdb::dbIsValid(x)) {
+    return(duckdb::dbListTables(x))
+  }
+})
+
+# TODO : add 'names<-.Andromeda'
+
+#' @param x    An [`Andromeda`] object.
+#' @export
+#' @rdname
+#' Andromeda-class
+setMethod("length", "Andromeda", function(x) {
+  length(names(x))
+})
+
+#' Check whether an object is an Andromeda object
+#'
+#' @param x   The object to check.
+#'
+#' @details
+#' Checks whether an object is an Andromeda object.
+#'
+#' @return
+#' A logical value.
+#'
+#' @export
+isAndromeda <- function(x) {
+  return(inherits(x, "Andromeda"))
 }
-
 
 #' Check whether an Andromeda object is still valid
 #'
@@ -256,5 +359,25 @@ checkIfValid <- function(x) {
 #'
 #' @export
 isValidAndromeda <- function(x) {
-  return(duckdb::dbIsValid(attr(x, "conn_ref")))
+  return(duckdb::dbIsValid(x))
+}
+
+#' @param con    An [`Andromeda`] object.
+#' @param ...	   Included for compatibility with generic `close()` method.
+#' @export
+#' @rdname
+#' Andromeda-class
+setMethod("close", "Andromeda", function(con, ...) {
+  fileName <- con@driver@dbdir
+  if (duckdb::dbIsValid(con)) {
+    duckdb::dbDisconnect(con, shutdown = TRUE)
+  }
+  if (file.exists(fileName)) {
+    unlink(fileName)
+  }
+})
+
+checkIfValid <- function(x) {
+  if (!isValidAndromeda(x))
+    abort("Andromeda object is no longer valid. Perhaps it was saved without maintainConnection = TRUE, or R has been restarted?")
 }
