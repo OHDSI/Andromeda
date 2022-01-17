@@ -75,17 +75,19 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
   attributesFileName <- tempfile(fileext = ".rds")
   saveRDS(attribs, attributesFileName)
   
-  duckdb::dbDisconnect(andromeda, shutdown = TRUE)
-  zip::zipr(fileName, c(attributesFileName, tempFileName), compression_level = 2)
     
   if (maintainConnection) {
-    # create a new connection and restore attributes
-    andromeda <- .createAndromeda(dbname = andromeda@driver@dbdir)
-    for(name in names(attribs)) {
-      attr(andromeda, name) <- attribs[[name]]
-    }
+    # Can't zip while connected so make a copy
+    andromedaCopy <- copyAndromeda(andromeda)
+    tempFileName <- andromedaCopy@driver@dbdir
+    duckdb::dbDisconnect(andromedaCopy, shutdown = TRUE)
+    file.exists(tempFileName)
+    zip::zipr(fileName, c(attributesFileName, tempFileName), compression_level = 2)
+    close(andromedaCopy)
   } else {
-    unlink(andromeda@driver@dbdir)
+    duckdb::dbDisconnect(andromeda, shutdown = TRUE)
+    zip::zipr(fileName, c(attributesFileName, andromeda@dbname), compression_level = 2)
+    close(andromeda)
     inform("Disconnected Andromeda. This data object can no longer be used")
   }
   unlink(attributesFileName)
@@ -118,7 +120,7 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
 #' unlink(fileName)
 #'
 #' @export
-loadAndromeda <- function(fileName) {
+loadAndromeda <- function(fileName, options = list()) {
   if (!file.exists(fileName)) {
     abort(sprintf("File %s does not exist", fileName))
   }
@@ -139,19 +141,13 @@ loadAndromeda <- function(fileName) {
   newFileName <- tempfile(tmpdir = andromedaTempFolder, fileext = ".duckdb")
   file.rename(file.path(tempDir, duckdbFilenameInZip), newFileName)
   attributes <- readRDS(file.path(tempDir, rdsFilenameInZip))
-  andromeda <- duckdb::dbConnect(duckdb::duckdb(), newFileName)
-  finalizer <- function(conn_ref) { browser()
-    # Suppress R Check note:
-    missing(conn_ref)
-    close(andromeda) # what does andromeda refer to here?
-  }
-  reg.finalizer(andromeda@conn_ref, finalizer, onexit = TRUE)
-  for (name in names(attributes)) {
+  
+  andromeda <- .createAndromeda(dbdir = newFileName, options = options)
+  
+  # Restore user defined attributes that don't overwrite Andromeda's reserved attributes
+  for (name in dplyr::setdiff(names(attributes), names(attributes(andromeda)))) {
     attr(andromeda, name) <- attributes[[name]]
   }
-  
-  class(andromeda) <- "Andromeda"
-  attr(class(andromeda), "package") <- "Andromeda"
   return(andromeda)
 }
 

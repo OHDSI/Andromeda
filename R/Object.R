@@ -59,6 +59,8 @@ setClass("Andromeda", slots = c("dbname"="character"), contains = "duckdb_connec
 #'
 #' @param ...   Named objects. See details for what objects are valid. If no objects are provided, an
 #'              empty Andromeda is returned.
+#' @param options A named list of options. Currently the only supported option is 'threads' (see example). 
+#'                All other options are ignored.
 #'
 #' @details
 #' Valid objects are data frames, `Andromeda` tables, or any other [`dplyr`] table.
@@ -81,16 +83,20 @@ setClass("Andromeda", slots = c("dbname"="character"), contains = "duckdb_connec
 #'
 #' close(andr)
 #' 
+#' # Use multiple threads for queries
+#' andr <- andromeda(cars = cars, iris = iris, options = list(threads = 8))
+#' 
+#' 
 #' @rdname andromeda_constructor
 #'
 #' @export
-andromeda <- function(...) {
+andromeda <- function(..., options = list()) {
   arguments <- list(...)
   if (length(arguments) > 0) {
     if (is.null(names(arguments)) || any(names(arguments) == ""))
       abort("All arguments must be named")
   }
-  andromeda <- .createAndromeda()
+  andromeda <- .createAndromeda(options)
   if (length(arguments) > 0) {
     for (name in names(arguments)) {
       andromeda[[name]] <- arguments[[name]]
@@ -121,42 +127,41 @@ andromeda <- function(...) {
 #' close(andr2)
 #'
 #' @export
-copyAndromeda <- function(andromeda) {
-  stop("copyAndromeda not supported")
+copyAndromeda <- function(andromeda, options = list()) {
   checkIfValid(andromeda)
-  
-  # assign()
-  
-  # Must disconnect from duckdb to copy. Not sure how to implement this since I can't disconnect and reconnect without overwriting the passed in connection.
   dbname <- andromeda@dbname
-  duckdb::dbDisconnect(andromeda, shutdown = TRUE)
-  dbname2 <- tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".duckdb")
-  file.copy(dbname, dbname2)
-  newAndromeda <- .createAndromeda()
+  newAndromeda <- .createAndromeda(options)
   
-  # RSQLite::sqliteCopyDatabase(andromeda, newAndromeda)
-  # duckdb::copy
-  # return(newAndromeda)
+  invisible(lapply(names(a), function(nm) {
+    newAndromeda[[nm]] <- a[[nm]]
+  }))
+  
+  if (!dplyr::setequal(names(andromeda), names(newAndromeda))) {
+    succeeded <- paste(dplyr::intersect(names(andromeda), names(newAndromeda)), collapse = ", ")
+    failed <- paste(dplyr::setdiff(names(andromeda), names(newAndromeda)), collapse = ", ")
+    msg <- paste("Error copying Andromeda object.\n", succeeded, "copied successfully.\n", failed, "failed to copy.\n")
+    rlang::abort(msg)
+  } 
+  return(newAndromeda)
 }
 
 # By default .createAndromeda will create a new duckdb instance in a temp folder. However it can also use an existing duckdb file.
-.createAndromeda <- function(dbname = tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".duckdb")) {
-  # tempFolder <- .getAndromedaTempFolder()
-  andromeda <- duckdb::dbConnect(duckdb::duckdb(), dbdir = dbname)
-  # andromeda <- RSQLite::dbConnect(RSQLite::SQLite(),
-                                  # tempfile(tmpdir = tempFolder, fileext = ".sqlite"),
-                                  # extended_types = TRUE)
+.createAndromeda <- function(dbdir = tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".duckdb"), options = list()) {
+  andromeda <- duckdb::dbConnect(duckdb::duckdb(), dbdir = dbdir)
   class(andromeda) <- "Andromeda"
-  attr(class(andromeda),"package") <- "Andromeda"
+  attr(class(andromeda), "package") <- "Andromeda"
   andromeda@dbname <- andromeda@driver@dbdir
   finalizer <- function(conn_ref) {
-    # Suppress R Check note:
+    # Suppress R Check note about unused argument:
     missing(conn_ref)
+    # Use R's scoping rules to refer the andromeda object we want to close without explicitly passing it as an argument:
     close(andromeda)
   }
   reg.finalizer(andromeda@conn_ref, finalizer, onexit = TRUE)
-  # RSQLite::dbExecute(andromeda, "PRAGMA journal_mode = OFF") # turn off rollback journal in sqlite https://www.sqlite.org/pragma.html#pragma_journal_mode
-  # RSQLite::dbExecute(andromeda, sprintf("PRAGMA temp_store_directory = '%s'", tempFolder)) # depricated by sqlite https://www.sqlite.org/pragma.html#pragma_temp_store
+  
+  if (is.numeric(options[["threads"]])) {
+    DBI::dbExecute(andromeda, paste("PRAGMA threads = ", as.integer(options[["threads"]])))
+  }
   return(andromeda)
 }
 
@@ -236,6 +241,7 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
   } else if (inherits(value, "tbl_dbi")) {
     .checkAvailableSpace(x)
     if (isTRUE(all.equal(x, dbplyr::remote_con(value)))) {
+      # x[[i]] and value are tables are in the same Andromeda object
       sql <- dbplyr::sql_render(value, x)
       if (duckdb::dbExistsTable(x, i)) {
         # Maybe we're copying data from a table into the same table. So write to temp
@@ -251,6 +257,7 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
         DBI::dbExecute(x, sql)
       }
     } else {
+      # value is not in the same database as x[[i]] 
       if (duckdb::dbExistsTable(x, i)) {
         duckdb::dbRemoveTable(x, i)
       }
@@ -312,6 +319,9 @@ setMethod("names", "Andromeda", function(x) {
 })
 
 # TODO : add 'names<-.Andromeda'
+setMethod("names<-", "Andromeda", function(x) {
+  rlang::abort("Andromeda table names cannot be changed using `names(x) <- c()`.")
+})
 
 #' @param x    An [`Andromeda`] object.
 #' @export
@@ -379,5 +389,5 @@ setMethod("close", "Andromeda", function(con, ...) {
 
 checkIfValid <- function(x) {
   if (!isValidAndromeda(x))
-    abort("Andromeda object is no longer valid. Perhaps it was saved without maintainConnection = TRUE, or R has been restarted?")
+    rlang::abort("Andromeda object is no longer valid. Perhaps it was saved without maintainConnection = TRUE, or R has been restarted?")
 }

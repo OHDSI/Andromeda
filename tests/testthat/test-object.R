@@ -1,4 +1,4 @@
-# library(testthat)
+# library(testthat) 
 # 
 # test_that("Object creation", {
 #   andromeda <- andromeda()
