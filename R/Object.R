@@ -48,7 +48,7 @@
 #' @importClassesFrom DBI DBIObject DBIConnection
 #' @importClassesFrom duckdb duckdb_connection
 #' @export
-setClass("Andromeda", slots = c("dbname"="character"), contains = "duckdb_connection")
+setClass("Andromeda", slots = c("dbname" = "character"), contains = "duckdb_connection")
 
 #' Create an Andromeda object
 #'
@@ -96,7 +96,7 @@ andromeda <- function(..., options = list()) {
     if (is.null(names(arguments)) || any(names(arguments) == ""))
       abort("All arguments must be named")
   }
-  andromeda <- .createAndromeda(options)
+  andromeda <- .createAndromeda(options = options)
   if (length(arguments) > 0) {
     for (name in names(arguments)) {
       andromeda[[name]] <- arguments[[name]]
@@ -130,10 +130,10 @@ andromeda <- function(..., options = list()) {
 copyAndromeda <- function(andromeda, options = list()) {
   checkIfValid(andromeda)
   dbname <- andromeda@dbname
-  newAndromeda <- .createAndromeda(options)
+  newAndromeda <- .createAndromeda(options = options)
   
-  invisible(lapply(names(a), function(nm) {
-    newAndromeda[[nm]] <- a[[nm]]
+  invisible(lapply(names(andromeda), function(nm) {
+    newAndromeda[[nm]] <- andromeda[[nm]]
   }))
   
   if (!dplyr::setequal(names(andromeda), names(newAndromeda))) {
@@ -159,6 +159,7 @@ copyAndromeda <- function(andromeda, options = list()) {
   }
   reg.finalizer(andromeda@conn_ref, finalizer, onexit = TRUE)
   
+  # ignore all options except 'threads' for now
   if (is.numeric(options[["threads"]])) {
     DBI::dbExecute(andromeda, paste("PRAGMA threads = ", as.integer(options[["threads"]])))
   }

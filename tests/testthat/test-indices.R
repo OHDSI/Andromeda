@@ -1,4 +1,4 @@
-library(testthat)
+# library(testthat)
 # NEED TO FIX THIS TEST
 # test_that("Index creation. listing, and removal using column names", {
 #   andromeda <- andromeda(cars = cars)

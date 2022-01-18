@@ -158,7 +158,8 @@ groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, progres
     env$groupData <- groups[[length(groups)]]
     env$groupValue <- groups[[length(groups)]][1, groupVariable]
   }
-  batchApply(tbl = tbl %>% arrange(rlang::sym(groupVariable)),
+  # tbl %>% arrange(rlang::sym(groupVariable)
+  batchApply(tbl = tbl,
              fun = wrapper,
              userFun = fun,
              env = env,
