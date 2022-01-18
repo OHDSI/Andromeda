@@ -10,6 +10,7 @@
 \alias{[[<-,Andromeda-method}
 \alias{[[,Andromeda-method}
 \alias{names,Andromeda-method}
+\alias{names<-,Andromeda-method}
 \alias{length,Andromeda-method}
 \alias{close,Andromeda-method}
 \title{The Andromeda class}
@@ -25,6 +26,8 @@
 \S4method{[[}{Andromeda}(x, i)
 
 \S4method{names}{Andromeda}(x)
+
+\S4method{names}{Andromeda}(x) <- value
 
 \S4method{length}{Andromeda}(x)
 
@@ -75,8 +78,8 @@ while keeping the saved data as is.
 \section{Inheritance}{
 
 
-The \code{Andromeda} inherits directly from \code{SQLiteConnection.} As such, it can be used as if it is a \code{SQLiteConnection}.
-\code{\link{RSQLite}} is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run
+The \code{Andromeda} inherits directly from \code{duckdb_connection} As such, it can be used as if it is a \code{duckdb_connection}.
+\code{\link{duckdb}} is an R wrapper around 'duckdb', a low-weight but powerful single-user SQL database that can run
 from a single file on the local file system.
 }
 

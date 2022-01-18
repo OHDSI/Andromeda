@@ -91,40 +91,13 @@ createIndex <- function(tbl, columnNames, unique = FALSE, indexName = NULL) {
 #'
 #' @export
 listIndices <- function(tbl) {
-  # stop("listIndicies is not yet supported with duckdb")
-  if (!inherits(tbl, "tbl_dbi"))
-    abort("Argument must be an Andromeda (or DBI) table")
+  if (!inherits(tbl, "tbl_dbi")) abort("Argument must be an Andromeda (or DBI) table")
   
   tableName <- as.character(dbplyr::remote_name(tbl))
-  connection <- dbplyr::remote_con(tbl)
-  indices <- DBI::dbGetQuery(conn = connection, 
-                                 # statement = sprintf("PRAGMA index_list('%s');", tableName)) %>%
-                                 statement = sprintf("select * from duckdb_indexes where table_name = '%s';", tableName)) %>%
+  conn <- dbplyr::remote_con(tbl)
+  sql <- sprintf("select * from duckdb_indexes where table_name = '%s';", tableName)
+  DBI::dbGetQuery(conn, sql) %>%
     dplyr::as_tibble()
-  if (nrow(indices) == 0) {
-    return(dplyr::tibble())
-  }
-  # getIndexInfo <- function(indexName) {
-  #   indexInfo <- DBI::dbGetQuery(conn = connection, 
-  #                                    statement = sprintf("PRAGMA index_info('%s');", indexName)) %>%
-  #     dplyr::as_tibble()
-  #   indexInfo$indexName <- indexName
-  #   return(indexInfo)
-  # }
-  # indexInfo <- lapply(indices$name, getIndexInfo)
-  # indexInfo <- bind_rows(indexInfo) %>% 
-  #   select(indexName = .data$indexName,
-  #          columnSequenceId = .data$seqno,
-  #          columnName = .data$name) 
-  
-  result <- indices #%>%
-    #   mutate(unique = case_when(.data$unique == 1 ~ TRUE, TRUE ~ FALSE)) %>%
-    #   select(indexSequenceId = .data$seq,       
-    #          indexName = .data$name,
-    #          unique = .data$unique) %>%
-    # inner_join(indexInfo, by = "indexName")
-  
-  return(result)
 }
 
 #' Removes an index from an Andromeda table
@@ -160,36 +133,37 @@ listIndices <- function(tbl) {
 #'
 #' @export
 removeIndex <- function(tbl, columnNames = NULL, indexName = NULL) {
-  if (!inherits(tbl, "tbl_dbi"))
+  if (!inherits(tbl, "tbl_dbi")) 
     abort("First argument must be an Andromeda (or DBI) table")
-  if (is.null(indexName))
-    abort("indexName cannot be null with duckdb.")
   
-  # tableName <- as.character(dbplyr::remote_name(tbl))
-  # connection <- dbplyr::remote_con(tbl)
-  # indices <- DBI::dbGetQuery(conn = connection, 
-  #                                statement = sprintf("PRAGMA index_list('%s');", tableName))
-  # 
-  # if (is.null(indexName)) {
-  #   for (indexName in indices$name) {
-  #     indexInfo <- DBI::dbGetQuery(conn = connection, 
-  #                                    statement = sprintf("PRAGMA index_info('%s');", indexName))
-  #     if (all(columnNames %in% indexInfo$name)) {
-  #       indexName <- indexName
-  #       break;
-  #     }
-  #   }
-  #   if (is.null(indexName)) {
-  #     abort(sprintf("Could not find an index on column(s) %s", paste(columnNames, collapse = ", ")))
-  #   }
-  # } else {
-  #   if (!indexName %in% indices$name) {
-  #     abort(sprintf("Index with name '%s' not found", indexName))
-  #   }
-  # }
+  if (!((is.character(columnNames) && length(columnNames) > 0) || (is.character(indexName) && length(indexName) > 0))) 
+      abort("Either columnNames or indexName must be supplied.")
   
-  statement <- sprintf("DROP INDEX IF EXISTS %s;", indexName)
+  tableName <- as.character(dbplyr::remote_name(tbl))
+  connection <- dbplyr::remote_con(tbl)
+  indices <- listIndices(tbl)
   
-  DBI::dbExecute(conn = dbplyr::remote_con(tbl), statement = statement)
+  if (is.character(columnNames) && length(columnNames) > 0) {
+    # get the index name that matches the columnNames
+    indexName <- indices %>% 
+      # filter to indices with the number of columns passed in
+      filter(stringr::str_count(.data$sql, ",") == (length(columnNames) - 1)) %>% 
+      # get index that matches all column names
+      filter(all(stringr::str_detect(.data$sql, columnNames))) %>% 
+      pull(.data$index_name)
+    
+    if (length(indexName) == 0) {
+      abort(sprintf("Could not find an index on column(s) %s", paste(columnNames, collapse = ", ")))
+    }
+  } else {
+    for(i in indexName) {
+      if (!(indexName %in% indices$index_name)) abort(sprintf("Index with name '%s' not found", i))
+    }
+  }
+  
+  for(i in indexName) {
+    statement <- sprintf("DROP INDEX IF EXISTS %s;", i)
+    DBI::dbExecute(conn = dbplyr::remote_con(tbl), statement = statement)
+  }
   invisible(tbl)
 }

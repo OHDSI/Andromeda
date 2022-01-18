@@ -4,11 +4,14 @@
 \alias{andromeda}
 \title{Create an Andromeda object}
 \usage{
-andromeda(...)
+andromeda(..., options = list())
 }
 \arguments{
 \item{...}{Named objects. See details for what objects are valid. If no objects are provided, an
 empty Andromeda is returned.}
+
+\item{options}{A named list of options. Currently the only supported option is 'threads' (see example).
+All other options are ignored.}
 }
 \value{
 Returns an \code{\link{Andromeda}} object.
@@ -35,5 +38,9 @@ andr$cars \%>\% filter(speed > 10) \%>\% collect()
 # ...
 
 close(andr)
+
+# Use multiple threads for queries
+andr <- andromeda(cars = cars, iris = iris, options = list(threads = 8))
+
 
 }

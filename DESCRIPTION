@@ -1,7 +1,7 @@
 Package: Andromeda
 Type: Package
 Title: Asynchronous Disk-Based Representation of Massive Data
-Version: 0.5.0
+Version: 0.6.0
 Date: 2021-06-25
 Authors@R: c(
   person("Adam", "Black", , "black@ohdsi.org", role = c("aut", "cre")),
@@ -18,17 +18,16 @@ BugReports: https://github.com/OHDSI/Andromeda/issues
 Depends:
   dplyr
 Imports:
-    duckdb,
-    DBI,
-    zip,
-    methods,
-    dbplyr,
-    tidyselect,
-    cli,
-    rlang,
-    pillar,
-    hms,
-    duckdb
+  DBI,
+  zip,
+  methods,
+  dbplyr,
+  tidyselect,
+  cli,
+  rlang,
+  pillar,
+  hms,
+  duckdb
 Suggests:
   testthat,
   stringr,
@@ -38,5 +37,5 @@ Suggests:
   rJava
 LazyData: false
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8

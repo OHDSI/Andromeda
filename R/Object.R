@@ -37,8 +37,8 @@
 #' 
 #' @section Inheritance:
 #' 
-#' The `Andromeda` inherits directly from `SQLiteConnection.` As such, it can be used as if it is a `SQLiteConnection`. 
-#' [`RSQLite`] is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run 
+#' The `Andromeda` inherits directly from `duckdb_connection` As such, it can be used as if it is a `duckdb_connection`. 
+#' [`duckdb`] is an R wrapper around 'duckdb', a low-weight but powerful single-user SQL database that can run 
 #' from a single file on the local file system.
 #' 
 #' @name Andromeda-class
@@ -108,6 +108,8 @@ andromeda <- function(..., options = list()) {
 #' Copy Andromeda
 #'
 #' @param andromeda   The [`Andromeda`] object to copy.
+#' @param options A list containing Andromeda options. Currently the only supported option is 'threads'.
+#'     Setting `options = list(threads = 10)` will set the database used by Andromeda to use 10 threads.
 #'
 #' @description
 #' Creates a complete copy of an [`Andromeda`] object. Object attributes are not copied.
@@ -319,7 +321,10 @@ setMethod("names", "Andromeda", function(x) {
   }
 })
 
-# TODO : add 'names<-.Andromeda'
+#' @rdname
+#' Andromeda-class
+#' 
+#' @export
 setMethod("names<-", "Andromeda", function(x) {
   rlang::abort("Andromeda table names cannot be changed using `names(x) <- c()`.")
 })

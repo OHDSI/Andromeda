@@ -30,7 +30,7 @@
 #' @description
 #' Saves the [`Andromeda`] object in a zipped file. Note that by default the [`Andromeda`] object is
 #' automatically closed by saving it to disk. This is due to a limitation of the underlying technology
-#' ('RSQLite'). To keep the connection open, use `maintainConnection = TRUE`. This will first
+#' ('duckdb'). To keep the connection open, use `maintainConnection = TRUE`. This will first
 #' create a temporary copy of the [`Andromeda`] object. Note that this can be substantially slower.
 #'
 #' @return 
@@ -96,6 +96,8 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
 #' Load Andromeda from file
 #'
 #' @param fileName   The path where the object was saved using [`saveAndromeda()`].
+#' @param options A list containing Andromeda options. Currently the only supported option is 'threads'.
+#'    Setting `options = list(threads = 10)` will set the database used by Andromeda to use 10 threads.
 #'
 #' @seealso
 #' [`saveAndromeda()`]

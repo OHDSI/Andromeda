@@ -4,10 +4,13 @@
 \alias{loadAndromeda}
 \title{Load Andromeda from file}
 \usage{
-loadAndromeda(fileName)
+loadAndromeda(fileName, options = list())
 }
 \arguments{
 \item{fileName}{The path where the object was saved using \code{\link[=saveAndromeda]{saveAndromeda()}}.}
+
+\item{options}{A list containing Andromeda options. Currently the only supported option is 'threads'.
+Setting \code{options = list(threads = 10)} will set the database used by Andromeda to use 10 threads.}
 }
 \value{
 An \code{\link{Andromeda}} object.

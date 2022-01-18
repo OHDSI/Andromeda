@@ -4,10 +4,13 @@
 \alias{copyAndromeda}
 \title{Copy Andromeda}
 \usage{
-copyAndromeda(andromeda)
+copyAndromeda(andromeda, options = list())
 }
 \arguments{
 \item{andromeda}{The \code{\link{Andromeda}} object to copy.}
+
+\item{options}{A list containing Andromeda options. Currently the only supported option is 'threads'.
+Setting \code{options = list(threads = 10)} will set the database used by Andromeda to use 10 threads.}
 }
 \value{
 The copied \code{\link{Andromeda}} object.
