@@ -291,12 +291,91 @@ setMethod("[[", "Andromeda", function(x, i) {
 #' 
 #' @export
 setMethod("names", "Andromeda", function(x) {
-  if (RSQLite::dbIsValid(x)) {
-    return(RSQLite::dbListTables(x))
-  }
+  checkIfValid(x)
+  RSQLite::dbListTables(x)
 })
 
-# TODO : add 'names<-.Andromeda'
+#' Set table names in an Andromeda object
+#' 
+#' names(andromedaObject) must be set to a character vector with length equal to the number of
+#' tables in the andromeda object (i.e. length(andromedaObject)). The user is 
+#' responsible for setting valid table names (e.g. not using SQL keywords or numbers as names)
+#' This function treats Andromeda table names as case insensitive so if the only difference 
+#' between the new names and old names is the case then the names will not be changed.
+#'
+#' @param x An Andromeda object
+#' @param value A character vector with the same length as the number of tables in x
+#'
+#' @export
+#'
+#' @examples
+#' andr <- andromeda(cars = cars, iris = iris)
+#' names(andr) <- c("CARS", "IRIS")
+#' names(andr)
+#' # [1] "CARS" "IRIS"
+#' close(andr)
+#' 
+setMethod("names<-", "Andromeda", function(x, value) {
+  checkIfValid(x)
+  nm <- names(x)
+  if(!is.character(value) || !(length(nm) == length(value))) {
+    rlang::abort("New names must be a character vector with the same length as names(x).")
+  }
+  
+  idx <- nm != value
+  if (any(idx)) {
+    sql <- sprintf("ALTER TABLE %s RENAME TO %s;", nm[idx], value[idx])
+    lapply(sql, function(statement) DBI::dbExecute(x, statement))
+  }
+  invisible(x)
+})
+
+
+#' Get the column names of an Andromeda table
+#'
+#' @param tbl An table in an Andromeda object
+#'
+#' @return A character vector of column names
+#' @export
+#'
+#' @examples
+#' andr <- andromeda(cars = cars)
+#' names(andr$cars)
+#' [1] "speed" "dist"
+#' 
+names.tbl_Andromeda <- function(tbl) {
+  colnames(tbl)
+}
+
+#' Set column names of an Andromeda table
+#'
+#' @param x A reference to a table in an andromeda object. (see examples)
+#' @param value A character vector of new names that must have length equat to the number of columns in the table.
+#'
+#' @export
+#'
+#' @examples
+#' andr <- andromeda(cars = cars)
+#' names(andr$cars) <- toupper(names(andr$cars))
+#' names(andr$cars)
+#' [1] "SPEED" "DIST" 
+#' close(andr)
+"names<-.tbl_Andromeda" <- function(x, value) {
+  tableName <- dbplyr::remote_name(x)
+  connection <- dbplyr::remote_con(x)
+  nm <- names(x)
+  if(!is.character(value) || !(length(nm) == length(value))) {
+    rlang::abort("New names must be a character vector with the same length as names(x).")
+  }
+  
+  idx <- nm != value
+  if (any(idx)) {
+    sql <- sprintf("ALTER TABLE %s RENAME COLUMN %s TO %s;", tableName, nm[idx], value[idx])
+    lapply(sql, function(statement) DBI::dbExecute(connection, statement))
+  }
+  invisible(x)
+}
+
 
 #' @param x    An [`Andromeda`] object.
 #' @export
@@ -344,6 +423,7 @@ isAndromeda <- function(x) {
 #'
 #' @export
 isValidAndromeda <- function(x) {
+  if(!isAndromeda(x)) rlang::abort(paste(deparse(substitute(x)), "is not an Andromeda object."))
   return(RSQLite::dbIsValid(x))
 }
 

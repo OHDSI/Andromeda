@@ -6,7 +6,7 @@ test_that("Object creation", {
   expect_true(isValidAndromeda(andromeda))
 
   close(andromeda)
-  expect_null(names(andromeda))
+  expect_error(names(andromeda), "no longer valid")
   expect_true(isAndromeda(andromeda))
   expect_false(isValidAndromeda(andromeda))
 
@@ -163,3 +163,23 @@ test_that("Warning when disk space low", {
 test_that("The only cached class is Andromeda", {
   expect_true(setequal(getClasses(asNamespace("Andromeda"), inherits = F), "Andromeda"))
 })
+
+test_that("Get/set Andromeda table/column names works.", {
+  andr <- andromeda()
+  expect_length(names(andr), 0L)
+  
+  andr$cars <- cars
+  andr[["iris"]] <- iris
+  expect_equal(names(andr), c("cars", "iris"))
+  
+  names(andr) <- c("cars", "table2")
+  expect_equal(names(andr), c("cars", "table2"))
+  
+  expect_equal(colnames(andr$cars), names(cars))
+  
+  names(andr$cars) <- c("col1", "col2")
+  expect_equal(names(andr$cars), c("col1", "col2"))
+  
+  close(andr)
+})
+
