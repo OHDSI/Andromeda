@@ -338,7 +338,7 @@ setMethod("names<-", "Andromeda", function(x, value) {
 
 #' Get the column names of an Andromeda table
 #'
-#' @param tbl An table in an Andromeda object
+#' @param x An table in an Andromeda object
 #'
 #' @return A character vector of column names
 #' @export
@@ -346,10 +346,10 @@ setMethod("names<-", "Andromeda", function(x, value) {
 #' @examples
 #' andr <- andromeda(cars = cars)
 #' names(andr$cars)
-#' [1] "speed" "dist"
-#' 
-names.tbl_Andromeda <- function(tbl) {
-  colnames(tbl)
+#' # [1] "speed" "dist"
+#' close(andr)
+names.tbl_Andromeda <- function(x) {
+  colnames(x)
 }
 
 #' Set column names of an Andromeda table
@@ -363,7 +363,7 @@ names.tbl_Andromeda <- function(tbl) {
 #' andr <- andromeda(cars = cars)
 #' names(andr$cars) <- toupper(names(andr$cars))
 #' names(andr$cars)
-#' [1] "SPEED" "DIST" 
+#' # [1] "SPEED" "DIST" 
 #' close(andr)
 "names<-.tbl_Andromeda" <- function(x, value) {
   tableName <- dbplyr::remote_name(x)
