@@ -34,7 +34,8 @@ Suggests:
   knitr,
   rmarkdown,
   tibble,
-  rJava
+  rJava,
+  rcmdcheck
 LazyData: false
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
