@@ -4,10 +4,10 @@
 \alias{names.tbl_Andromeda}
 \title{Get the column names of an Andromeda table}
 \usage{
-\method{names}{tbl_Andromeda}(tbl)
+\method{names}{tbl_Andromeda}(x)
 }
 \arguments{
-\item{tbl}{An table in an Andromeda object}
+\item{x}{An table in an Andromeda object}
 }
 \value{
 A character vector of column names
@@ -18,6 +18,6 @@ Get the column names of an Andromeda table
 \examples{
 andr <- andromeda(cars = cars)
 names(andr$cars)
-[1] "speed" "dist"
-
+# [1] "speed" "dist"
+close(andr)
 }

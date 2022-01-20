@@ -18,6 +18,6 @@ Set column names of an Andromeda table
 andr <- andromeda(cars = cars)
 names(andr$cars) <- toupper(names(andr$cars))
 names(andr$cars)
-[1] "SPEED" "DIST" 
+# [1] "SPEED" "DIST" 
 close(andr)
 }
