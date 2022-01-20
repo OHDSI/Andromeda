@@ -175,10 +175,13 @@ test_that("Get/set Andromeda table/column names works.", {
   names(andr) <- c("cars", "table2")
   expect_equal(names(andr), c("cars", "table2"))
   
-  expect_equal(colnames(andr$cars), names(cars))
+  names(andr) <- toupper(names(andr))
+  expect_equal(names(andr), c("CARS", "TABLE2"))
   
-  names(andr$cars) <- c("col1", "col2")
-  expect_equal(names(andr$cars), c("col1", "col2"))
+  expect_equal(colnames(andr$CARS), names(cars))
+  
+  names(andr$CARS) <- c("col1", "col2")
+  expect_equal(names(andr$CARS), c("col1", "col2"))
   
   close(andr)
 })

@@ -322,20 +322,16 @@ setMethod("names<-", "Andromeda", function(x, value) {
     rlang::abort("New names must be a character vector with the same length as names(x).")
   }
   
-  # Handle case where names differ only by case
-  idx <- (nm != value) & (tolower(nm) == tolower(value))
-  if (any(idx)) {
-    sql1 <- sprintf("ALTER TABLE %s RENAME TO %s;", nm[idx], paste0(nm[idx], "0"))
-    sql2 <- sprintf("ALTER TABLE %s RENAME TO %s;", paste0(nm[idx], "0"), value[idx])
-    lapply(c(sql1, sql2), function(statement) DBI::dbExecute(x, statement))
-    nm <- names(x)
+  for(i in seq_along(nm)) {
+    if((nm[i] != value[i]) & (tolower(nm[i]) == tolower(value[i]))) {
+      # Handle case when names differ only by case
+      DBI::dbExecute(x, sprintf("ALTER TABLE %s RENAME TO %s;", nm[i], paste0(nm[i], "0")))
+      DBI::dbExecute(x, sprintf("ALTER TABLE %s RENAME TO %s;", paste0(nm[i], "0"), value[i]))
+    } else if(nm[i] != value[i]) {
+      DBI::dbExecute(x, sprintf("ALTER TABLE %s RENAME TO %s;", nm[i], value[i]))
+    }
   }
   
-  idx <- nm != value
-  if (any(idx)) {
-    sql <- sprintf("ALTER TABLE %s RENAME TO %s;", nm[idx], value[idx])
-    lapply(sql, function(statement) DBI::dbExecute(x, statement))
-  }
   invisible(x)
 })
 
