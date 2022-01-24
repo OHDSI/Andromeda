@@ -117,6 +117,7 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
 #' unlink(fileName)
 #'
 #' @export
+#' @import hms
 loadAndromeda <- function(fileName) {
   if (!file.exists(fileName)) {
     abort(sprintf("File %s does not exist", fileName))

@@ -13,7 +13,7 @@ restorePosixct(x)
 A vector of type \code{POSIXct}.
 }
 \description{
-This function has been deprecated since Andromeda v0.5 preserves POSIXct datetimes.
+Restores datetimes that were converted by Andromeda to numeric values back to datetimes.
 }
 \examples{
 myData <- data.frame(startTime = as.POSIXct(c("2000-01-01 10:00", 
