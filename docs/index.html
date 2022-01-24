@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,14 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="reference/index.html">Reference</a>
-</li>
-<li>
-  <a href="news/index.html">Changelog</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -61,13 +54,16 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://ohdsi.github.io/Hades">hadesLogo</a>
+  <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
 </li>
 <li>
-  <a href="https://github.com/OHDSI/Andromeda/">
+  <a href="https://github.com/OHDSI/Andromeda/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -85,102 +81,102 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
-<div id="andromeda" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#andromeda" class="anchor"></a>Andromeda</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="andromeda">Andromeda<a class="anchor" aria-label="anchor" href="#andromeda"></a>
+</h1></div>
 
-<p>Andromeda is part of <a href="https://ohdsi.github.io/Hades/">HADES</a>.</p>
+<p>Andromeda is part of <a href="https://ohdsi.github.io/Hades/" class="external-link">HADES</a>.</p>
 </div>
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
+<div class="section level1">
+<h1 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h1>
 <p>AsynchroNous Disk-based Representation of MassivE DAta (ANDROMEDA): An R package for storing large data objects. Andromeda allow storing data objects on a local drive, while still making it possible to manipulate the data in an efficient manner.</p>
 </div>
-<div id="features" class="section level1">
-<h1 class="hasAnchor">
-<a href="#features" class="anchor"></a>Features</h1>
+<div class="section level1">
+<h1 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
+</h1>
 <ul>
 <li>Allows storage of data objects much larger than what can fit in memory.</li>
-<li>Integrates with <a href="https://dplyr.tidyverse.org/">dplyr package</a> for data manipulation.</li>
+<li>Integrates with <a href="https://dplyr.tidyverse.org/" class="external-link">dplyr package</a> for data manipulation.</li>
 <li>Objects are stored in a temporary location on the local file system.</li>
 <li>Ability to save and load the objects to a compressed file in a permanent location on the local file system.</li>
 </ul>
 </div>
-<div id="examples" class="section level1">
-<h1 class="hasAnchor">
-<a href="#examples" class="anchor"></a>Examples</h1>
+<div class="section level1">
+<h1 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h1>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ohdsi.github.io/Andromeda/">Andromeda</a></span><span class="op">)</span>
-<span class="va">bigData</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/andromeda.html">andromeda</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/OHDSI/Andromeda" class="external-link">Andromeda</a></span><span class="op">)</span>
+<span class="va">bigData</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/andromeda_constructor.html">andromeda</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="co"># Add some 'big' data:</span>
 <span class="va">bigData</span><span class="op">$</span><span class="va">cars</span> <span class="op">&lt;-</span> <span class="va">cars</span>
 
 <span class="co"># Manipulate using dplyr:</span>
-<span class="va">bigData</span><span class="op">$</span><span class="va">cars</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">count</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">collect</span><span class="op">(</span><span class="op">)</span>
+<span class="va">bigData</span><span class="op">$</span><span class="va">cars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co"># # A tibble: 1 x 1</span>
 <span class="co">#       n</span>
 <span class="co">#   &lt;int&gt;</span>
 <span class="co"># 1    41</span>
 
 <span class="fu"><a href="reference/saveAndromeda.html">saveAndromeda</a></span><span class="op">(</span><span class="va">bigData</span>, <span class="st">"bigData.zip"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span><span class="op">(</span><span class="va">bigData</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">bigData</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="technology" class="section level1">
-<h1 class="hasAnchor">
-<a href="#technology" class="anchor"></a>Technology</h1>
+<div class="section level1">
+<h1 id="technology">Technology<a class="anchor" aria-label="anchor" href="#technology"></a>
+</h1>
 <p>The Andromeda package is an R package wrapped around RSQLite.</p>
 </div>
-<div id="system-requirements" class="section level1">
-<h1 class="hasAnchor">
-<a href="#system-requirements" class="anchor"></a>System Requirements</h1>
+<div class="section level1">
+<h1 id="system-requirements">System Requirements<a class="anchor" aria-label="anchor" href="#system-requirements"></a>
+</h1>
 <p>Running the package requires R.</p>
 </div>
-<div id="installation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h1>
+<div class="section level1">
+<h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h1>
 <p>To install the latest development version, install from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"ohdsi/Andromeda"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ohdsi/Andromeda"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="user-documentation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#user-documentation" class="anchor"></a>User Documentation</h1>
-<p>Documentation can be found on the <a href="https://ohdsi.github.io/Andromeda/">package website</a>.</p>
+<div class="section level1">
+<h1 id="user-documentation">User Documentation<a class="anchor" aria-label="anchor" href="#user-documentation"></a>
+</h1>
+<p>Documentation can be found on the <a href="https://ohdsi.github.io/Andromeda/" class="external-link">package website</a>.</p>
 <ul>
-<li>Vignette: <a href="https://ohdsi.github.io/Andromeda/articles/UsingAndromeda.html">Using Andromeda</a>
+<li>Vignette: <a href="https://ohdsi.github.io/Andromeda/articles/UsingAndromeda.html" class="external-link">Using Andromeda</a>
 </li>
-<li>Package manual: <a href="https://ohdsi.github.io/Andromeda/reference/index.html">Andromeda manual</a>
+<li>Package manual: <a href="https://ohdsi.github.io/Andromeda/reference/index.html" class="external-link">Andromeda manual</a>
 </li>
 </ul>
 </div>
-<div id="support" class="section level1">
-<h1 class="hasAnchor">
-<a href="#support" class="anchor"></a>Support</h1>
+<div class="section level1">
+<h1 id="support">Support<a class="anchor" aria-label="anchor" href="#support"></a>
+</h1>
 <ul>
-<li>Developer questions/comments/feedback: <a href="http://forums.ohdsi.org/c/developers">OHDSI Forum</a>
+<li>Developer questions/comments/feedback: <a href="http://forums.ohdsi.org/c/developers" class="external-link">OHDSI Forum</a>
 </li>
-<li>We use the <a href="https://github.com/OHDSI/Andromeda/issues">GitHub issue tracker</a> for all bugs/issues/enhancements</li>
+<li>We use the <a href="https://github.com/OHDSI/Andromeda/issues" class="external-link">GitHub issue tracker</a> for all bugs/issues/enhancements</li>
 </ul>
 </div>
-<div id="contributing" class="section level1">
-<h1 class="hasAnchor">
-<a href="#contributing" class="anchor"></a>Contributing</h1>
-<p>Read <a href="https://ohdsi.github.io/Hades/contribute.html">here</a> how you can contribute to this package.</p>
+<div class="section level1">
+<h1 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
+</h1>
+<p>Read <a href="https://ohdsi.github.io/Hades/contribute.html" class="external-link">here</a> how you can contribute to this package.</p>
 </div>
-<div id="license" class="section level1">
-<h1 class="hasAnchor">
-<a href="#license" class="anchor"></a>License</h1>
+<div class="section level1">
+<h1 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+</h1>
 <p>Andromeda is licensed under Apache License 2.0</p>
 </div>
-<div id="development" class="section level1">
-<h1 class="hasAnchor">
-<a href="#development" class="anchor"></a>Development</h1>
+<div class="section level1">
+<h1 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
+</h1>
 <p>Andromeda is being developed in R Studio.</p>
-<div id="development-status" class="section level3">
-<h3 class="hasAnchor">
-<a href="#development-status" class="anchor"></a>Development status</h3>
+<div class="section level3">
+<h3 id="development-status">Development status<a class="anchor" aria-label="anchor" href="#development-status"></a>
+</h3>
 <p>Beta. Use at your own risk.</p>
 </div>
 </div>
@@ -189,53 +185,62 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=Andromeda">https://​cloud.r-project.org/​package=Andromeda</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/OHDSI/Andromeda/">https://​github.com/​OHDSI/​Andromeda/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/OHDSI/Andromeda/issues">https://​github.com/​OHDSI/​Andromeda/​issues</a>
-</li>
-<li>Ask a question at <br><a href="http://forums.ohdsi.org">http://​forums.ohdsi.org</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=Andromeda" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/OHDSI/Andromeda/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/OHDSI/Andromeda/issues" class="external-link">Report a bug</a></li>
+<li><a href="http://forums.ohdsi.org" class="external-link">Ask a question</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>Apache License 2.0</li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing Andromeda</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Adam Black <br><small class="roles"> Author, maintainer </small>  </li>
 <li>Martijn Schuemie <br><small class="roles"> Author </small>  </li>
 <li>Marc A. Suchard <br><small class="roles"> Author </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/OHDSI/Andromeda/actions?query=workflow%3AR-CMD-check"><img src="https://github.com/OHDSI/Andromeda/workflows/R-CMD-check/badge.svg" alt="Build Status"></a></li>
-<li><a href="https://codecov.io/github/OHDSI/Andromeda?branch=master"><img src="https://codecov.io/github/OHDSI/Andromeda/coverage.svg?branch=master" alt="codecov.io"></a></li>
-<li><a href="https://cran.r-project.org/package=Andromeda"><img src="http://www.r-pkg.org/badges/version/Andromeda" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://cran.r-project.org/package=Andromeda"><img src="http://cranlogs.r-pkg.org/badges/Andromeda" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://github.com/OHDSI/Andromeda/actions?query=workflow%3AR-CMD-check" class="external-link"><img src="https://github.com/OHDSI/Andromeda/workflows/R-CMD-check/badge.svg" alt="Build Status"></a></li>
+<li><a href="https://codecov.io/github/OHDSI/Andromeda?branch=main" class="external-link"><img src="https://codecov.io/github/OHDSI/Andromeda/coverage.svg?branch=main" alt="codecov.io"></a></li>
+<li><a href="https://cran.r-project.org/package=Andromeda" class="external-link"><img src="http://www.r-pkg.org/badges/version/Andromeda" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://cran.r-project.org/package=Andromeda" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/Andromeda" alt="CRAN_Status_Badge"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Adam Black, Martijn Schuemie, Marc A. Suchard.</p>
+  <p></p>
+<p>Developed by Adam Black, Martijn Schuemie, Marc A. Suchard.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -243,6 +248,8 @@
 
   
 
+
+  
 
   </body>
 </html>
