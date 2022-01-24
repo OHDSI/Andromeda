@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{A reference to a table in an andromeda object. (see examples)}
 
-\item{value}{A character vector of new names that must have length equat to the number of columns in the table.}
+\item{value}{A character vector of new names that must have length equal to the number of columns in the table.}
 }
 \description{
 Set column names of an Andromeda table

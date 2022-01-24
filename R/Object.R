@@ -355,7 +355,7 @@ names.tbl_Andromeda <- function(x) {
 #' Set column names of an Andromeda table
 #'
 #' @param x A reference to a table in an andromeda object. (see examples)
-#' @param value A character vector of new names that must have length equat to the number of columns in the table.
+#' @param value A character vector of new names that must have length equal to the number of columns in the table.
 #'
 #' @export
 #'
