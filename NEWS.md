@@ -1,3 +1,12 @@
+Andromeda 0.6.0
+===============
+
+Changes
+
+- Provide methods to get and set Andromeda table names using the `names` and `names<-` generic functions.
+- Provide methods to get and set Andromeda table column names using the `names` and `names<-` generic functions.
+
+
 Andromeda 0.5.0
 ===============
 
