@@ -248,6 +248,42 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
   }
 }
 
+#' Check that Andromeda temp folder 
+#' 
+#' Checks that the Andromeda temp folder exists, is writable, and optionally has a minimum required amount of available disk space.
+#' The Andromeda temp folder is the location where Andromeda objects are stored. 
+#'
+#' @param minimumSize (Optional) The minimum required number of available bytes for the Andromeda temp folder.
+#'
+#' @return This function is not called for its return value. 
+#' @export
+#'
+#' @examples
+#' # Check that the Andromeda temp folder has at least 10GB. 
+#' checkTempFolder(minimumSize = 10*1024^3)
+checkAndromedaTempFolder <- function(minimumSize) {
+  folder <- .getAndromedaTempFolder()
+  if(!file.exists(folder)) 
+    rlang::abort(paste("Andromeda temp folder", folder, "does not exist.\nSet option andromedaTempFolder to a writatble file location."))
+  
+  tryCatch({a <- andromeda(df = data.frame(test = "test"))},
+           error = function(e) rlang::abort("Andromeda temp folder is not writable."),
+           finally = close(a))
+  
+  a <- andromeda(df = data.frame(test = "test"))
+  on.exit(close(a), add = TRUE)
+  if (!missing(minimumSize)) {
+    if (!.isInstalled("rJava")) rlang::abort("rJava is required to check minimum size of Andromeda temp folder but is not installed.")
+    tempSpace <- getAndromedaTempDiskSpace(a)
+    if (is.na(tempSpace)) rlang::abort("Error getting temp disk space with `getAndromedaTempDiskSpace`")
+    if (tempSpace <  minimumSize) {
+      rlang::abort(paste("Andromeda temp location has less available space than minimum required size.", 
+                         "\navailable space:", getAndromedaTempDiskSpace(a), "bytes", 
+                         "\nminimumSize:", minimumSize, "bytes\n"))
+    }
+  }
+}
+
 .isInstalled <- function(pkg) {
   installedVersion <- tryCatch(utils::packageVersion(pkg), 
                                error = function(e) NA)

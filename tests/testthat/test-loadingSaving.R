@@ -92,6 +92,13 @@ test_that("getAndromedaTempDiskSpace works", {
   expect_error(getAndromedaTempDiskSpace(cars), "Andromeda argument must be of type 'Andromeda'")
 })
 
+test_that("checkAndromedaTempFolder works", {
+  expect_error(checkAndromedaTempFolder(), NA)
+  expect_error(checkAndromedaTempFolder(100), NA)
+  
+  expect_error(checkAndromedaTempFolder(10000*1024^3), "space")
+})
+
 
 # test_that(".checkAvailableSpace works", {
 #   space <- getAndromedaTempDiskSpace()
