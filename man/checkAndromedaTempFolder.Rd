@@ -7,7 +7,7 @@
 checkAndromedaTempFolder(minimumSize)
 }
 \arguments{
-\item{minimumSize}{(Optional) The minimum required number of available bytes for the Andromeda temp folder.}
+\item{minimumSize}{(Optional) The minimum required number of available gigabytes for the Andromeda temp folder.}
 }
 \value{
 This function is not called for its return value.
@@ -18,5 +18,5 @@ The Andromeda temp folder is the location where Andromeda objects are stored.
 }
 \examples{
 # Check that the Andromeda temp folder has at least 10GB. 
-checkTempFolder(minimumSize = 10*1024^3)
+checkTempFolder(minimumSize = 10)
 }

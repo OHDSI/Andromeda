@@ -12,7 +12,7 @@ space. Normally all \link{Andromeda} objects use the same temp folder, but the u
 could have altered it.}
 }
 \value{
-The number of bytes of available disk space in the Andromeda temp folder. Returns NA
+The number of gigabytes of available disk space in the Andromeda temp folder. Returns NA
 if unable to determine the amount of available disk space, for example because \code{rJava}
 is not installed, or because the user doesn't have the rights to query the available
 disk space.
@@ -27,7 +27,7 @@ can be altered using \code{options(andromedaTempFolder = "c:/andromedaTemp")}, w
 }
 \examples{
 # Get the number of available gigabytes:
-getAndromedaTempDiskSpace() / 1024^3
+getAndromedaTempDiskSpace()
 #123.456
 
 }
