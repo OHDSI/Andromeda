@@ -160,7 +160,7 @@ loadAndromeda <- function(fileName) {
   if (.isInstalled("rJava")) {
     warnDiskSpace <- getOption("warnDiskSpaceThreshold")
     if (is.null(warnDiskSpace)) {
-      warnDiskSpace <- 10 * 1024 ^ 3
+      warnDiskSpace <- 10 
     }
     if (warnDiskSpace != 0) {
       if (is.null(andromeda)) {
@@ -181,10 +181,10 @@ loadAndromeda <- function(fileName) {
       if (!is.na(space) && space < warnDiskSpace) {
         message <- sprintf("Low disk space in '%s'. Only %0.1f GB left.", 
                            folder, 
-                           space / 1024^3)
+                           space)
         
         message <- c(message, 
-                     pillar::style_subtle("Use options(warnDiskSpaceThreshold = <n>) to set the number of bytes for this warning to trigger."))
+                     pillar::style_subtle("Use options(warnDiskSpaceThreshold = <n>) to set the number of gigabytes for this warning to trigger."))
         message <- c(message, 
                      pillar::style_subtle("This warning will not be shown for this file location again during this R session."))
         
@@ -210,14 +210,14 @@ loadAndromeda <- function(fileName) {
 #'                   could have altered it. 
 #'
 #' @return
-#' The number of bytes of available disk space in the Andromeda temp folder. Returns NA
+#' The number of gigabytes of available disk space in the Andromeda temp folder. Returns NA
 #' if unable to determine the amount of available disk space, for example because `rJava` 
 #' is not installed, or because the user doesn't have the rights to query the available 
 #' disk space.
 #'
 #' @examples
 #' # Get the number of available gigabytes:
-#' getAndromedaTempDiskSpace() / 1024^3
+#' getAndromedaTempDiskSpace()
 #' #123.456
 #' 
 #' @export
@@ -244,6 +244,7 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
       # fileStore <- rJava::J("java.nio.file.Files")$getFileStore(path)
       # fileStore$getUsableSpace()
     }, error = function(e) NA)
+    space <- round(space/(1000^3), digits = 2)
     return(space)
   }
 }
@@ -253,14 +254,14 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
 #' Checks that the Andromeda temp folder exists, is writable, and optionally has a minimum required amount of available disk space.
 #' The Andromeda temp folder is the location where Andromeda objects are stored. 
 #'
-#' @param minimumSize (Optional) The minimum required number of available bytes for the Andromeda temp folder.
+#' @param minimumSize (Optional) The minimum required number of available gigabytes for the Andromeda temp folder.
 #'
 #' @return This function is not called for its return value. 
 #' @export
 #'
 #' @examples
 #' # Check that the Andromeda temp folder has at least 10GB. 
-#' checkTempFolder(minimumSize = 10*1024^3)
+#' checkTempFolder(minimumSize = 10)
 checkAndromedaTempFolder <- function(minimumSize) {
   folder <- .getAndromedaTempFolder()
   if(!file.exists(folder)) 
@@ -278,8 +279,8 @@ checkAndromedaTempFolder <- function(minimumSize) {
     if (is.na(tempSpace)) rlang::abort("Error getting temp disk space with `getAndromedaTempDiskSpace`")
     if (tempSpace <  minimumSize) {
       rlang::abort(paste("Andromeda temp location has less available space than minimum required size.", 
-                         "\navailable space:", getAndromedaTempDiskSpace(a), "bytes", 
-                         "\nminimumSize:", minimumSize, "bytes\n"))
+                         "\navailable space:", getAndromedaTempDiskSpace(a), "gigabytes", 
+                         "\nminimumSize:", minimumSize, "gigabytes\n"))
     }
   }
 }

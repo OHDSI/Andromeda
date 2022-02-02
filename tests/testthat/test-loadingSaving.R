@@ -94,9 +94,9 @@ test_that("getAndromedaTempDiskSpace works", {
 
 test_that("checkAndromedaTempFolder works", {
   expect_error(checkAndromedaTempFolder(), NA)
-  expect_error(checkAndromedaTempFolder(100), NA)
+  expect_error(checkAndromedaTempFolder(1), NA)
   
-  expect_error(checkAndromedaTempFolder(10000*1024^3), "space")
+  expect_error(checkAndromedaTempFolder(10000), "space")
 })
 
 
