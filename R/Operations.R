@@ -213,12 +213,12 @@ groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, progres
 appendToTable <- function(tbl, data) {
   if (!inherits(tbl, "tbl_dbi"))
     abort("First argument must be an Andromeda table")
-  if (!inherits(tbl$ops, "op_base_remote"))
+  tableName <- as.character(dbplyr::remote_name(tbl))
+  if (is.null(tableName))
     abort("First argument must be a base table (cannot be a query result)")
-  
+
   connection <- dbplyr::remote_con(tbl)
   .checkAvailableSpace(connection)
-  tableName <- as.character(dbplyr::remote_name(tbl))
   if (inherits(data, "data.frame")) {
     
     RSQLite::dbWriteTable(conn = connection,
