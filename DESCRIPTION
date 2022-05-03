@@ -1,8 +1,8 @@
 Package: Andromeda
 Type: Package
 Title: Asynchronous Disk-Based Representation of Massive Data
-Version: 0.6.0
-Date: 2022-01-24
+Version: 1.0.0
+Date: 2022-05-03
 Authors@R: c(
   person("Adam", "Black", , "black@ohdsi.org", role = c("aut", "cre")),
   person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut")),
@@ -18,16 +18,13 @@ BugReports: https://github.com/OHDSI/Andromeda/issues
 Depends:
   dplyr
 Imports:
-    RSQLite,
-    DBI,
+    arrow,
     zip,
-    methods,
     dbplyr,
-    tidyselect,
     cli,
     rlang,
     pillar,
-    hms
+    magrittr
 Suggests:
   testthat,
   stringr,

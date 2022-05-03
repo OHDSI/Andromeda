@@ -4,33 +4,23 @@
 \alias{saveAndromeda}
 \title{Save Andromeda to file}
 \usage{
-saveAndromeda(
-  andromeda,
-  fileName,
-  maintainConnection = FALSE,
-  overwrite = TRUE
-)
+saveAndromeda(andromeda, fileName, overwrite = TRUE)
 }
 \arguments{
 \item{andromeda}{An object of class \code{\link{Andromeda}}.}
 
 \item{fileName}{The path where the object will be written.}
 
-\item{maintainConnection}{Should the connection be maintained after saving? If \code{FALSE}, the
-Andromeda object will be invalid after this operation, but saving will
-be faster.}
-
 \item{overwrite}{If the file exists, should it be overwritten? If \code{FALSE} and the file
 exists, an error will be thrown.}
 }
 \value{
-Returns no value. Executed for the side-effect of saving the object to disk.
+Invisibly returns the andromeda object being saved.
 }
 \description{
-Saves the \code{\link{Andromeda}} object in a zipped file. Note that by default the \code{\link{Andromeda}} object is
-automatically closed by saving it to disk. This is due to a limitation of the underlying technology
-('RSQLite'). To keep the connection open, use \code{maintainConnection = TRUE}. This will first
-create a temporary copy of the \code{\link{Andromeda}} object. Note that this can be substantially slower.
+Saves the \code{\link{Andromeda}} object in a zipped file.
+Each dataset is represented as a folder contiaining one or more feather files.
+User defined attributes are saved to a json file.
 }
 \examples{
 andr <- andromeda(cars = cars)

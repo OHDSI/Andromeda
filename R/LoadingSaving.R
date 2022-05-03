@@ -18,9 +18,6 @@
 #'
 #' @param andromeda            An object of class [`Andromeda`].
 #' @param fileName             The path where the object will be written.
-#' @param maintainConnection   Should the connection be maintained after saving? If `FALSE`, the
-#'                             Andromeda object will be invalid after this operation, but saving will
-#'                             be faster.
 #' @param overwrite            If the file exists, should it be overwritten? If `FALSE` and the file
 #'                             exists, an error will be thrown.
 #'
@@ -28,13 +25,12 @@
 #' \code{\link{loadAndromeda}}
 #'
 #' @description
-#' Saves the [`Andromeda`] object in a zipped file. Note that by default the [`Andromeda`] object is
-#' automatically closed by saving it to disk. This is due to a limitation of the underlying technology
-#' ('RSQLite'). To keep the connection open, use `maintainConnection = TRUE`. This will first
-#' create a temporary copy of the [`Andromeda`] object. Note that this can be substantially slower.
+#' Saves the [`Andromeda`] object in a zipped file.
+#' Each dataset is represented as a folder contiaining one or more feather files.
+#' User defined attributes are saved to a json file.
 #'
 #' @return 
-#' Returns no value. Executed for the side-effect of saving the object to disk.
+#' Invisibly returns the andromeda object being saved.
 #'
 #' @examples
 #' andr <- andromeda(cars = cars)
@@ -51,13 +47,9 @@
 #' [`loadAndromeda()`]
 #'
 #' @export
-saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overwrite = TRUE) {
+saveAndromeda <- function(andromeda, fileName, overwrite = TRUE) {
   if (!overwrite && file.exists(fileName)) {
     abort(sprintf("File %s already exists, and overwrite = FALSE", fileName))
-  }
-  
-  if (!isValidAndromeda(andromeda)) {
-    abort("andromeda object is closed or not valid.")
   }
   
   fileName <- path.expand(fileName)
@@ -67,32 +59,19 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
   
   # Need to save any user-defined attributes as well:
   attribs <- attributes(andromeda)
-  for (name in slotNames(andromeda)) {
-    attribs[[name]] <- NULL
-  }
-  attribs[["class"]] <- NULL
+  attribs[["class"]] <- attribs[["path"]] <- attribs[["names"]] <- NULL
+  attributesFileName <- file.path(tempdir(), "user-defined-attributes.json")
+  jsonlite::write_json(attribs, attributesFileName)
   
-  attributesFileName <- tempfile(fileext = ".rds")
-  saveRDS(attribs, attributesFileName)
-  
-  if (maintainConnection) {
-    # Can't zip while connected, so make copy:
-    tempFileName <- tempfile(fileext = ".sqlite")
-    RSQLite::sqliteCopyDatabase(andromeda, tempFileName)
-    zip::zipr(fileName, c(attributesFileName, tempFileName), compression_level = 2)
-    unlink(tempFileName)
-  } else {
-    RSQLite::dbDisconnect(andromeda)
-    zip::zipr(fileName, c(attributesFileName, andromeda@dbname), compression_level = 2)
-    unlink(andromeda@dbname)
-    inform("Disconnected Andromeda. This data object can no longer be used")
-  }
+  tableDirs <- list.dirs(attr(andromeda, "path"), recursive = FALSE)
+  zip::zipr(fileName, c(attributesFileName, tableDirs), compression_level = 2)
   unlink(attributesFileName)
+  invisible(andromeda)
 }
 
 #' Load Andromeda from file
 #'
-#' @param fileName   The path where the object was saved using [`saveAndromeda()`].
+#' @param fileName The path where the object was saved using [`saveAndromeda()`].
 #'
 #' @seealso
 #' [`saveAndromeda()`]
@@ -102,7 +81,7 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
 #'
 #' @examples
 #' # For this example we create an Andromeda object and save it to
-#' # a temporary file locationL
+#' # a temporary file location
 #' fileName <- tempfile()
 #' andr <- andromeda(cars = cars)
 #' saveAndromeda(andr, fileName)
@@ -110,88 +89,44 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
 #' # Using loadAndromeda to load the object back:
 #' andr <- loadAndromeda(fileName)
 #' 
-#' # Don't forget to close Andromeda when you are done:
-#' close(andr)
 #' 
 #' # Cleaning up the file used in this example:
 #' unlink(fileName)
 #'
 #' @export
-#' @import hms
 loadAndromeda <- function(fileName) {
-  if (!file.exists(fileName)) {
-    abort(sprintf("File %s does not exist", fileName))
-  }
+  if (!file.exists(fileName)) abort(sprintf("File %s does not exist", fileName))
+  
   fileNamesInZip <- utils::unzip(fileName, list = TRUE)$Name
-  sqliteFilenameInZip <- fileNamesInZip[grepl(".sqlite$", fileNamesInZip)]
-  rdsFilenameInZip <- fileNamesInZip[grepl(".rds$", fileNamesInZip)]
   
-  andromedaTempFolder <- .getAndromedaTempFolder()
-  .checkAvailableSpace()
+  andromeda <- .createAndromeda()
+  path <- attr(andromeda, "path")
+  zip::unzip(fileName, exdir = path)
   
-  # Unzip:
-  tempDir <- tempfile(tmpdir = andromedaTempFolder)
-  dir.create(tempDir)
-  on.exit(unlink(tempDir, recursive = TRUE))
-  zip::unzip(fileName, exdir = tempDir)
+  tableNames <- list.dirs(path, full.names = FALSE, recursive = FALSE)
   
-  # Rename unzipped files:
-  newFileName <- tempfile(tmpdir = andromedaTempFolder, fileext = ".sqlite")
-  file.rename(file.path(tempDir, sqliteFilenameInZip), newFileName)
-  attributes <- readRDS(file.path(tempDir, rdsFilenameInZip))
-  andromeda <- RSQLite::dbConnect(RSQLite::SQLite(), newFileName, extended_types = TRUE)
-  finalizer <- function(ptr) {
-    # Suppress R Check note:
-    missing(ptr)
-    close(andromeda)
+  for (nm in tableNames) {
+    andromeda[[nm]] <- arrow::open_dataset(file.path(path, nm), format = "feather")
   }
-  reg.finalizer(andromeda@ptr, finalizer, onexit = TRUE)
-  for (name in names(attributes)) {
-    attr(andromeda, name) <- attributes[[name]]
+  
+  attributes <- jsonlite::read_json(file.path(path, "user-defined-attributes.json"))
+  on.exit(unlink(file.path(path, "user-defined-attributes.json")))
+  for (nm in names(attributes)) {
+    attr(andromeda, nm) <- attributes[[nm]]
   }
-  RSQLite::dbExecute(andromeda, "PRAGMA journal_mode = OFF") 
-  RSQLite::dbExecute(andromeda, sprintf("PRAGMA temp_store_directory = '%s'", andromedaTempFolder)) 
-  class(andromeda) <- "Andromeda"
-  attr(class(andromeda), "package") <- "Andromeda"
   return(andromeda)
 }
 
 .checkAvailableSpace <- function(andromeda = NULL) {
-  if (.isInstalled("rJava")) {
-    warnDiskSpace <- getOption("warnDiskSpaceThreshold")
-    if (is.null(warnDiskSpace)) {
-      warnDiskSpace <- 10 
-    }
-    if (warnDiskSpace != 0) {
-      if (is.null(andromeda)) {
-        folder <- .getAndromedaTempFolder()
-      } else {
-        folder <- dirname(andromeda@dbname) 
-      }
-      if (exists("lowDiskWarnings", envir = andromedaGlobalEnv)) {
-        lowDiskWarnings <- get("lowDiskWarnings", envir = andromedaGlobalEnv)
-        if (folder %in% lowDiskWarnings) {
-          # Already warned about this location. Not warning again.
-          return()
-        }
-      } else {
-        lowDiskWarnings <- c()
-      }
-      space <- getAndromedaTempDiskSpace(andromeda)
-      if (!is.na(space) && space < warnDiskSpace) {
-        message <- sprintf("Low disk space in '%s'. Only %0.1f GB left.", 
-                           folder, 
-                           space)
-        
-        message <- c(message, 
-                     pillar::style_subtle("Use options(warnDiskSpaceThreshold = <n>) to set the number of gigabytes for this warning to trigger."))
-        message <- c(message, 
-                     pillar::style_subtle("This warning will not be shown for this file location again during this R session."))
-        
-        warn(paste(message, collapse = "\n")) 
-        assign("lowDiskWarnings", c(lowDiskWarnings, folder), envir = andromedaGlobalEnv)
-      }
-    }
+  warnDiskSpace <- getOption("warnDiskSpaceThreshold") %||% 10
+  if (!.isInstalled("rJava") || warnDiskSpace <= 0) return()
+  space <- getAndromedaTempDiskSpace(andromeda)
+  
+  if (!is.na(space) && space < warnDiskSpace) {
+    line1 <- sprintf("Low disk space in '%s'. Only %0.1f GB left.", folder, space)
+    line2 <- "Use options(warnDiskSpaceThreshold = <n>) to set the number of gigabytes for this warning to trigger."
+    msg <- paste(line1, pillar::style_subtle(line2), collapse = "\n")
+    warn(msg, .frequency = "once", .frequency_id = folder)
   }
 }
 
@@ -222,31 +157,21 @@ loadAndromeda <- function(fileName) {
 #' 
 #' @export
 getAndromedaTempDiskSpace <- function(andromeda = NULL) {
-  if (!is.null(andromeda) && !inherits(andromeda, "SQLiteConnection")) 
-    abort("Andromeda argument must be of type 'Andromeda'.")
-  
   # Using Java because no cross-platform functions available in R:
-  if (!.isInstalled("rJava")) {
-    return(NA)
-  } else {
-    if (is.null(andromeda)) {
-      folder <- .getAndromedaTempFolder()
-    } else {
-      folder <- dirname(andromeda@dbname) 
-    }
-    space <- tryCatch({
-      rJava::.jinit()
-      file <- rJava::.jnew("java.io.File", normalizePath(folder), check = FALSE, silent = TRUE)
-      rJava::.jcall(file, "J", "getUsableSpace")
-      
-      # This throws "illegal reflective access operation" warning:
-      # path <- rJava::J("java.nio.file.Paths")$get(fileName, rJava::.jarray(c("")))
-      # fileStore <- rJava::J("java.nio.file.Files")$getFileStore(path)
-      # fileStore$getUsableSpace()
-    }, error = function(e) NA)
-    space <- round(space/(1000^3), digits = 2)
-    return(space)
-  }
+  if (!.isInstalled("rJava")) return(NA)
+  folder <- attr(andromeda, "path") %||% .getAndromedaTempFolder()
+  space <- tryCatch({
+    rJava::.jinit()
+    file <- rJava::.jnew("java.io.File", normalizePath(folder), check = FALSE, silent = TRUE)
+    rJava::.jcall(file, "J", "getUsableSpace")
+    
+    # This throws "illegal reflective access operation" warning:
+    # path <- rJava::J("java.nio.file.Paths")$get(fileName, rJava::.jarray(c("")))
+    # fileStore <- rJava::J("java.nio.file.Files")$getFileStore(path)
+    # fileStore$getUsableSpace()
+  }, error = function(e) NA)
+  space <- round(space/(1000^3), digits = 2)
+  return(space)
 }
 
 #' Check that Andromeda temp folder 
@@ -261,7 +186,7 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
 #'
 #' @examples
 #' # Check that the Andromeda temp folder has at least 10GB. 
-#' checkTempFolder(minimumSize = 10)
+#' checkAndromedaTempFolder(minimumSize = 10)
 checkAndromedaTempFolder <- function(minimumSize) {
   folder <- .getAndromedaTempFolder()
   if(!file.exists(folder)) 
@@ -286,7 +211,6 @@ checkAndromedaTempFolder <- function(minimumSize) {
 }
 
 .isInstalled <- function(pkg) {
-  installedVersion <- tryCatch(utils::packageVersion(pkg), 
-                               error = function(e) NA)
+  installedVersion <- tryCatch(utils::packageVersion(pkg), error = function(e) NA)
   return(!is.na(installedVersion))
 }

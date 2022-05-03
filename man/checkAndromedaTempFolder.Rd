@@ -18,5 +18,5 @@ The Andromeda temp folder is the location where Andromeda objects are stored.
 }
 \examples{
 # Check that the Andromeda temp folder has at least 10GB. 
-checkTempFolder(minimumSize = 10)
+checkAndromedaTempFolder(minimumSize = 10)
 }
