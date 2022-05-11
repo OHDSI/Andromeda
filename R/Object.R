@@ -172,6 +172,9 @@ print.Andromeda <- function(object) {
   invisible(NULL)
 }
 
+
+
+
 #' @param x     An [`Andromeda`] object.
 #' @param name  The name of a table in the [`Andromeda`] object.
 #' @param value A data frame, [`Andromeda`] table.
@@ -209,6 +212,19 @@ print.Andromeda <- function(object) {
 }
 
 
+#' The Andromeda table names
+#'
+#' @param x An andromeda object
+#'
+#' @return A character vector with table names
+#' @export
+#' @rdname
+#' Andromeda-class
+names.Andromeda <- function(x) {
+  checkIfValid(x)
+  list.dirs(attr(x, "path"), full.names = FALSE, recursive = FALSE)
+}
+
 #' @param con    An [`Andromeda`] object.
 #' @param ...	   Included for compatibility with generic `close()` method.
 #' @export
@@ -237,9 +253,10 @@ isAndromeda <- function(x) {
 isValidAndromeda <- function(x) {
   if(!isAndromeda(x)) rlang::abort(paste(deparse(substitute(x)), "is not an Andromeda object."))
   
-  nms <- names(x) %||% character(0L)
-  dirs <- list.dirs(attr(x, "path"), recursive = FALSE)
-  isValid <- dir.exists(attr(x, "path")) && dplyr::setequal(nms, dirs)
+  # nms <- names(x) %||% character(0L)
+  # dirs <- list.dirs(attr(x, "path"), recursive = FALSE)
+  # isValid <- dir.exists(attr(x, "path")) && dplyr::setequal(nms, dirs)
+  isValid <- dir.exists(attr(x, "path"))
   return(isValid)
 }
 

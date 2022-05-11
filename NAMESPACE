@@ -3,6 +3,7 @@
 S3method("$<-",Andromeda)
 S3method("[[<-",Andromeda)
 S3method(close,Andromeda)
+S3method(names,Andromeda)
 S3method(print,Andromeda)
 export(andromeda)
 export(checkAndromedaTempFolder)

@@ -6,6 +6,7 @@
 \alias{print.Andromeda}
 \alias{$<-.Andromeda}
 \alias{[[<-.Andromeda}
+\alias{names.Andromeda}
 \alias{close.Andromeda}
 \title{The Andromeda class}
 \usage{
@@ -15,12 +16,14 @@
 
 \method{[[}{Andromeda}(x, i) <- value
 
+\method{names}{Andromeda}(x)
+
 \method{close}{Andromeda}(con, ...)
 }
 \arguments{
 \item{object}{An \code{\link{Andromeda}} object.}
 
-\item{x}{An \code{\link{Andromeda}} object.}
+\item{x}{An andromeda object}
 
 \item{name}{The name of a table in the \code{\link{Andromeda}} object.}
 
@@ -31,6 +34,9 @@
 \item{con}{An \code{\link{Andromeda}} object.}
 
 \item{...}{Included for compatibility with generic \code{close()} method.}
+}
+\value{
+A character vector with table names
 }
 \description{
 The \code{Andromeda} class is an S3 object.
