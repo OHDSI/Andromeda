@@ -172,8 +172,41 @@ print.Andromeda <- function(object) {
   invisible(NULL)
 }
 
+#' Extract Andromeda table
+#'
+#' @param x An andromeda object
+#' @param name A character string containing the name of an Andromeda table
+#'
+#' @return
+#' @export
+"[[.Andromeda" <- function(x, name) {
+  checkIfValid(x)
+  if(!(name %in% names(x))) {
+    x[[name]] <- NULL
+  }
+  NextMethod()
+}
 
+#' Number of tables in an Andromeda object
+#'
+#' @param x An andromeda object
+#'
+#' @return
+#' @export
+"length.Andromeda" <- function(x) {
+  length(names(x))
+}
 
+#' Extract table reference from Andromeda
+#'
+#' @param x An andromeda object
+#' @param name The name of a table in the andromeda object
+#'
+#' @return
+#' @export
+"$.Andromeda" <- function(x, name) {
+  x[[name]]
+}
 
 #' @param x     An [`Andromeda`] object.
 #' @param name  The name of a table in the [`Andromeda`] object.
@@ -193,7 +226,7 @@ print.Andromeda <- function(object) {
 #' @rdname
 #' Andromeda-class
 "[[<-.Andromeda" <- function(x, i, value) { 
-  # checkIfValid(x)
+  checkIfValid(x)
   if(!is.null(value) && !inherits(value, c("data.frame", "arrow_dplyr_query", "FileSystemDataset"))) {
     abort("value must be null, a dataframe, or an dplyr query using an existing andromeda table")
   }
