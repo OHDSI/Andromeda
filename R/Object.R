@@ -225,10 +225,10 @@ print.Andromeda <- function(object) {
 #' @export
 #' @rdname
 #' Andromeda-class
-"[[<-.Andromeda" <- function(x, i, value) { 
+"[[<-.Andromeda" <- function(x, i, value) {
   checkIfValid(x)
   if(!is.null(value) && !inherits(value, c("data.frame", "arrow_dplyr_query", "FileSystemDataset"))) {
-    abort("value must be null, a dataframe, or an dplyr query using an existing andromeda table")
+    abort("value must be null, a dataframe, an Andromeda table, or a dplyr query using an Andromeda table")
   }
   
   if (is.null(value)) {
@@ -236,7 +236,11 @@ print.Andromeda <- function(object) {
       r <- unlink(file.path(attr(x, "path"), i), recursive = TRUE)
       if (r == 1) abort(paste("Removal of Andromeda dataset", i, "failed."))
     }
-  } else if(inherits(value, c("data.frame", "arrow_dplyr_query"))) {
+  } else if(inherits(value, "data.frame") && nrow(value) == 0) {
+    dir.create(file.path(attr(x, "path"), i))
+    arrow::write_feather(value, file.path(attr(x, "path"), i, "part-0.feather"))
+    value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
+  } else if(inherits(value, c("data.frame", "arrow_dplyr_query", "FileSystemDataset"))) {
     # .checkAvailableSpace(x)
     arrow::write_dataset(value, file.path(attr(x, "path"), i), format = "feather")
     value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
