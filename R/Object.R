@@ -83,11 +83,10 @@ NULL
 #' @export
 andromeda <- function(...) {
   arguments <- list(...)
-  if (length(arguments) > 0) {
-    if (is.null(names(arguments)) || any(names(arguments) == ""))
-      abort("All arguments must be named")
-  }
-  andromeda <- .createAndromeda()
+  if (length(arguments) > 0 && (is.null(names(arguments)) || any(names(arguments) == "")))
+    abort("All arguments must be named")
+  
+  andromeda <- .newAndromeda()
   if (length(arguments) > 0) {
     for (name in names(arguments)) {
       andromeda[[name]] <- arguments[[name]]
@@ -120,7 +119,7 @@ andromeda <- function(...) {
 #' @export
 copyAndromeda <- function(andromeda) {
   checkIfValid(andromeda)
-  newAndromeda <- .createAndromeda()
+  newAndromeda <- .newAndromeda()
   arrow::copy_files(attr(Andromeda, "path"), attr(newAndromeda, "path"))
   datasets <- list.dirs(attr(newAndromeda, "path"), full.names = TRUE)
   for (d in datasets) {
@@ -134,15 +133,15 @@ copyAndromeda <- function(andromeda) {
   return(newAndromeda)
 }
 
-.createAndromeda <- function() {
+.newAndromeda <- function() {
   path <- tempfile(tmpdir = .getAndromedaTempFolder())
   dir.create(path)
-  andromeda <- list()
-  class(andromeda) <- "Andromeda"
-  attr(class(andromeda), "package") <- "Andromeda"
-  attr(andromeda, "path") <- path
+  andromeda <- structure(list(), class = "Andromeda", path = path)
+  # attr(class(andromeda), "package") <- "Andromeda" # Why is this necessary?
   return(andromeda)
 }
+
+dirs <- function(x) list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
 
 .getAndromedaTempFolder <- function() {
   tempFolder <- getOption("andromedaTempFolder")
@@ -160,14 +159,20 @@ copyAndromeda <- function(andromeda) {
 #' @rdname
 #' Andromeda-class
 print.Andromeda <- function(object) {
-  cli::cat_line(pillar::style_subtle("# Andromeda object"))
-  cli::cat_line(pillar::style_subtle(paste("# Physical location: ", attr(object, "path"))))
-  cli::cat_line("")
-  cli::cat_line("Tables:")
-  for (tableName in names(object)) {
-    # columns <- purrr::map_chr(object[[tableName]]$schema$fields, "name")
-    columns <- paste0(names(object[[tableName]]), collapse = ", ")
-    cli::cat_line(paste0("$", tableName," (", columns, ")"))
+  
+  if(isValidAndromeda(object)) {
+    
+    cli::cat_line(pillar::style_subtle("# Andromeda object"))
+    cli::cat_line(pillar::style_subtle(paste("# Physical location: ", attr(object, "path"))))
+    cli::cat_line("")
+    cli::cat_line("Tables:")
+    for (tableName in names(object)) {
+      # columns <- purrr::map_chr(object[[tableName]]$schema$fields, "name")
+      columns <- paste0(names(object[[tableName]]), collapse = ", ")
+      cli::cat_line(paste0("$", tableName," (", columns, ")"))
+    }
+  } else {
+    cli::cat_line(pillar::style_subtle("# Andromeda object is no longer valid. "))
   }
   invisible(NULL)
 }
@@ -221,33 +226,35 @@ print.Andromeda <- function(object) {
 
 #' @param x    An [`Andromeda`] object.
 #' @param i    The name of a table in the [`Andromeda`] object.
-#' @param value A data frame, [`Andromeda`] table, or other 'DBI' table.
+#' @param value A dataframe, [`Andromeda`] table, or dplyr query that uses an [`Andromeda`] table.
 #' @export
 #' @rdname
 #' Andromeda-class
 "[[<-.Andromeda" <- function(x, i, value) {
-  checkIfValid(x)
   if(!is.null(value) && !inherits(value, c("data.frame", "arrow_dplyr_query", "FileSystemDataset"))) {
     abort("value must be null, a dataframe, an Andromeda table, or a dplyr query using an Andromeda table")
   }
   
   if (is.null(value)) {
-    if (i %in% names(x)) {
+    if (i %in% dirs(x)) {
       r <- unlink(file.path(attr(x, "path"), i), recursive = TRUE)
       if (r == 1) abort(paste("Removal of Andromeda dataset", i, "failed."))
     }
-  } else if(inherits(value, "data.frame") && nrow(value) == 0) {
+  } else if (inherits(value, "data.frame") && nrow(value) == 0) {
     dir.create(file.path(attr(x, "path"), i))
     arrow::write_feather(value, file.path(attr(x, "path"), i, "part-0.feather"))
     value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
-  } else if(inherits(value, c("data.frame", "arrow_dplyr_query", "FileSystemDataset"))) {
+  } else if (inherits(value, c("data.frame", "arrow_dplyr_query", "FileSystemDataset"))) {
     # .checkAvailableSpace(x)
     arrow::write_dataset(value, file.path(attr(x, "path"), i), format = "feather")
+    
+    # A dplyr query that results in zero rows will not be written so we need to handle that case
+    if (!dir.exists(file.path(attr(x, "path"), i))) return(`[[<-`(x, i, dplyr::collect(value)))
+    
     value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
   }
-  return(NextMethod())
+  NextMethod()
 }
-
 
 #' The Andromeda table names
 #'
@@ -258,8 +265,9 @@ print.Andromeda <- function(object) {
 #' @rdname
 #' Andromeda-class
 names.Andromeda <- function(x) {
-  checkIfValid(x)
-  list.dirs(attr(x, "path"), full.names = FALSE, recursive = FALSE)
+  if (!isAndromeda(x)) rlang::abort(paste(deparse(substitute(x)), "is not an Andromeda object."))
+  
+  list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
 }
 
 #' @param con    An [`Andromeda`] object.
@@ -283,17 +291,29 @@ names.Andromeda <- function(x) {
 #' A logical value.
 #'
 #' @export
-isAndromeda <- function(x) {
-  return(inherits(x, "Andromeda"))
-}
+isAndromeda <- function(x) inherits(x, "Andromeda")
 
+checkIfAndromeda <- function(x) if (!isAndromeda(x)) rlang::abort(paste(deparse(substitute(x)), "is not an Andromeda object."))
+
+#' Checks whether an Andromeda object is valid
+#' 
+#' @param x an Andromeda object
+#'
+#' @return TRUE if the Andromeda object is in a valid state. FALSE otherwise.
+#' @export
 isValidAndromeda <- function(x) {
-  if(!isAndromeda(x)) rlang::abort(paste(deparse(substitute(x)), "is not an Andromeda object."))
+  checkIfAndromeda(x)
+  if (!dir.exists(attr(x, "path"))) return(FALSE) 
   
-  # nms <- names(x) %||% character(0L)
-  # dirs <- list.dirs(attr(x, "path"), recursive = FALSE)
-  # isValid <- dir.exists(attr(x, "path")) && dplyr::setequal(nms, dirs)
-  isValid <- dir.exists(attr(x, "path"))
+  nms <- attr(x, "names") %||% character(0L)
+  dirs <- list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
+  namesWithoutDirectories <- dplyr::setdiff(nms, dirs)
+  for (n in namesWithoutDirectories) x[[n]] <- NULL
+
+  directoriesWithoutNames <- dplyr::setdiff(dirs, nms)
+  for (d in directoriesWithoutNames) unlink(file.path(attr(x, "path"), d), recursive = TRUE)
+  
+  isValid <- dplyr::setequal(nms, dirs)
   return(isValid)
 }
 

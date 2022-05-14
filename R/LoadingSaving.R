@@ -99,7 +99,7 @@ loadAndromeda <- function(fileName) {
   
   fileNamesInZip <- utils::unzip(fileName, list = TRUE)$Name
   
-  andromeda <- .createAndromeda()
+  andromeda <- .newAndromeda()
   path <- attr(andromeda, "path")
   zip::unzip(fileName, exdir = path)
   
