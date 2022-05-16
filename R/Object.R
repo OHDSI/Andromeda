@@ -123,7 +123,7 @@ copyAndromeda <- function(andromeda) {
   arrow::copy_files(attr(andromeda, "path"), attr(newAndromeda, "path"))
   datasetPaths <- list.dirs(attr(newAndromeda, "path"), full.names = TRUE, recursive = FALSE)
   datasetNames <- list.dirs(attr(newAndromeda, "path"), full.names = FALSE, recursive = FALSE)
-  for (i in seq_along(datasets)) {
+  for (i in seq_along(datasetPaths)) {
     newAndromeda[[datasetNames[i]]] <- arrow::open_dataset(datasetPaths[i], format = "feather")
   }
   if(!dplyr::setequal(names(andromeda), names(newAndromeda))) {
