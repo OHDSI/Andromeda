@@ -265,8 +265,7 @@ print.Andromeda <- function(object) {
 #' @rdname
 #' Andromeda-class
 names.Andromeda <- function(x) {
-  if (!isAndromeda(x)) rlang::abort(paste(deparse(substitute(x)), "is not an Andromeda object."))
-  
+  checkIfValid(x)
   list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
 }
 
@@ -303,19 +302,29 @@ checkIfAndromeda <- function(x) if (!isAndromeda(x)) rlang::abort(paste(deparse(
 #' @export
 isValidAndromeda <- function(x) {
   checkIfAndromeda(x)
-  if (!dir.exists(attr(x, "path"))) return(FALSE) 
+  # if (!dir.exists(attr(x, "path"))) return(FALSE) 
   
-  nms <- attr(x, "names") %||% character(0L)
-  dirs <- list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
-  namesWithoutDirectories <- dplyr::setdiff(nms, dirs)
-  for (n in namesWithoutDirectories) x[[n]] <- NULL
-
-  directoriesWithoutNames <- dplyr::setdiff(dirs, nms)
-  for (d in directoriesWithoutNames) unlink(file.path(attr(x, "path"), d), recursive = TRUE)
-  
-  isValid <- dplyr::setequal(nms, dirs)
-  return(isValid)
+  # syncNames(x)
+  # nms <- attr(x, "names") %||% character(0L)
+  # dirs <- list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
+  # isValid <- dplyr::setequal(nms, dirs)
+  # return(isValid)
+  dir.exists(attr(x, "path"))
 }
+
+# syncNames <- function(x) {
+#   nms <- attr(x, "names") %||% character(0L)
+#   dirs <- list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
+#   namesWithoutDirectories <- dplyr::setdiff(nms, dirs)
+#   if(length(namesWithoutDirectories) > 0) message(paste("names without directories:", paste0(namesWithoutDirectories, collapse = ", ")))
+#   for (n in namesWithoutDirectories) x[[n]] <- NULL
+#   print(paste(attr(x, "names"), collapse = " "))
+#   
+#   directoriesWithoutNames <- dplyr::setdiff(dirs, nms)
+#   if(length(directoriesWithoutNames) > 0) message(paste("directories without names:", paste0(directoriesWithoutNames, collapse = ", ")))
+#   for (d in directoriesWithoutNames) unlink(file.path(attr(x, "path"), d), recursive = TRUE)
+# }
+
 
 checkIfValid <- function(x) {
   if (!isValidAndromeda(x)) abort("Andromeda object is not valid.")

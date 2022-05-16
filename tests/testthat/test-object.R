@@ -105,6 +105,34 @@ test_that("Zero rows", {
   # close(andromeda2)
 })
 
+test_that("file system reference stay consistent with what is on disk", {
+  a <- andromeda(cars = cars, iris = iris)
+  b <- a
+  
+  expect_equal(names(a), c("cars", "iris"))
+  expect_equal(names(b), c("cars", "iris"))
+  
+  b$cars <- NULL
+  
+  expect_equal(names(a), "iris")
+  expect_equal(names(b), "iris")
+  expect_equal(attr(b, "names"), "iris")
+  
+  # internal name still exists. I can't see a way to remove it.
+  expect_equal(attr(a, "names"), c("cars", "iris")) 
+  # The returned value is NULL
+  expect_null(a$cars)
+  
+  # however str(a) shows that the reference is still there
+  
+  a$iris <- NULL
+  expect_equal(names(a), character(0L))
+  expect_equal(names(b), character(0L))
+  
+  close(a)
+  close(b)
+})
+
 test_that("Object cleanup", {
   andromeda <- andromeda()
 

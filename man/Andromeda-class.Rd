@@ -27,7 +27,7 @@
 
 \item{name}{The name of a table in the \code{\link{Andromeda}} object.}
 
-\item{value}{A data frame, \code{\link{Andromeda}} table, or other 'DBI' table.}
+\item{value}{A dataframe, \code{\link{Andromeda}} table, or dplyr query that uses an \code{\link{Andromeda}} table.}
 
 \item{i}{The name of a table in the \code{\link{Andromeda}} object.}
 
