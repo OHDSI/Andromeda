@@ -297,7 +297,7 @@ names.Andromeda <- function(x) {
 #' @export
 isAndromeda <- function(x) inherits(x, "Andromeda")
 
-checkIfAndromeda <- function(x) if (!isAndromeda(x)) rlang::abort(paste(deparse(substitute(x)), "is not an Andromeda object."))
+checkIfAndromeda <- function(x) if (!isAndromeda(x)) rlang::abort("Andromeda argument must be of type 'Andromeda'")
 
 #' Checks whether an Andromeda object is valid
 #' 

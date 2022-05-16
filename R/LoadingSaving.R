@@ -109,7 +109,7 @@ loadAndromeda <- function(fileName) {
     andromeda[[nm]] <- arrow::open_dataset(file.path(path, nm), format = "feather")
   }
   
-  attributes <- jsonlite::read_json(file.path(path, "user-defined-attributes.json"))
+  attributes <- jsonlite::read_json(file.path(path, "user-defined-attributes.json"), simplifyVector = TRUE)
   on.exit(unlink(file.path(path, "user-defined-attributes.json")))
   for (nm in names(attributes)) {
     attr(andromeda, nm) <- attributes[[nm]]
@@ -158,6 +158,8 @@ loadAndromeda <- function(fileName) {
 #' 
 #' @export
 getAndromedaTempDiskSpace <- function(andromeda = NULL) {
+  if(!is.null(andromeda)) checkIfValid(andromeda)
+     
   # Using Java because no cross-platform functions available in R:
   if (!.isInstalled("rJava")) return(NA)
   folder <- attr(andromeda, "path") %||% .getAndromedaTempFolder()
