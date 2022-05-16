@@ -240,7 +240,7 @@ print.Andromeda <- function(object) {
     abort("value must be null, a dataframe, an Andromeda table, or a dplyr query using an Andromeda table")
   }
   
-  .checkAvailableSpace()
+  .checkAvailableSpace(x)
   if (is.null(value)) {
     if (i %in% dirs(x)) {
       r <- unlink(file.path(attr(x, "path"), i), recursive = TRUE)
