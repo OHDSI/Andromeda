@@ -120,10 +120,11 @@ andromeda <- function(...) {
 copyAndromeda <- function(andromeda) {
   checkIfValid(andromeda)
   newAndromeda <- .newAndromeda()
-  arrow::copy_files(attr(Andromeda, "path"), attr(newAndromeda, "path"))
-  datasets <- list.dirs(attr(newAndromeda, "path"), full.names = TRUE)
-  for (d in datasets) {
-    newAndromeda[[d]] <- arrow::open_dataset(d, format = "feather")
+  arrow::copy_files(attr(andromeda, "path"), attr(newAndromeda, "path"))
+  datasetPaths <- list.dirs(attr(newAndromeda, "path"), full.names = TRUE, recursive = FALSE)
+  datasetNames <- list.dirs(attr(newAndromeda, "path"), full.names = FALSE, recursive = FALSE)
+  for (i in seq_along(datasets)) {
+    newAndromeda[[datasetNames[i]]] <- arrow::open_dataset(datasetPaths[i], format = "feather")
   }
   if(!dplyr::setequal(names(andromeda), names(newAndromeda))) {
     abort(glue::glue("copyAndromeda failed.\n 
@@ -137,7 +138,11 @@ copyAndromeda <- function(andromeda) {
   path <- tempfile(tmpdir = .getAndromedaTempFolder())
   dir.create(path)
   andromeda <- structure(list(), class = "Andromeda", path = path)
+  
+  # save the path for cleanup when R session ends
+  andromedaGlobalEnv[[path]] <- path
   # attr(class(andromeda), "package") <- "Andromeda" # Why is this necessary?
+  .checkAvailableSpace(andromeda)
   return(andromeda)
 }
 
@@ -235,6 +240,7 @@ print.Andromeda <- function(object) {
     abort("value must be null, a dataframe, an Andromeda table, or a dplyr query using an Andromeda table")
   }
   
+  .checkAvailableSpace()
   if (is.null(value)) {
     if (i %in% dirs(x)) {
       r <- unlink(file.path(attr(x, "path"), i), recursive = TRUE)
@@ -245,7 +251,6 @@ print.Andromeda <- function(object) {
     arrow::write_feather(value, file.path(attr(x, "path"), i, "part-0.feather"))
     value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
   } else if (inherits(value, c("data.frame", "arrow_dplyr_query", "FileSystemDataset"))) {
-    # .checkAvailableSpace(x)
     arrow::write_dataset(value, file.path(attr(x, "path"), i), format = "feather")
     
     # A dplyr query that results in zero rows will not be written so we need to handle that case

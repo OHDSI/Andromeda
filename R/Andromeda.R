@@ -23,3 +23,9 @@
 #' @import dplyr
 #' 
 NULL
+
+
+# Clean up any andromeda objects that were created when R session ends
+andromedaGlobalEnv <- new.env(parent = emptyenv())
+removeAndromedaTempFiles <- function(e) invisible(lapply(ls(e), unlink, recursive = TRUE))
+reg.finalizer(andromedaGlobalEnv, removeAndromedaTempFiles, onexit = TRUE)

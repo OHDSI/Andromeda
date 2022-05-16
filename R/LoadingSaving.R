@@ -121,11 +121,12 @@ loadAndromeda <- function(fileName) {
   warnDiskSpace <- getOption("warnDiskSpaceThreshold") %||% 10
   if (!.isInstalled("rJava") || warnDiskSpace <= 0) return()
   space <- getAndromedaTempDiskSpace(andromeda)
+  folder <- attr(andromeda, "path") %||% .getAndromedaTempFolder()
   
   if (!is.na(space) && space < warnDiskSpace) {
     line1 <- sprintf("Low disk space in '%s'. Only %0.1f GB left.", folder, space)
     line2 <- "Use options(warnDiskSpaceThreshold = <n>) to set the number of gigabytes for this warning to trigger."
-    msg <- paste(line1, pillar::style_subtle(line2), collapse = "\n")
+    msg <- paste(line1,"\n", pillar::style_subtle(line2))
     warn(msg, .frequency = "once", .frequency_id = folder)
   }
 }

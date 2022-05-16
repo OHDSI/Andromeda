@@ -142,25 +142,27 @@ test_that("Object cleanup", {
   close(andromeda)
   expect_false(file.exists(fileName))
 
+  # now only restarting the R session will automatically clean up andromeda files.
+  # andromeda2 <- andromeda()
 
-  andromeda2 <- andromeda()
+  # fileName <- attr(andromeda2, "path")
+  # expect_true(file.exists(fileName))
 
-  fileName <- attr(andromeda2, "path")
-  expect_true(file.exists(fileName))
-
-  rm(andromeda2)
-  invisible(gc())
-  expect_false(file.exists(fileName))
+  # rm(andromeda2)
+  # invisible(gc())
+  # expect_false(file.exists(fileName))
 })
 
 test_that("Setting the andromeda temp folder", {
   folder <- tempfile()
-  options(andromedaTempFolder = folder)
-  andromeda <- andromeda()
-  files <- list.files(folder)
-  expect_equal(length(files), 1)
-  close(andromeda)
-  unlink(folder, recursive = TRUE)
+  
+  withr::with_options(list(andromedaTempFolder = folder), {
+    andromeda <- andromeda()
+    files <- list.files(folder)
+    expect_equal(length(files), 1)
+    close(andromeda)
+    unlink(folder, recursive = TRUE)
+  })
 })
 
 test_that("Copying andromeda", {
@@ -170,13 +172,13 @@ test_that("Copying andromeda", {
   andromeda2 <- copyAndromeda(andromeda)
 
   expect_true("cars" %in% names(andromeda2))
-  expect_false(andromeda@dbname == andromeda2@dbname)
+  expect_false(attr(andromeda, "path") == attr(andromeda2, "path"))
   close(andromeda)
   close(andromeda2)
 })
 
 test_that("Warning when disk space low", {
-  skip_if(.Platform$OS.type != "windows")
+  skip_if(!.Platform$OS.type %in% c("windows", "unix"))
   
   availableSpace <- tryCatch(getAndromedaTempDiskSpace(), 
                              error = function(e) NA)
@@ -189,29 +191,25 @@ test_that("Warning when disk space low", {
   options(warnDiskSpaceThreshold = NULL)
 })
 
-test_that("The only cached class is Andromeda", {
-  expect_true(setequal(getClasses(asNamespace("Andromeda"), inherits = F), "Andromeda"))
-})
-
-test_that("Get/set Andromeda table/column names works.", {
-  andr <- andromeda()
-  expect_length(names(andr), 0L)
-  
-  andr$cars <- cars
-  andr[["iris"]] <- iris
-  expect_equal(names(andr), c("cars", "iris"))
-  
-  names(andr) <- c("cars", "table2")
-  expect_equal(names(andr), c("cars", "table2"))
-  
-  names(andr) <- toupper(names(andr))
-  expect_equal(names(andr), c("CARS", "TABLE2"))
-  
-  expect_equal(colnames(andr$CARS), names(cars))
-  
-  names(andr$CARS) <- c("col1", "col2")
-  expect_equal(names(andr$CARS), c("col1", "col2"))
-  
-  close(andr)
-})
+# test_that("Get/set Andromeda table/column names works.", {
+#   andr <- andromeda()
+#   expect_length(names(andr), 0L)
+#   
+#   andr$cars <- cars
+#   andr[["iris"]] <- iris
+#   expect_equal(names(andr), c("cars", "iris"))
+#   
+#   names(andr) <- c("cars", "table2")
+#   expect_equal(names(andr), c("cars", "table2"))
+#   
+#   names(andr) <- toupper(names(andr))
+#   expect_equal(names(andr), c("CARS", "TABLE2"))
+#   
+#   expect_equal(colnames(andr$CARS), names(cars))
+#   
+#   names(andr$CARS) <- c("col1", "col2")
+#   expect_equal(names(andr$CARS), c("col1", "col2"))
+#   
+#   close(andr)
+# })
 
