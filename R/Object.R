@@ -191,10 +191,13 @@ print.Andromeda <- function(object) {
 #' @export
 "[[.Andromeda" <- function(x, name) {
   checkIfValid(x)
-  if(!(name %in% names(x))) {
-    x[[name]] <- NULL
-  }
-  NextMethod()
+  # if(!(name %in% names(x))) {
+  #   x[[name]] <- NULL
+  # }
+    
+  if(!(name %in% names(x))) return(NULL)
+  # NextMethod()
+  arrow::open_dataset(file.path(attr(x, "path"), name), format = "feather")
 }
 
 #' Number of tables in an Andromeda object

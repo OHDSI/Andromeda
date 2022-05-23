@@ -176,74 +176,70 @@
 #'   invisible(output)
 #' }
 #' 
-#' #' Append to an Andromeda table
-#' #'
-#' #' @param tbl    An [`Andromeda`] table. This must be a base table (i.e. it cannot be a query result).
-#' #' @param data   The data to append. This can be either a data.frame or another Andromeda table.
-#' #'
-#' #' @description
-#' #' Append a data frame, Andromeda table, or result of a query on an [`Andromeda`] table to an existing
-#' #' [`Andromeda`] table. 
-#' #' 
-#' #' If data from another [`Andromeda`] is appended, a batch-wise copy process is used, which will be slower
-#' #' than when appending data from within the same [`Andromeda`] object.
-#' #' 
-#' #' **Important**: columns are appended based on column name, not on column order. The column names should
-#' #' therefore be identical (but not necessarily in the same order).
-#' #' 
-#' #' @return 
-#' #' Returns no value. Executed for the side-effect of appending the data to the table.
-#' #'
-#' #' @examples
-#' #' andr <- andromeda(cars = cars)
-#' #' nrow(andr$cars)
-#' #' # [1] 50
-#' #'
-#' #' appendToTable(andr$cars, cars)
-#' #' nrow(andr$cars)
-#' #' # [1] 100
-#' #'
-#' #' appendToTable(andr$cars, andr$cars %>% filter(speed > 10))
-#' #' nrow(andr$cars)
-#' #' # [1] 182
-#' #'
-#' #' close(andr)
-#' #'
-#' #' @export
-#' appendToTable <- function(tbl, data) {
-#'   if (!inherits(tbl, "tbl_dbi"))
-#'     abort("First argument must be an Andromeda table")
-#'   tableName <- as.character(dbplyr::remote_name(tbl))
-#'   if (is.null(tableName))
-#'     abort("First argument must be a base table (cannot be a query result)")
-#' 
-#'   connection <- dbplyr::remote_con(tbl)
-#'   .checkAvailableSpace(connection)
-#'   if (inherits(data, "data.frame")) {
-#'     
-#'     RSQLite::dbWriteTable(conn = connection,
-#'                           name = tableName,
-#'                           value = data,
-#'                           overwrite = FALSE,
-#'                           append = TRUE)
-#'   } else if (inherits(data, "tbl_dbi")) {
-#'     if (isTRUE(all.equal(connection, dbplyr::remote_con(data)))) {
-#'       sql <- dbplyr::sql_render(select(data, all_of(colnames(tbl))), connection)
-#'       sql <- sprintf("INSERT INTO %s %s", tableName, sql)
-#'       RSQLite::dbExecute(connection, sql)
-#'     } else {
-#'       doBatchedAppend <- function(batch) {
-#'         RSQLite::dbWriteTable(conn = connection,
-#'                               name = tableName,
-#'                               value = batch,
-#'                               overwrite = FALSE,
-#'                               append = TRUE)
-#'       }
-#'       batchApply(data, doBatchedAppend)
-#'     }
-#'   }
-#'   invisible(NULL)
-#' }
+
+
+
+#' Append to an Andromeda table
+#'
+#' @param tbl    An [`Andromeda`] table. This must be a base table (i.e. it cannot be a query result).
+#' @param data   The data to append. This can be either a data.frame or another Andromeda table.
+#'
+#' @description
+#' Append a data frame, Andromeda table, or result of a query on an [`Andromeda`] table to an existing
+#' [`Andromeda`] table.
+#'
+#' If data from another [`Andromeda`] is appended, a batch-wise copy process is used, which will be slower
+#' than when appending data from within the same [`Andromeda`] object.
+#'
+#' **Important**: columns are appended based on column name, not on column order. The column names should
+#' therefore be identical (but not necessarily in the same order).
+#'
+#' @return
+#' Returns no value. Executed for the side-effect of appending the data to the table.
+#'
+#' @examples
+#' andr <- andromeda(cars = cars)
+#' nrow(andr$cars)
+#' # [1] 50
+#'
+#' appendToTable(andr$cars, cars)
+#' nrow(andr$cars)
+#' # [1] 100
+#'
+#' appendToTable(andr$cars, andr$cars %>% filter(speed > 10))
+#' nrow(andr$cars)
+#' # [1] 182
+#'
+#' close(andr)
+#'
+#' @export
+appendToTable <- function(tbl, .data) {#browser()
+  if (!inherits(tbl, "FileSystemDataset")) abort("First argument must be an Andromeda table")
+  if (!inherits(.data, c("data.frame", "FileSystemDataset"))) abort("Second argument must be a dataframe or an Andromeda table")
+  
+  .checkAvailableSpace()
+  
+  if(inherits(data, "data.frame")) {
+    dataArrowTable <- arrow::arrow_table(.data)
+  } else {
+    dataScanner <- arrow::Scanner$create(.data)
+    dataArrowTable <- dataScanner$ToTable()
+  }
+  
+  path <- dirname(tbl$files[[1]])
+  s <- arrow::Scanner$create(tbl)
+  concatTables <- arrow::concat_tables(s$ToTable(), dataArrowTable)
+  # nrow(concatTables)
+  # nrow(.data) + nrow(tbl)
+  # nrow(concatTables)
+  arrow::write_dataset(concatTables, path = path, format = "feather")
+  
+  
+  # d <- arrow::open_dataset(path, format = "feather")
+  # nrow(d)
+  invisible(NULL)
+}
+
 #' 
 #' 
 #' #' Apply a boolean test to batches of data in an Andromeda table and terminate early
