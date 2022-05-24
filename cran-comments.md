@@ -1,5 +1,7 @@
-Andromeda v0.6.0
+Andromeda v0.6.1
 ---
+
+This is a patch release.
 
 ## Test environments
 * Windows-latest, R-release (Github Actions)
