@@ -10,7 +10,7 @@
 \item{x}{An andromeda object}
 }
 \value{
-
+The number of tables in the andromeda object
 }
 \description{
 Number of tables in an Andromeda object

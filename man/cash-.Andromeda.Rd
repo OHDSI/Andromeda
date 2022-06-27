@@ -12,7 +12,7 @@
 \item{name}{The name of a table in the andromeda object}
 }
 \value{
-
+An andromeda table
 }
 \description{
 Extract table reference from Andromeda

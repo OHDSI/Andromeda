@@ -187,7 +187,7 @@ print.Andromeda <- function(object) {
 #' @param x An andromeda object
 #' @param name A character string containing the name of an Andromeda table
 #'
-#' @return
+#' @return An andromeda table
 #' @export
 "[[.Andromeda" <- function(x, name) {
   checkIfValid(x)
@@ -204,7 +204,7 @@ print.Andromeda <- function(object) {
 #'
 #' @param x An andromeda object
 #'
-#' @return
+#' @return The number of tables in the andromeda object
 #' @export
 "length.Andromeda" <- function(x) {
   length(names(x))
@@ -215,7 +215,7 @@ print.Andromeda <- function(object) {
 #' @param x An andromeda object
 #' @param name The name of a table in the andromeda object
 #'
-#' @return
+#' @return An andromeda table
 #' @export
 "$.Andromeda" <- function(x, name) {
   x[[name]]

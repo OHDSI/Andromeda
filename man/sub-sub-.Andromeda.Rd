@@ -12,7 +12,7 @@
 \item{name}{A character string containing the name of an Andromeda table}
 }
 \value{
-
+An andromeda table
 }
 \description{
 Extract Andromeda table
