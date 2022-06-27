@@ -320,20 +320,6 @@ isValidAndromeda <- function(x) {
   dir.exists(attr(x, "path"))
 }
 
-# syncNames <- function(x) {
-#   nms <- attr(x, "names") %||% character(0L)
-#   dirs <- list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
-#   namesWithoutDirectories <- dplyr::setdiff(nms, dirs)
-#   if(length(namesWithoutDirectories) > 0) message(paste("names without directories:", paste0(namesWithoutDirectories, collapse = ", ")))
-#   for (n in namesWithoutDirectories) x[[n]] <- NULL
-#   print(paste(attr(x, "names"), collapse = " "))
-#   
-#   directoriesWithoutNames <- dplyr::setdiff(dirs, nms)
-#   if(length(directoriesWithoutNames) > 0) message(paste("directories without names:", paste0(directoriesWithoutNames, collapse = ", ")))
-#   for (d in directoriesWithoutNames) unlink(file.path(attr(x, "path"), d), recursive = TRUE)
-# }
-
-
 checkIfValid <- function(x) {
   if (!isValidAndromeda(x)) abort("Andromeda object is not valid.")
 }
