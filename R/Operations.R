@@ -29,7 +29,7 @@
 #' data. In this case, the data is batches of data from an [`Andromeda`] table. Each batch will be
 #' presented to the function as a data frame.
 #'
-#' @seealso [groupApply()]
+#' 
 #'
 #' @return
 #' Invisibly returns a list of objects, where each object is the output of the user-supplied function
@@ -85,6 +85,8 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
   }, finally = if (progressBar) close(pb))
   output
 }
+
+# @seealso [groupApply()]
 
 # map_batches wrapper implementation
 # batchApply <- function(tbl, fun, ..., batchSize = NULL, progressBar = lifecycle::deprecated(), safe = lifecycle::deprecated()) {
@@ -185,7 +187,7 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
 #' Append to an Andromeda table
 #'
 #' @param tbl    An [`Andromeda`] table. This must be a base table (i.e. it cannot be a query result).
-#' @param data   The data to append. This can be either a data.frame or another Andromeda table.
+#' @param .data   The data to append. This can be either a data.frame or another Andromeda table.
 #'
 #' @description
 #' Append a data frame, Andromeda table, or result of a query on an [`Andromeda`] table to an existing
@@ -216,7 +218,7 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
 #' close(andr)
 #'
 #' @export
-appendToTable <- function(tbl, .data) {#browser()
+appendToTable <- function(tbl, .data) {
   if (!inherits(tbl, "FileSystemDataset")) abort("First argument must be an Andromeda table")
   if (!inherits(.data, c("data.frame", "FileSystemDataset", "arrow_dplyr_query"))) abort("Second argument must be a dataframe or an Andromeda table")
   

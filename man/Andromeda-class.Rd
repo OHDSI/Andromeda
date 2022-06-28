@@ -10,7 +10,7 @@
 \alias{close.Andromeda}
 \title{The Andromeda class}
 \usage{
-\method{print}{Andromeda}(object)
+\method{print}{Andromeda}(x, ...)
 
 \method{$}{Andromeda}(x, name) <- value
 
@@ -21,9 +21,9 @@
 \method{close}{Andromeda}(con, ...)
 }
 \arguments{
-\item{object}{An \code{\link{Andromeda}} object.}
-
 \item{x}{An andromeda object}
+
+\item{...}{Included for compatibility with generic \code{close()} method.}
 
 \item{name}{The name of a table in the \code{\link{Andromeda}} object.}
 
@@ -32,8 +32,6 @@
 \item{i}{The name of a table in the \code{\link{Andromeda}} object.}
 
 \item{con}{An \code{\link{Andromeda}} object.}
-
-\item{...}{Included for compatibility with generic \code{close()} method.}
 }
 \value{
 A character vector with table names
@@ -59,14 +57,6 @@ To mimic the behavior of in-memory objects, when working with data in \code{Andr
 temporary location on the disk. You can modify the data as you can see fit, and when needed can save the data
 to a permanent location. Later this data can be loaded to a temporary location again and be read and modified,
 while keeping the saved data as is.
-}
-
-\section{Inheritance}{
-
-
-The \code{Andromeda} inherits directly from \code{SQLiteConnection.} As such, it can be used as if it is a \code{SQLiteConnection}.
-\code{\link{RSQLite}} is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run
-from a single file on the local file system.
 }
 
 \seealso{

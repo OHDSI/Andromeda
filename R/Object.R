@@ -36,12 +36,6 @@
 #' to a permanent location. Later this data can be loaded to a temporary location again and be read and modified, 
 #' while keeping the saved data as is.
 #' 
-#' @section Inheritance:
-#' 
-#' The `Andromeda` inherits directly from `SQLiteConnection.` As such, it can be used as if it is a `SQLiteConnection`. 
-#' [`RSQLite`] is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run 
-#' from a single file on the local file system.
-#' 
 #' @name Andromeda-class
 #' @aliases Andromeda
 #' @seealso [`andromeda()`]
@@ -159,21 +153,22 @@ dirs <- function(x) list.dirs(attr(x, "path"), recursive = FALSE, full.names = F
   return(tempFolder)
 }
 
-#' @param object  An [`Andromeda`] object.
+#' @param x  An [`Andromeda`] object.
+#' @param ... Included for consitency with generic. Currently ignored.
 #' @export
 #' @rdname
 #' Andromeda-class
-print.Andromeda <- function(object) {
+print.Andromeda <- function(x, ...) {
   
-  if(isValidAndromeda(object)) {
+  if(isValidAndromeda(x)) {
     
     cli::cat_line(pillar::style_subtle("# Andromeda object"))
-    cli::cat_line(pillar::style_subtle(paste("# Physical location: ", attr(object, "path"))))
+    cli::cat_line(pillar::style_subtle(paste("# Physical location: ", attr(x, "path"))))
     cli::cat_line("")
     cli::cat_line("Tables:")
-    for (tableName in names(object)) {
+    for (tableName in names(x)) {
       # columns <- purrr::map_chr(object[[tableName]]$schema$fields, "name")
-      columns <- paste0(names(object[[tableName]]), collapse = ", ")
+      columns <- paste0(names(x[[tableName]]), collapse = ", ")
       cli::cat_line(paste0("$", tableName," (", columns, ")"))
     }
   } else {

@@ -9,7 +9,7 @@ appendToTable(tbl, .data)
 \arguments{
 \item{tbl}{An \code{\link{Andromeda}} table. This must be a base table (i.e. it cannot be a query result).}
 
-\item{data}{The data to append. This can be either a data.frame or another Andromeda table.}
+\item{.data}{The data to append. This can be either a data.frame or another Andromeda table.}
 }
 \value{
 Returns no value. Executed for the side-effect of appending the data to the table.

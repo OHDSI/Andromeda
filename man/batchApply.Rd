@@ -51,6 +51,3 @@ result
 close(andr)
 
 }
-\seealso{
-\code{\link[=groupApply]{groupApply()}}
-}

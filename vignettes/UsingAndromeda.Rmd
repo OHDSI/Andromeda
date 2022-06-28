@@ -99,7 +99,7 @@ This only applies to `Andromeda` objects that are created from that point onward
 
 # Querying data from an Andromeda object
 
-`Andromeda` relies on `dbplyr`, a `dplyr` implementation, for querying the data. A key aspect of `dbplyr` is lazy execution. This means that we can define a query, but the query will not be executed until we explicitly request so using the `collect()` statement. For example, we may want to know the number of cars that can go faster than 10:
+`Andromeda` relies on `dplyr` for querying the data. A key aspect of `dplyr` is lazy execution. This means that we can define a query, but the query will not be executed until we explicitly request so using the `collect()` statement. For example, we may want to know the number of cars that can go faster than 10:
 
 ```{r eval=TRUE}
 andr <- andromeda(cars = cars)
