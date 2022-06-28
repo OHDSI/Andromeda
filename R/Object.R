@@ -154,7 +154,7 @@ dirs <- function(x) list.dirs(attr(x, "path"), recursive = FALSE, full.names = F
 }
 
 #' @param x  An [`Andromeda`] object.
-#' @param ... Included for consitency with generic. Currently ignored.
+#' @param ... Included for consistency with generic. Currently ignored.
 #' @export
 #' @rdname
 #' Andromeda-class

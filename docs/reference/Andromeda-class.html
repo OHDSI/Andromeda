@@ -38,9 +38,6 @@ It is essentially a list of arrow datasets that are stored on disk in the feathe
       <a href="../articles/UsingAndromeda.html">Using Andromeda</a>
     </li>
   </ul></li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
 </li>
@@ -73,7 +70,7 @@ It is essentially a list of arrow datasets that are stored on disk in the feathe
 
     <div id="ref-usage">
     <div class="sourceCode"><pre><code># S3 method for Andromeda
-print(object)
+print(x, ...)
 
 # S3 method for Andromeda
 $(x, name) &lt;- value
@@ -90,12 +87,12 @@ close(con, ...)</code></pre></div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>object</dt>
-<dd><p>An <code>Andromeda</code> object.</p></dd>
-
-
-<dt>x</dt>
+    <dl><dt>x</dt>
 <dd><p>An andromeda object</p></dd>
+
+
+<dt>...</dt>
+<dd><p>Included for compatibility with generic <code><a href="https://rdrr.io/r/base/connections.html" class="external-link">close()</a></code> method.</p></dd>
 
 
 <dt>name</dt>
@@ -112,10 +109,6 @@ close(con, ...)</code></pre></div>
 
 <dt>con</dt>
 <dd><p>An <code>Andromeda</code> object.</p></dd>
-
-
-<dt>...</dt>
-<dd><p>Included for compatibility with generic <code><a href="https://rdrr.io/r/base/connections.html" class="external-link">close()</a></code> method.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -141,15 +134,6 @@ syntax, e.g. <code>andromeda[["myTable"]]</code></p>
 temporary location on the disk. You can modify the data as you can see fit, and when needed can save the data
 to a permanent location. Later this data can be loaded to a temporary location again and be read and modified,
 while keeping the saved data as is.</p>
-    </div>
-    <div id="inheritance">
-    <h2>Inheritance</h2>
-    
-
-
-<p>The <code>Andromeda</code> inherits directly from <code>SQLiteConnection.</code> As such, it can be used as if it is a <code>SQLiteConnection</code>.
-<code>RSQLite</code> is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run
-from a single file on the local file system.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>

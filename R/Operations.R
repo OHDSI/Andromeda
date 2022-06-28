@@ -101,86 +101,86 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
 #   arrow::map_batches(X = tbl, FUN = fun, ... = ..., .data.frame = FALSE)
 # }
 
-# #' Apply a function to groups of data in an Andromeda table
-# #'
-# #' @param tbl             An [`Andromeda`] table (or any other 'DBI' table).
-# #' @param groupVariable   The variable to group by
-# #' @param fun             A function where the first argument is a data frame.
-# #' @param ...             Additional parameters passed to fun.
-# #' @param batchSize       Number of rows fetched from the table at a time. This is not the number of
-# #'                        rows to which the function will be applied. Included mostly for testing
-# #'                        purposes.
-# #' @param progressBar     Show a progress bar?
-# #' @param safe            Create a copy of `tbl` first? Allows writing to the same Andromeda as being
-# #'                        read from.
-# #'
-# #' @details
-# #' This function applies a function to groups of data. The groups are identified by unique values of
-# #' the `groupVariable`, which must be a variable in the table.
-# #'
-# #' @seealso [batchApply()]
-# #'
-# #' @return
-# #' Invisibly returns a list of objects, where each object is the output of the user-supplied function
-# #' applied to a group.
-# #'
-# #' @examples
-# #' andr <- andromeda(cars = cars)
-# #'
-# #' fun <- function(x) {
-# #'   return(tibble::tibble(speed = x$speed[1], meanDist = mean(x$dist)))
-# #' }
-# #'
-# #' result <- groupApply(andr$cars, "speed", fun)
-# #' result <- bind_rows(result)
-# #' result
-# #' # # A tibble: 19 x 2 
-# #' # speed meanDist 
-# #' # <dbl> <dbl> 
-# #' # 1 4 6 
-# #' # 2 7 13 
-# #' # 3 8 16 
-# #' # ...
-# #'
-# #' close(andr)
-# #'
-# #' @export
-# groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, progressBar = FALSE, safe = FALSE) {
-#   if (!groupVariable %in% colnames(tbl))
-#     abort(sprintf("'%s' is not a variable in the table", groupVariable))
-#   
-#   env <- new.env()
-#   assign("output", list(), envir = env)
-#   wrapper <- function(data, userFun, groupVariable, env, ...) {
-#     groups <- split(data, data[groupVariable])
-#     if (!is.null(env$groupValue) && groups[[1]][1, groupVariable] == env$groupValue) {
-#       groups[[1]] <- bind_rows(groups[[1]], env$groupData)
-#     }
-#     if (length(groups) > 1) {
-#       results <- lapply(groups[1:(length(groups) - 1)], userFun, ...)
-#       env$output <- append(env$output, results)
-#     }
-#     env$groupData <- groups[[length(groups)]]
-#     env$groupValue <- groups[[length(groups)]][1, groupVariable]
-#   }
-#   batchApply(tbl = tbl %>% arrange(rlang::sym(groupVariable)),
-#              fun = wrapper,
-#              userFun = fun,
-#              env = env,
-#              groupVariable = groupVariable,
-#              ...,
-#              batchSize = batchSize,
-#              progressBar = progressBar,
-#              safe = safe)
-#   output <- env$output
-#   if (!is.null(env$groupData)) {
-#     output[[length(output) + 1]] <- fun(env$groupData, ...)
-#     names(output)[length(output)] <- as.character(env$groupValue)
-#   }
-#   rm(env)
-#   invisible(output)
-# }
-# 
+#' Apply a function to groups of data in an Andromeda table
+#'
+#' @param tbl             An [`Andromeda`] table (or any other 'DBI' table).
+#' @param groupVariable   The variable to group by
+#' @param fun             A function where the first argument is a data frame.
+#' @param ...             Additional parameters passed to fun.
+#' @param batchSize       Number of rows fetched from the table at a time. This is not the number of
+#'                        rows to which the function will be applied. Included mostly for testing
+#'                        purposes.
+#' @param progressBar     Show a progress bar?
+#' @param safe            Create a copy of `tbl` first? Allows writing to the same Andromeda as being
+#'                        read from.
+#'
+#' @details
+#' This function applies a function to groups of data. The groups are identified by unique values of
+#' the `groupVariable`, which must be a variable in the table.
+#'
+#' @seealso [batchApply()]
+#'
+#' @return
+#' Invisibly returns a list of objects, where each object is the output of the user-supplied function
+#' applied to a group.
+#'
+#' @examples
+#' andr <- andromeda(cars = cars)
+#'
+#' fun <- function(x) {
+#'   return(tibble::tibble(speed = x$speed[1], meanDist = mean(x$dist)))
+#' }
+#'
+#' result <- groupApply(andr$cars, "speed", fun)
+#' result <- bind_rows(result)
+#' result
+#' # # A tibble: 19 x 2
+#' # speed meanDist
+#' # <dbl> <dbl>
+#' # 1 4 6
+#' # 2 7 13
+#' # 3 8 16
+#' # ...
+#'
+#' close(andr)
+#'
+#' @export
+groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, progressBar = FALSE, safe = FALSE) {
+  if (!groupVariable %in% names(tbl))
+    abort(sprintf("'%s' is not a variable in the table", groupVariable))
+
+  env <- new.env()
+  assign("output", list(), envir = env)
+  wrapper <- function(data, userFun, groupVariable, env, ...) {
+    groups <- split(data, data[groupVariable])
+    if (!is.null(env$groupValue) && groups[[1]][1, groupVariable] == env$groupValue) {
+      groups[[1]] <- bind_rows(groups[[1]], env$groupData)
+    }
+    if (length(groups) > 1) {
+      results <- lapply(groups[1:(length(groups) - 1)], userFun, ...)
+      env$output <- append(env$output, results)
+    }
+    env$groupData <- groups[[length(groups)]]
+    env$groupValue <- groups[[length(groups)]][1, groupVariable]
+  }
+  batchApply(tbl = tbl, # %>% arrange(rlang::sym(groupVariable)),
+             fun = wrapper,
+             userFun = fun,
+             env = env,
+             groupVariable = groupVariable,
+             ...,
+             batchSize = batchSize,
+             progressBar = progressBar,
+             safe = safe)
+  output <- env$output
+  if (!is.null(env$groupData)) {
+    output[[length(output) + 1]] <- fun(env$groupData, ...)
+    names(output)[length(output)] <- as.character(env$groupValue)
+  }
+  rm(env)
+  invisible(output)
+}
+
 
 
 

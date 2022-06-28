@@ -48,34 +48,34 @@ test_that("batchApply progress bar", {
   expect_true(stringr::str_count(result, "=") > 100)
   close(andromeda)
 })
-# 
-# test_that("groupApply", {
-#   andromeda <- andromeda()
-#   andromeda$cars <- cars
-# 
-#   doSomething <- function(batch, multiplier) {
-#     return(nrow(batch) * multiplier)
-#   }
-#   result <- groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10)
-#   result <- unlist(result)
-# 
-#   expect_true(sum(result) == nrow(cars) * 2)
-#   expect_true(length(result) == length(unique(cars$speed)))
-#   close(andromeda)
-# })
-# 
-# test_that("groupApply progress bar", {
-#   andromeda <- andromeda()
-#   andromeda$cars <- cars
-#   
-#   doSomething <- function(batch, multiplier) {
-#     return(nrow(batch) * multiplier)
-#   }
-#   result <- capture_output(groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10, progressBar = TRUE))
-#   expect_true(stringr::str_count(result, "=") > 100)
-#   close(andromeda)
-# })
-# 
+
+test_that("groupApply", {
+  andromeda <- andromeda()
+  andromeda$cars <- cars
+
+  doSomething <- function(batch, multiplier) {
+    return(nrow(batch) * multiplier)
+  }
+  result <- groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10)
+  result <- unlist(result)
+
+  expect_true(sum(result) == nrow(cars) * 2)
+  expect_true(length(result) == length(unique(cars$speed)))
+  close(andromeda)
+})
+
+test_that("groupApply progress bar", {
+  andromeda <- andromeda()
+  andromeda$cars <- cars
+
+  doSomething <- function(batch, multiplier) {
+    return(nrow(batch) * multiplier)
+  }
+  result <- capture_output(groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10, progressBar = TRUE))
+  expect_true(stringr::str_count(result, "=") > 100)
+  close(andromeda)
+})
+
 test_that("batchTest", {
   andromeda <- andromeda(cars = cars)
 

@@ -54,9 +54,6 @@
     </li>
   </ul>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -85,7 +82,7 @@
                         <h4 data-toc-skip class="author">Martijn J.
 Schuemie</h4>
             
-            <h4 data-toc-skip class="date">2022-06-27</h4>
+            <h4 data-toc-skip class="date">2022-06-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/OHDSI/Andromeda/blob/HEAD/vignettes/UsingAndromeda.Rmd" class="external-link"><code>vignettes/UsingAndromeda.Rmd</code></a></small>
       <div class="hidden name"><code>UsingAndromeda.Rmd</code></div>
@@ -137,7 +134,7 @@ this:</p>
 <code class="sourceCode R"><span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op">&lt;-</span> <span class="va">cars</span></span>
 <span><span class="va">andr</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># Andromeda object</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># Physical location:  /var/folders/xx/01v98b6546ldnm1rg1_bvk000000gn/T//RtmpVGcBat/file1123114173920</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># Physical location:  /var/folders/xx/01v98b6546ldnm1rg1_bvk000000gn/T//Rtmpm2eR2h/file128d034a17296</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Tables:</span></span>
 <span><span class="co">## $cars (speed, dist)</span></span></code></pre>
@@ -270,7 +267,7 @@ on groups of rows defined by having the same speed:</p>
 <code class="sourceCode R"><span><span class="va">doSomething</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">batch</span>, <span class="va">multiplier</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">batch</span><span class="op">)</span> <span class="op">*</span> <span class="va">multiplier</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">groupApply</span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/groupApply.html">groupApply</a></span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span>,</span>
 <span>                     <span class="va">doSomething</span>,</span>
 <span>                     groupVariable <span class="op">=</span> <span class="st">"speed"</span>,</span>
 <span>                     multiplier <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
