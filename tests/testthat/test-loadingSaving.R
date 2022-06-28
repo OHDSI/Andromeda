@@ -45,6 +45,8 @@ test_that("Object cleanup when loading and saving", {
 
   # Andromeda is no longer deleted when saved.
   expect_true(file.exists(attr(andromeda, "path")))
+  close(andromeda)
+  expect_false(file.exists(attr(andromeda, "path")))
 
   andromeda2 <- loadAndromeda(fileName)
   internalFileName <- attr(andromeda2, "path")
