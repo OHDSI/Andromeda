@@ -272,14 +272,25 @@ names.Andromeda <- function(x) {
   list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
 }
 
+#' Remove an andromeda object
+#' 
+#' Attempts to delete an andromeda object. 
+#' 
 #' @param con    An [`Andromeda`] object.
 #' @param ...	   Included for compatibility with generic `close()` method.
+#' @param verbose Should a message be printed if the attempt to remove the andromeda directory was unsuccessful (TRUE or FALSE). .
+#' @return 0 for success, 1 for failure, invisibly. If the andromeda object is already closed (file does not exist) 0 is returned.
 #' @export
 #' @rdname Andromeda-class
-"close.Andromeda" <- function(con, ...) { 
+"close.Andromeda" <- function(con, ..., verbose = TRUE) { 
   if (!isAndromeda(con)) abort("First argument must be an Andromeda object.")
   path <- attr(con, "path")
-  if (file.exists(path)) unlink(path, recursive = TRUE)
+  rc <- 0
+  if (file.exists(path)) {
+    rc <- unlink(path, recursive = TRUE)
+    if (rc == 1 && verbose) message("Attempt to remove andromeda file unsuccessful.")
+  }
+  invisible(rc)
 }
 
 #' Check whether an object is an Andromeda object

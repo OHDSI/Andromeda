@@ -18,7 +18,7 @@
 
 \method{names}{Andromeda}(x)
 
-\method{close}{Andromeda}(con, ...)
+\method{close}{Andromeda}(con, ..., verbose = TRUE)
 }
 \arguments{
 \item{x}{An andromeda object}
@@ -32,9 +32,13 @@
 \item{i}{The name of a table in the \code{\link{Andromeda}} object.}
 
 \item{con}{An \code{\link{Andromeda}} object.}
+
+\item{verbose}{Should a message be printed if the attempt to remove the andromeda directory was unsuccessful (TRUE or FALSE). .}
 }
 \value{
 A character vector with table names
+
+0 for success, 1 for failure, invisibly. If the andromeda object is already closed (file does not exist) 0 is returned.
 }
 \description{
 The \code{Andromeda} class is an S3 object.
@@ -42,6 +46,8 @@ The \code{Andromeda} class is an S3 object.
 This class is provides the ability to work with data objects in R that are too large to fit in memory. Instead,
 these objects are stored on disk. This is slower than working from memory, but may be the only viable option.
 It is essentially a list of arrow datasets that are stored on disk in the feather format.
+
+Attempts to delete an andromeda object.
 }
 \section{Tables}{
 
