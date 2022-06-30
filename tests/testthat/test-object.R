@@ -142,7 +142,6 @@ test_that("Object cleanup", {
   close(andromeda)
   expect_false(file.exists(fileName))
 
-  # now only restarting the R session will automatically clean up andromeda files.
   andromeda2 <- andromeda()
 
   fileName <- attr(andromeda2, "path")
