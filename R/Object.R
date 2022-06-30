@@ -131,10 +131,15 @@ copyAndromeda <- function(andromeda) {
 .newAndromeda <- function() {
   path <- tempfile(tmpdir = .getAndromedaTempFolder())
   dir.create(path)
-  andromeda <- structure(list(), class = "Andromeda", path = path)
+  andromeda <- structure(list(), 
+                         class = "Andromeda", 
+                         path = path,
+                         env = rlang::new_environment(list(path = path)))
   
-  # save the path for cleanup when R session ends
-  andromedaGlobalEnv[[path]] <- path
+  reg.finalizer(attr(andromeda, "env"), function(env) {
+    r <- unlink(env$path, recursive = TRUE) 
+    if(r == 1) rlang::inform("Problem with andromeda cleanup. Possible lock on Andromeda files.")
+  }, onexit = TRUE)
   # attr(class(andromeda), "package") <- "Andromeda" # Why is this necessary?
   .checkAvailableSpace(andromeda)
   return(andromeda)

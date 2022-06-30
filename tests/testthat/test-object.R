@@ -213,3 +213,12 @@ test_that("Warning when disk space low", {
 #   close(andr)
 # })
 
+test_that("Cleanup works", {
+  a <- andromeda(cars = cars)
+  path <- attr(a, "path")
+  expect_true(file.exists(path))
+  rm(a)
+  gc()
+  expect_false(file.exists(path))
+})
+
