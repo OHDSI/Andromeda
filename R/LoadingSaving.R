@@ -59,7 +59,7 @@ saveAndromeda <- function(andromeda, fileName, overwrite = TRUE) {
   
   # Need to save any user-defined attributes as well:
   attribs <- attributes(andromeda)
-  attribs[["class"]] <- attribs[["path"]] <- attribs[["names"]] <- NULL
+  attribs[["class"]] <- attribs[["path"]] <- attribs[["names"]] <- attribs[["env"]] <- NULL
   attributesFileName <- file.path(tempdir(), "user-defined-attributes.json")
   jsonlite::write_json(attribs, attributesFileName)
   

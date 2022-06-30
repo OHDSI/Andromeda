@@ -143,14 +143,14 @@ test_that("Object cleanup", {
   expect_false(file.exists(fileName))
 
   # now only restarting the R session will automatically clean up andromeda files.
-  # andromeda2 <- andromeda()
+  andromeda2 <- andromeda()
 
-  # fileName <- attr(andromeda2, "path")
-  # expect_true(file.exists(fileName))
+  fileName <- attr(andromeda2, "path")
+  expect_true(file.exists(fileName))
 
-  # rm(andromeda2)
-  # invisible(gc())
-  # expect_false(file.exists(fileName))
+  rm(andromeda2)
+  invisible(gc())
+  expect_false(file.exists(fileName))
 })
 
 test_that("Setting the andromeda temp folder", {
@@ -213,12 +213,4 @@ test_that("Warning when disk space low", {
 #   close(andr)
 # })
 
-test_that("Cleanup works", {
-  a <- andromeda(cars = cars)
-  path <- attr(a, "path")
-  expect_true(file.exists(path))
-  rm(a)
-  gc()
-  expect_false(file.exists(path))
-})
 
