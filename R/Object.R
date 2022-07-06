@@ -246,8 +246,11 @@ print.Andromeda <- function(x, ...) {
   .checkAvailableSpace(x)
   if (is.null(value)) {
     if (i %in% dirs(x)) {
-      r <- unlink(file.path(attr(x, "path"), i), recursive = TRUE)
-      if (r == 1) abort(paste("Removal of Andromeda dataset", i, "failed."))
+      files <- list.files(file.path(attr(x, "path"), i), full.names = TRUE)
+      r1 <- vapply(files, unlink, FUN.VALUE = numeric(length(files)), recursive = TRUE)
+      r2 <- unlink(file.path(attr(x, "path"), i), recursive = TRUE)
+      r <- c(r1, r2)
+      if (any(r == 1)) abort(paste("Removal of Andromeda dataset", i, "failed."))
     }
   } else if (inherits(value, "data.frame") && nrow(value) == 0) {
     dir.create(file.path(attr(x, "path"), i))
