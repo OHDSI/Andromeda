@@ -190,6 +190,18 @@ test_that("Warning when disk space low", {
   options(warnDiskSpaceThreshold = NULL)
 })
 
+test_that("Table removal works", {
+  
+  a <- andromeda(cars = cars, iris = iris)
+  x <- a$cars %>%
+    count() %>%
+    pull()
+
+  expect_equal(names(a), c("cars", "iris"))
+  expect_error(a$cars <- NULL, NA)
+  expect_equal(names(a), "iris")
+})
+
 # test_that("Get/set Andromeda table/column names works.", {
 #   andr <- andromeda()
 #   expect_length(names(andr), 0L)
