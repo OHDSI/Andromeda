@@ -247,6 +247,7 @@ print.Andromeda <- function(x, ...) {
   if (is.null(value)) {
     if (i %in% dirs(x)) {
       files <- list.files(file.path(attr(x, "path"), i), full.names = TRUE)
+      invisible(gc())
       r1 <- vapply(files, unlink, FUN.VALUE = numeric(length(files)), recursive = TRUE)
       r2 <- unlink(file.path(attr(x, "path"), i), recursive = TRUE)
       r <- c(r1, r2)
