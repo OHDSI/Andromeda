@@ -105,9 +105,13 @@ loadAndromeda <- function(fileName) {
   
   tableNames <- list.dirs(path, full.names = FALSE, recursive = FALSE)
   
+  classToRestore <- class(andromeda)
+  class(andromeda) <- "list"
   for (nm in tableNames) {
+    # Use normal list assignment here since the files are already in the Andromeda temp folder
     andromeda[[nm]] <- arrow::open_dataset(file.path(path, nm), format = "feather")
   }
+  class(andromeda) <- classToRestore
   
   attributes <- jsonlite::read_json(file.path(path, "user-defined-attributes.json"), simplifyVector = TRUE)
   on.exit(unlink(file.path(path, "user-defined-attributes.json")))
