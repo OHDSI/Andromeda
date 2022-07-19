@@ -246,6 +246,7 @@ print.Andromeda <- function(x, ...) {
   .checkAvailableSpace(x)
   if (is.null(value)) {
     if (i %in% dirs(x)) {
+      gc(verbose = FALSE, full = TRUE)
       r <- unlink(file.path(attr(x, "path"), i), recursive = TRUE)
       if (r == 1) abort(paste("Removal of Andromeda dataset", i, "failed."))
     }
