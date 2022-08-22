@@ -36,6 +36,10 @@ test_that("Tables from data frames", {
 test_that("Tables from tables", {
   andromeda <- andromeda()
   andromeda$cars <- cars
+  
+  # Case where source == target. Strangely this works fine in interactive use but fails when called by devtools::testthat
+  # andromeda$cars <- andromeda$cars
+  # expect_equivalent(collect(andromeda$cars), cars)
 
   andromeda$cars2 <- andromeda$cars
   expect_setequal(names(andromeda), c("cars", "cars2"))
