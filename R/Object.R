@@ -115,11 +115,6 @@ copyAndromeda <- function(andromeda) {
   checkIfValid(andromeda)
   newAndromeda <- .newAndromeda()
   arrow::copy_files(attr(andromeda, "path"), attr(newAndromeda, "path"))
-  datasetPaths <- list.dirs(attr(newAndromeda, "path"), full.names = TRUE, recursive = FALSE)
-  datasetNames <- list.dirs(attr(newAndromeda, "path"), full.names = FALSE, recursive = FALSE)
-  for (i in seq_along(datasetPaths)) {
-    newAndromeda[[datasetNames[i]]] <- arrow::open_dataset(datasetPaths[i], format = "feather")
-  }
   if(!dplyr::setequal(names(andromeda), names(newAndromeda))) {
     abort(glue::glue("copyAndromeda failed.\n 
                      names(andromeda): {paste(names(andromeda), collapse = ',')} \n
