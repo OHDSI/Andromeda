@@ -55,10 +55,12 @@
 #'
 #' @export
 batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, safe = FALSE) {
-  if (!inherits(tbl, "FileSystemDataset")) abort("First argument must be an Andromeda table")
+  if (!inherits(tbl, c("FileSystemDataset", "arrow_dplyr_query"))) {
+    abort("First argument must be an Andromeda table or a dplyr query of an Andromeda table")
+  }
   if (!is.function(fun)) abort("Second argument must be a function")
   
-  if (safe) {
+  if (safe || inherits(tbl, "arrow_dplyr_query")) {
     tempAndromeda <- andromeda()
     on.exit(close(tempAndromeda))
     tempAndromeda$tbl <- tbl

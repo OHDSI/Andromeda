@@ -7,11 +7,21 @@ test_that("batchApply", {
   doSomething <- function(batch, multiplier) {
     return(nrow(batch) * multiplier)
   }
+  
   result <- batchApply(andromeda$cars, doSomething, multiplier = 2, batchSize = 10)
   result <- unlist(result)
-
   expect_true(sum(result) == nrow(cars) * 2)
   expect_true(length(result) == ceiling(nrow(cars)/10))
+  rm(result)
+  
+  # batchApply can also accept an arrow_dplyr_query
+  query <- dplyr::mutate(andromeda$cars, new_column = speed*dist)
+  expect_s3_class(query, "arrow_dplyr_query")
+  result <- query %>% batchApply(doSomething, multiplier = 2, batchSize = 10)
+  result <- unlist(result)
+  expect_true(sum(result) == nrow(cars) * 2)
+  expect_true(length(result) == ceiling(nrow(cars)/10))
+  
   close(andromeda)
 })
 
