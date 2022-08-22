@@ -365,3 +365,18 @@ isValidAndromeda <- function(x) {
 checkIfValid <- function(x) {
   if (!isValidAndromeda(x)) abort("Andromeda object is not valid.")
 }
+
+#' Is the object an Andromeda table?
+#'
+#' @param tbl A reference to an Andromeda table
+#'
+#' @return TRUE or FALSE
+#' @export
+#'
+#' @examples
+#' andr <- andromeda(cars = cars)
+#' isAndromedaTable(andr$cars)
+#' close(andr)
+isAndromedaTable <- function(tbl) {
+  inherits(tbl, "FileSystemDataset")
+}

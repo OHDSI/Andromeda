@@ -226,6 +226,12 @@ test_that("Andromeda assignment overwrites existing table with the same name", {
   close(andr)
 })
 
+test_that("isAndromedaTable works", {
+  andr <- andromeda(cars = cars)
+  expect_true(isAndromedaTable(andr$cars))
+  expect_false(isAndromedaTable(cars))
+  close(andr)
+})
 
 # test_that("Get/set Andromeda table/column names works.", {
 #   andr <- andromeda()
