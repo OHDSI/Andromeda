@@ -200,7 +200,32 @@ test_that("Table removal works", {
   expect_equal(names(a), c("cars", "iris"))
   expect_error(a$cars <- NULL, NA)
   expect_equal(names(a), "iris")
+  close(a)
 })
+
+
+test_that("Andromeda assignment overwrites existing table with the same name", {
+  andr <- andromeda()
+  
+  # create andromeda table consisting of 10 files with 10 lines each
+  for (i in 1:10) {
+    df <- data.frame(x = replicate(1, sample(0:1, 10, rep = TRUE)))
+    if (i == 1) {
+      andr[['table']] <- df
+    } else {
+      Andromeda::appendToTable(andr[['table']], df)
+    }
+  }
+  
+  expect_equal(length(list.files(file.path(attr(andr, "path"), "table"))), 10)
+  expect_equal(nrow(andr[['table']]), 100) 
+  
+  andr[['table']] <- dplyr::rename(andr[['table']], y = x)
+  
+  expect_equal(nrow(andr[['table']]), 100)
+  close(andr)
+})
+
 
 # test_that("Get/set Andromeda table/column names works.", {
 #   andr <- andromeda()

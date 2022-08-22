@@ -227,8 +227,8 @@ print.Andromeda <- function(x, ...) {
   return(x)
 }
 
-#' @param x    An [`Andromeda`] object.
-#' @param i    The name of a table in the [`Andromeda`] object.
+#' @param x An [`Andromeda`] object.
+#' @param i The name of a table in the [`Andromeda`] object.
 #' @param value A dataframe, [`Andromeda`] table, or dplyr query that uses an [`Andromeda`] table.
 #' @export
 #' @rdname
@@ -238,19 +238,54 @@ print.Andromeda <- function(x, ...) {
     abort("value must be null, a dataframe, an Andromeda table, or a dplyr query using an Andromeda table")
   }
   
-  .checkAvailableSpace(x)
-  if (is.null(value)) {
+  removeTableIfExists <- function(x, i) {
     if (i %in% dirs(x)) {
+      # on windows sometimes there is a file lock possibly added by dplyr::collect that is removed by calling gc
       gc(verbose = FALSE, full = TRUE)
       r <- unlink(file.path(attr(x, "path"), i), recursive = TRUE)
       if (r == 1) abort(paste("Removal of Andromeda dataset", i, "failed."))
     }
-  } else if (inherits(value, "data.frame") && nrow(value) == 0) {
+  }
+  
+  .checkAvailableSpace(x)
+  
+  if (is.null(value)) {
+    removeTableIfExists(x, i)
+  } else if (inherits(value, "data.frame")) {
+    removeTableIfExists(x, i)
     dir.create(file.path(attr(x, "path"), i))
-    arrow::write_feather(value, file.path(attr(x, "path"), i, "part-0.feather"))
+    
+    if (nrow(value) == 0) {
+      # write_dataset will do nothing if given a dataframe with zero rows so use write_feather instead
+      arrow::write_feather(value, file.path(attr(x, "path"), i, "part-0.feather"))
+    } else {
+      arrow::write_dataset(value, file.path(attr(x, "path"), i), format = "feather")
+    }
     value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
-  } else if (inherits(value, c("data.frame", "arrow_dplyr_query", "FileSystemDataset"))) {
-    arrow::write_dataset(value, file.path(attr(x, "path"), i), format = "feather")
+    
+  } else if (inherits(value, "FileSystemDataset")) {
+    valueDirname <- unique(dirname(value$files))
+    if(length(valueDirname) != 1) abort("Only FileSystemDatasets with one or more files in a single enclosing directory are supported by Andromeda.")
+    
+    if (valueDirname %in% list.dirs(attr(x, "path"), recursive = FALSE, full.names = TRUE)) {
+      # No need to write the FileSystemDataset since it already exists in the correct location
+      value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
+    } else {
+      removeTableIfExists(x, i)
+      arrow::write_dataset(value, file.path(attr(x, "path"), i), format = "feather")
+      value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
+    }
+  } else if (inherits(value, c("arrow_dplyr_query"))) {
+    if (i %in% dirs(x)) {
+      tempDir <- tempfile("temp")
+      arrow::write_dataset(value, tempDir, format = "feather")
+      removeTableIfExists(x, i)
+      dir.create(file.path(attr(x, "path"), i))
+      arrow::copy_files(tempDir, file.path(attr(x, "path"), i))
+      unlink(tempDir, recursive = TRUE)
+    } else {
+      arrow::write_dataset(value, file.path(attr(x, "path"), i), format = "feather")
+    }
     
     # A dplyr query that results in zero rows will not be written so we need to handle that case
     if (!dir.exists(file.path(attr(x, "path"), i))) return(`[[<-`(x, i, dplyr::collect(value)))
