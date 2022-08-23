@@ -50,3 +50,37 @@ test_that("Times are preserved", {
   
   close(andromeda)
 })
+
+test_that("Date manipulations work", {
+  andr <- andromeda()
+  
+  df <- data.frame(person_id = c(1, 2, 3),
+                   startDate = as.Date(c("2000-01-01", "2001-01-31", "2004-12-31")),
+                   endDate   = as.Date(c("2000-01-02", "2001-02-01", "2005-01-01")),
+                   someText  = c("asdf", "asdf", "asdf"))
+  
+  andr$df <- df
+  
+  # add days to a date
+  andr$df %>% 
+    mutate(newEndDate = startDate + lubridate::ddays(1)) %>% 
+    mutate(match = (endDate == newEndDate)) %>% 
+    pull(match) %>% 
+    all() %>% 
+    expect_true()
+
+  # conversion of date to integer
+  andr$df %>% 
+    mutate(endDateInteger = as.integer(endDate)) %>% 
+    collect() %>% 
+    pull(endDateInteger) %>% 
+    expect_is("integer")
+  
+  # difference of dates in days
+  andr$df %>% 
+    mutate(diff = as.integer(endDate) - as.integer(startDate)) %>% 
+    collect() %>% 
+    pull(diff) %>% 
+    expect_equal(c(1, 1, 1))
+})
+
