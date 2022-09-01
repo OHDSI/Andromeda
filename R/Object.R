@@ -39,7 +39,7 @@
 #' @name Andromeda-class
 #' @aliases Andromeda
 #' @seealso [`andromeda()`]
-NULL
+setClass("Andromeda", slots = c(path = "character"), contains = "environment")
 
 #' Create an Andromeda object
 #'
@@ -126,21 +126,19 @@ copyAndromeda <- function(andromeda) {
 .newAndromeda <- function() {
   path <- tempfile(tmpdir = .getAndromedaTempFolder())
   dir.create(path)
-  andromeda <- structure(list(), 
-                         class = "Andromeda", 
-                         path = path,
-                         env = rlang::new_environment(list(path = path)))
+  andromeda <- new("Andromeda", path = path)
   
-  reg.finalizer(attr(andromeda, "env"), function(env) {
-    r <- unlink(env$path, recursive = TRUE) 
+  # is.environment(andromeda) is TRUE so why does the next line return the error "first argument must be environment"?
+  reg.finalizer(andromeda, function(a) {
+    r <- unlink(a@path, recursive = TRUE) 
     if(r == 1) rlang::inform("Problem with andromeda cleanup. Possible lock on Andromeda files.")
   }, onexit = TRUE)
-  # attr(class(andromeda), "package") <- "Andromeda" # Why is this necessary?
+  attr(class(andromeda), "package") <- "Andromeda" # Why is this necessary?
   .checkAvailableSpace(andromeda)
   return(andromeda)
 }
 
-dirs <- function(x) list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
+dirs <- function(x) list.dirs(x@path, recursive = FALSE, full.names = FALSE)
 
 .getAndromedaTempFolder <- function() {
   tempFolder <- getOption("andromedaTempFolder")
@@ -158,74 +156,69 @@ dirs <- function(x) list.dirs(attr(x, "path"), recursive = FALSE, full.names = F
 #' @export
 #' @rdname
 #' Andromeda-class
-print.Andromeda <- function(x, ...) {
+setMethod("show", "Andromeda", function(object) {
   
-  if(isValidAndromeda(x)) {
+  if(isValidAndromeda(object)) {
     
     cli::cat_line(pillar::style_subtle("# Andromeda object"))
-    cli::cat_line(pillar::style_subtle(paste("# Physical location: ", attr(x, "path"))))
+    cli::cat_line(pillar::style_subtle(paste("# Physical location: ", object@path)))
     cli::cat_line("")
     cli::cat_line("Tables:")
-    for (tableName in names(x)) {
+    for (tableName in names(object)) {
       # columns <- purrr::map_chr(object[[tableName]]$schema$fields, "name")
-      columns <- paste0(names(x[[tableName]]), collapse = ", ")
+      columns <- paste0(names(object[[tableName]]), collapse = ", ")
       cli::cat_line(paste0("$", tableName," (", columns, ")"))
     }
   } else {
     cli::cat_line(pillar::style_subtle("# Andromeda object is no longer valid. "))
   }
   invisible(NULL)
-}
+})
 
 #' Extract Andromeda table
 #'
-#' @param x An andromeda object
+#' @param x An [`Andromeda`] object
 #' @param name A character string containing the name of an Andromeda table
 #'
-#' @return An andromeda table
+#' @return An [`Andromeda`] table
 #' @export
-"[[.Andromeda" <- function(x, name) {
+setMethod("[[", "Andromeda", function(x, name) {
   checkIfValid(x)
-  # if(!(name %in% names(x))) {
-  #   x[[name]] <- NULL
-  # }
-    
   if(!(name %in% names(x))) return(NULL)
-  # NextMethod()
   arrow::open_dataset(file.path(attr(x, "path"), name), format = "feather")
-}
+})
 
 #' Number of tables in an Andromeda object
 #'
-#' @param x An andromeda object
+#' @param x An [`Andromeda`] object
 #'
 #' @return The number of tables in the andromeda object
 #' @export
-"length.Andromeda" <- function(x) {
+setMethod("length", "Andromeda", function(x) {
   length(names(x))
-}
+})
 
 #' Extract table reference from Andromeda
 #'
-#' @param x An andromeda object
+#' @param x An [`Andromeda`] object
 #' @param name The name of a table in the andromeda object
 #'
 #' @return An andromeda table
 #' @export
-"$.Andromeda" <- function(x, name) {
+setMethod("$", "Andromeda", function(x, name) {
   x[[name]]
-}
+})
 
-#' @param x     An [`Andromeda`] object.
+#' @param x An [`Andromeda`] object.
 #' @param name  The name of a table in the [`Andromeda`] object.
 #' @param value A data frame, [`Andromeda`] table.
 #' @export
 #' @rdname
 #' Andromeda-class
-"$<-.Andromeda" <- function(x, name, value) {
+setMethod("$<-", "Andromeda", function(x, name, value) {
   x[[name]] <- value
   return(x)
-}
+})
 
 #' @param x An [`Andromeda`] object.
 #' @param i The name of a table in the [`Andromeda`] object.
@@ -233,7 +226,7 @@ print.Andromeda <- function(x, ...) {
 #' @export
 #' @rdname
 #' Andromeda-class
-"[[<-.Andromeda" <- function(x, i, value) {
+setMethod("[[<-", "Andromeda", function(x, i, value) {
   if(!is.null(value) && !inherits(value, c("data.frame", "arrow_dplyr_query", "FileSystemDataset"))) {
     abort("value must be null, a dataframe, an Andromeda table, or a dplyr query using an Andromeda table")
   }
@@ -292,8 +285,8 @@ print.Andromeda <- function(x, ...) {
     
     value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
   }
-  NextMethod()
-}
+  callNextMethod()
+})
 
 #' The Andromeda table names
 #'
@@ -303,10 +296,10 @@ print.Andromeda <- function(x, ...) {
 #' @export
 #' @rdname
 #' Andromeda-class
-names.Andromeda <- function(x) {
+setMethod("names", "Andromeda", function(x) {
   checkIfValid(x)
   list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
-}
+})
 
 #' Remove an andromeda object
 #' 
@@ -318,7 +311,7 @@ names.Andromeda <- function(x) {
 #' @return 0 for success, 1 for failure, invisibly. If the andromeda object is already closed (file does not exist) 0 is returned.
 #' @export
 #' @rdname Andromeda-class
-"close.Andromeda" <- function(con, ..., verbose = TRUE) { 
+setMethod("close", "Andromeda", function(con, ..., verbose = TRUE) { 
   if (!isAndromeda(con)) abort("First argument must be an Andromeda object.")
   path <- attr(con, "path")
   rc <- 0
@@ -327,7 +320,7 @@ names.Andromeda <- function(x) {
     if (rc == 1 && verbose) message("Attempt to remove andromeda file unsuccessful.")
   }
   invisible(rc)
-}
+})
 
 #' Check whether an object is an Andromeda object
 #'

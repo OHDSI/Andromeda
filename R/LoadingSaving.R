@@ -48,6 +48,7 @@
 #'
 #' @export
 saveAndromeda <- function(andromeda, fileName, overwrite = TRUE) {
+  checkIfValid(andromeda)
   if (!overwrite && file.exists(fileName)) {
     abort(sprintf("File %s already exists, and overwrite = FALSE", fileName))
   }
@@ -100,7 +101,7 @@ loadAndromeda <- function(fileName) {
   fileNamesInZip <- utils::unzip(fileName, list = TRUE)$Name
   
   andromeda <- .newAndromeda()
-  path <- attr(andromeda, "path")
+  path <- andromeda@path
   zip::unzip(fileName, exdir = path)
   
   tableNames <- list.dirs(path, full.names = FALSE, recursive = FALSE)
