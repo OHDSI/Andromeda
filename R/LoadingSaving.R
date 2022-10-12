@@ -33,6 +33,7 @@
 #' Invisibly returns the andromeda object being saved.
 #'
 #' @examples
+#' \dontrun{
 #' andr <- andromeda(cars = cars)
 #' 
 #' # For this example we'll use a temporary file location:
@@ -42,7 +43,7 @@
 #' 
 #' # Cleaning up the file used in this example:
 #' unlink(fileName)
-#' 
+#' }
 #' @seealso 
 #' [`loadAndromeda()`]
 #'
@@ -81,6 +82,7 @@ saveAndromeda <- function(andromeda, fileName, overwrite = TRUE) {
 #' An [`Andromeda`] object.
 #'
 #' @examples
+#' \dontrun{
 #' # For this example we create an Andromeda object and save it to
 #' # a temporary file location
 #' fileName <- tempfile()
@@ -93,7 +95,7 @@ saveAndromeda <- function(andromeda, fileName, overwrite = TRUE) {
 #' 
 #' # Cleaning up the file used in this example:
 #' unlink(fileName)
-#'
+#' }
 #' @export
 loadAndromeda <- function(fileName) {
   if (!file.exists(fileName)) abort(sprintf("File %s does not exist", fileName))
@@ -152,10 +154,11 @@ loadAndromeda <- function(fileName) {
 #' disk space.
 #'
 #' @examples
+#' \dontrun{
 #' # Get the number of available gigabytes:
 #' getAndromedaTempDiskSpace()
 #' #123.456
-#' 
+#' }
 #' @export
 getAndromedaTempDiskSpace <- function(andromeda = NULL) {
   if(!is.null(andromeda)) checkIfValid(andromeda)
@@ -188,8 +191,10 @@ getAndromedaTempDiskSpace <- function(andromeda = NULL) {
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' # Check that the Andromeda temp folder has at least 10GB. 
 #' checkAndromedaTempFolder(minimumSize = 10)
+#' }
 checkAndromedaTempFolder <- function(minimumSize) {
   folder <- .getAndromedaTempFolder()
   if(!file.exists(folder)) 
