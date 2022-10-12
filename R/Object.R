@@ -58,6 +58,7 @@ setClass("Andromeda", slots = c(path = "character", env = "environment"), contai
 #' Returns an [`Andromeda`] object.
 #'
 #' @examples
+#' \dontrun{
 #' andr <- andromeda(cars = cars, iris = iris)
 #'
 #' names(andr)
@@ -71,7 +72,7 @@ setClass("Andromeda", slots = c(path = "character", env = "environment"), contai
 #' # ...
 #'
 #' close(andr)
-#' 
+#' }
 #' @rdname andromeda_constructor
 #'
 #' @export
@@ -100,6 +101,7 @@ andromeda <- function(...) {
 #' The copied [`Andromeda`] object.
 #'
 #' @examples
+#' \dontrun{
 #' andr <- andromeda(cars = cars, iris = iris)
 #'
 #' andr2 <- copyAndromeda(andr)
@@ -109,7 +111,7 @@ andromeda <- function(...) {
 #'
 #' close(andr)
 #' close(andr2)
-#'
+#' }
 #' @export
 copyAndromeda <- function(andromeda) {
   checkIfValid(andromeda)
@@ -123,6 +125,7 @@ copyAndromeda <- function(andromeda) {
   return(newAndromeda)
 }
 
+#' @importFrom methods new
 .newAndromeda <- function() {
   path <- tempfile(tmpdir = .getAndromedaTempFolder())
   dir.create(path)
@@ -151,11 +154,10 @@ dirs <- function(x) list.dirs(x@path, recursive = FALSE, full.names = FALSE)
   return(tempFolder)
 }
 
-#' @param x  An [`Andromeda`] object.
-#' @param ... Included for consistency with generic. Currently ignored.
+#' @param object  An [`Andromeda`] object.
+#' @importFrom methods show
 #' @export
-#' @rdname
-#' Andromeda-class
+#' @rdname Andromeda-class
 setMethod("show", "Andromeda", function(object) {
   
   if(isValidAndromeda(object)) {
@@ -178,7 +180,7 @@ setMethod("show", "Andromeda", function(object) {
 #' Extract Andromeda table
 #'
 #' @param x An [`Andromeda`] object
-#' @param name A character string containing the name of an Andromeda table
+#' @param i A character string containing the name of an Andromeda table
 #'
 #' @return An [`Andromeda`] table
 #' @export
@@ -224,6 +226,7 @@ setMethod("$<-", "Andromeda", function(x, name, value) {
 #' @param i The name of a table in the [`Andromeda`] object.
 #' @param value A dataframe, [`Andromeda`] table, or dplyr query that uses an [`Andromeda`] table.
 #' @export
+#' @importFrom methods callNextMethod
 #' @rdname
 #' Andromeda-class
 setMethod("[[<-", "Andromeda", function(x, i, value) {
@@ -270,7 +273,7 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
     }
   } else if (inherits(value, c("arrow_dplyr_query"))) {
     if (i %in% dirs(x)) {
-      tempDir <- tempfile("temp")
+      tempDir <- tempfile("temp", tmpdir = .getAndromedaTempFolder())
       arrow::write_dataset(value, tempDir, format = "feather")
       removeTableIfExists(x, i)
       dir.create(file.path(attr(x, "path"), i))
@@ -367,9 +370,11 @@ checkIfValid <- function(x) {
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' andr <- andromeda(cars = cars)
 #' isAndromedaTable(andr$cars)
 #' close(andr)
+#' }
 isAndromedaTable <- function(tbl) {
   inherits(tbl, "FileSystemDataset")
 }

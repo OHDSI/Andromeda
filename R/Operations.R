@@ -36,6 +36,7 @@
 #' applied to a batch
 #'
 #' @examples
+#' \dontrun{
 #' andr <- andromeda(cars = cars)
 #'
 #' fun <- function(x) {
@@ -52,7 +53,7 @@
 #' # [1] 25
 #'
 #' close(andr)
-#'
+#' }
 #' @export
 batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, safe = FALSE) {
   if (!inherits(tbl, c("FileSystemDataset", "arrow_dplyr_query"))) {
@@ -127,6 +128,7 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
 #' applied to a group.
 #'
 #' @examples
+#' \dontrun{
 #' andr <- andromeda(cars = cars)
 #'
 #' fun <- function(x) {
@@ -145,7 +147,7 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
 #' # ...
 #'
 #' close(andr)
-#'
+#' }
 #' @export
 groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, progressBar = FALSE, safe = FALSE) {
   if (!groupVariable %in% names(tbl))
@@ -205,6 +207,7 @@ groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, progres
 #' Returns no value. Executed for the side-effect of appending the data to the table.
 #'
 #' @examples
+#' \dontrun{
 #' andr <- andromeda(cars = cars)
 #' nrow(andr$cars)
 #' # [1] 50
@@ -218,7 +221,7 @@ groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, progres
 #' # [1] 182
 #'
 #' close(andr)
-#'
+#' }
 #' @export
 appendToTable <- function(tbl, .data) {
   if (!inherits(tbl, "FileSystemDataset")) abort("First argument must be an Andromeda table")
@@ -254,6 +257,7 @@ appendToTable <- function(tbl, .data) {
 #' Returns `FALSE` if any of the calls to the user-supplied function returned `FALSE`, else returns `TRUE`.
 #'
 #' @examples
+#' \dontrun{
 #' andr <- andromeda(cars = cars)
 #'
 #' fun <- function(x) {
@@ -266,7 +270,7 @@ appendToTable <- function(tbl, .data) {
 #' # [1] FALSE
 #'
 #' close(andr)
-#'
+#' }
 #' @export
 batchTest <- function(tbl, fun, ..., batchSize = 100000) {
   if (!inherits(tbl, "FileSystemDataset")) abort("First argument must be an Andromeda table")
