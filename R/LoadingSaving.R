@@ -60,7 +60,7 @@ saveAndromeda <- function(andromeda, fileName, overwrite = TRUE) {
   
   # Need to save any user-defined attributes as well:
   attribs <- attributes(andromeda)
-  attribs[["class"]] <- attribs[["path"]] <- attribs[["names"]] <- attribs[["env"]] <- NULL
+  attribs[["class"]] <- attribs[["path"]] <- attribs[["names"]] <- attribs[["env"]] <- attribs[[".xData"]] <- NULL
   attributesFileName <- file.path(tempdir(), "user-defined-attributes.json")
   jsonlite::write_json(attribs, attributesFileName)
   
@@ -103,16 +103,11 @@ loadAndromeda <- function(fileName) {
   andromeda <- .newAndromeda()
   path <- andromeda@path
   zip::unzip(fileName, exdir = path)
-  
   tableNames <- list.dirs(path, full.names = FALSE, recursive = FALSE)
   
-  classToRestore <- class(andromeda)
-  class(andromeda) <- "list"
   for (nm in tableNames) {
-    # Use normal list assignment here since the files are already in the Andromeda temp folder
     andromeda[[nm]] <- arrow::open_dataset(file.path(path, nm), format = "feather")
   }
-  class(andromeda) <- classToRestore
   
   attributes <- jsonlite::read_json(file.path(path, "user-defined-attributes.json"), simplifyVector = TRUE)
   on.exit(unlink(file.path(path, "user-defined-attributes.json")))
