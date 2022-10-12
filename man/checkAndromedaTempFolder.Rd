@@ -17,6 +17,8 @@ Checks that the Andromeda temp folder exists, is writable, and optionally has a 
 The Andromeda temp folder is the location where Andromeda objects are stored.
 }
 \examples{
+\dontrun{
 # Check that the Andromeda temp folder has at least 10GB. 
 checkAndromedaTempFolder(minimumSize = 10)
+}
 }

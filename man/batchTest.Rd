@@ -26,6 +26,7 @@ This function applies a boolean test function to sets of
 data and terminates at the first \code{FALSE}.
 }
 \examples{
+\dontrun{
 andr <- andromeda(cars = cars)
 
 fun <- function(x) {
@@ -38,5 +39,5 @@ result
 # [1] FALSE
 
 close(andr)
-
+}
 }

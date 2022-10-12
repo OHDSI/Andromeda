@@ -22,6 +22,8 @@
 \S4method{close}{Andromeda}(con, ..., verbose = TRUE)
 }
 \arguments{
+\item{object}{An \code{\link{Andromeda}} object.}
+
 \item{x}{An andromeda object}
 
 \item{name}{The name of a table in the \code{\link{Andromeda}} object.}

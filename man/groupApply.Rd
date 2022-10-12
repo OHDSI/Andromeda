@@ -44,6 +44,7 @@ This function applies a function to groups of data. The groups are identified by
 the \code{groupVariable}, which must be a variable in the table.
 }
 \examples{
+\dontrun{
 andr <- andromeda(cars = cars)
 
 fun <- function(x) {
@@ -62,7 +63,7 @@ result
 # ...
 
 close(andr)
-
+}
 }
 \seealso{
 \code{\link[=batchApply]{batchApply()}}

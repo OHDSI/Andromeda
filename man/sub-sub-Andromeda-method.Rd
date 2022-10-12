@@ -4,12 +4,12 @@
 \alias{[[,Andromeda-method}
 \title{Extract Andromeda table}
 \usage{
-\S4method{[[}{Andromeda}(x, name)
+\S4method{[[}{Andromeda}(x, i)
 }
 \arguments{
 \item{x}{An \code{\link{Andromeda}} object}
 
-\item{name}{A character string containing the name of an Andromeda table}
+\item{i}{A character string containing the name of an Andromeda table}
 }
 \value{
 An \code{\link{Andromeda}} table

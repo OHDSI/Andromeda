@@ -16,7 +16,9 @@ TRUE or FALSE
 Is the object an Andromeda table?
 }
 \examples{
+\dontrun{
 andr <- andromeda(cars = cars)
 isAndromedaTable(andr$cars)
 close(andr)
+}
 }

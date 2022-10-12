@@ -25,6 +25,7 @@ than when appending data from within the same \code{\link{Andromeda}} object.
 therefore be identical (but not necessarily in the same order).
 }
 \examples{
+\dontrun{
 andr <- andromeda(cars = cars)
 nrow(andr$cars)
 # [1] 50
@@ -38,5 +39,5 @@ nrow(andr$cars)
 # [1] 182
 
 close(andr)
-
+}
 }

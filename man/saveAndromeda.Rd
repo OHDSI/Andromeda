@@ -23,6 +23,7 @@ Each dataset is represented as a folder contiaining one or more feather files.
 User defined attributes are saved to a json file.
 }
 \examples{
+\dontrun{
 andr <- andromeda(cars = cars)
 
 # For this example we'll use a temporary file location:
@@ -32,7 +33,7 @@ saveAndromeda(andr, fileName)
 
 # Cleaning up the file used in this example:
 unlink(fileName)
-
+}
 }
 \seealso{
 \code{\link{loadAndromeda}}

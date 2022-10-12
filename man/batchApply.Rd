@@ -33,6 +33,7 @@ data. In this case, the data is batches of data from an \code{\link{Andromeda}} 
 presented to the function as a data frame.
 }
 \examples{
+\dontrun{
 andr <- andromeda(cars = cars)
 
 fun <- function(x) {
@@ -49,5 +50,5 @@ result
 # [1] 25
 
 close(andr)
-
+}
 }

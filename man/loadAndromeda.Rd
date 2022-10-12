@@ -16,6 +16,7 @@ An \code{\link{Andromeda}} object.
 Load Andromeda from file
 }
 \examples{
+\dontrun{
 # For this example we create an Andromeda object and save it to
 # a temporary file location
 fileName <- tempfile()
@@ -28,7 +29,7 @@ andr <- loadAndromeda(fileName)
 
 # Cleaning up the file used in this example:
 unlink(fileName)
-
+}
 }
 \seealso{
 \code{\link[=saveAndromeda]{saveAndromeda()}}
