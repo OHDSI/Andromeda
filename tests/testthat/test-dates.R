@@ -1,5 +1,7 @@
 library(testthat)
 
+withr::local_options(list("andromedaTempFolder" = "~/andromedaTempFolder"))
+
 test_that("Dates are preserved", {
   andromeda <- andromeda()
 

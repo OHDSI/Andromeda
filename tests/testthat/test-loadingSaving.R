@@ -1,5 +1,7 @@
 library(testthat)
 
+withr::local_options(list("andromedaTempFolder" = "~/andromedaTempFolder"))
+
 test_that("Saving and loading", {
   andromeda <- andromeda()
   andromeda$table <- iris
@@ -106,3 +108,4 @@ test_that(".checkAvailableSpace works", {
     options(warnDiskSpaceThreshold = oldOption)
   }
 })
+
