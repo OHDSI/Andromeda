@@ -39,7 +39,7 @@
 #' @name Andromeda-class
 #' @aliases Andromeda
 #' @seealso [`andromeda()`]
-setClass("Andromeda", slots = c(path = "character"), contains = "environment")
+setClass("Andromeda", slots = c(path = "character", env = "environment"), contains = "environment")
 
 #' Create an Andromeda object
 #'
@@ -126,11 +126,11 @@ copyAndromeda <- function(andromeda) {
 .newAndromeda <- function() {
   path <- tempfile(tmpdir = .getAndromedaTempFolder())
   dir.create(path)
-  andromeda <- new("Andromeda", path = path)
+  andromeda <- new("Andromeda", path = path, env = rlang::new_environment(list(path = path)))
   
   # is.environment(andromeda) is TRUE so why does the next line return the error "first argument must be environment"?
-  reg.finalizer(andromeda, function(a) {
-    r <- unlink(a@path, recursive = TRUE) 
+  reg.finalizer(andromeda@env, function(a) {
+    r <- unlink(a$path, recursive = TRUE) 
     if(r == 1) rlang::inform("Problem with andromeda cleanup. Possible lock on Andromeda files.")
   }, onexit = TRUE)
   attr(class(andromeda), "package") <- "Andromeda" # Why is this necessary?
@@ -182,10 +182,10 @@ setMethod("show", "Andromeda", function(object) {
 #'
 #' @return An [`Andromeda`] table
 #' @export
-setMethod("[[", "Andromeda", function(x, name) {
+setMethod("[[", "Andromeda", function(x, i) {
   checkIfValid(x)
-  if(!(name %in% names(x))) return(NULL)
-  arrow::open_dataset(file.path(attr(x, "path"), name), format = "feather")
+  if(!(i %in% names(x))) return(NULL)
+  arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
 })
 
 #' Number of tables in an Andromeda object
