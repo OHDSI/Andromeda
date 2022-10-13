@@ -263,7 +263,9 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
     valueDirname <- unique(dirname(value$files))
     if(length(valueDirname) != 1) abort("Only FileSystemDatasets with one or more files in a single enclosing directory are supported by Andromeda.")
     
-    if (valueDirname == file.path(attr(x, "path"), i)) {
+    normalizeWinslash <- function(x) gsub("\\\\", "/", x)
+    
+    if (normalizeWinslash(valueDirname) == normalizeWinslash(file.path(attr(x, "path"), i))) {
       # No need to write the FileSystemDataset since it already exists in the correct location
       value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
     } else {
