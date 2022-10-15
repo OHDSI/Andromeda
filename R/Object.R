@@ -286,7 +286,7 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
     }
     
     # A dplyr query that results in zero rows will not be written so we need to handle that case
-    if (!dir.exists(file.path(attr(x, "path"), i))) return(`[[<-`(x, i, dplyr::collect(value)))
+    if (!dir.exists(file.path(attr(x, "path"), i))) return(`[[<-`(x = x, i = i, value = dplyr::collect(value)))
     
     value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
   }
