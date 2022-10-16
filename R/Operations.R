@@ -68,7 +68,9 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
     tbl <- tempAndromeda$tbl
   }
   
-  if(tally(tbl)$n == 0) return(list())
+  if(nrow(tbl) == 0) {
+    return(list())
+  } 
   
   scanner <- arrow::ScannerBuilder$create(tbl)$BatchSize(batch_size = batchSize)$Finish()
   reader <- scanner$ToRecordBatchReader()
