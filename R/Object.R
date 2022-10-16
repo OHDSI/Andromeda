@@ -271,6 +271,10 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
     } else {
       removeTableIfExists(x, i)
       arrow::write_dataset(value, file.path(attr(x, "path"), i), format = "feather")
+      
+      # If the dataset has zero rows it will not get written by arrow::write_dataset so bring into R and call assignment using dataframe
+      if (!dir.exists(file.path(attr(x, "path"), i))) return(`[[<-`(x = x, i = i, value = dplyr::collect(value)))
+  
       value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
     }
   } else if (inherits(value, c("arrow_dplyr_query"))) {

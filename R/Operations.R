@@ -67,6 +67,9 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
     tempAndromeda$tbl <- tbl
     tbl <- tempAndromeda$tbl
   }
+  
+  if(tally(tbl)$n == 0) return(list())
+  
   scanner <- arrow::ScannerBuilder$create(tbl)$BatchSize(batch_size = batchSize)$Finish()
   reader <- scanner$ToRecordBatchReader()
   
@@ -167,7 +170,8 @@ groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, progres
     env$groupData <- groups[[length(groups)]]
     env$groupValue <- groups[[length(groups)]][1, groupVariable]
   }
-  batchApply(tbl = tbl, # %>% arrange(rlang::sym(groupVariable)),
+  groupVariableSym <- rlang::ensym(groupVariable)
+  batchApply(tbl = tbl %>% arrange(!!groupVariableSym),
              fun = wrapper,
              userFun = fun,
              env = env,
