@@ -39,7 +39,7 @@
 #' @name Andromeda-class
 #' @aliases Andromeda
 #' @seealso [`andromeda()`]
-setClass("Andromeda", slots = c(path = "character", env = "environment"), contains = "environment")
+setClass("Andromeda", slots = c(path = "character", env = "environment"), contains = "list")
 
 #' Create an Andromeda object
 #'
