@@ -131,12 +131,16 @@ copyAndromeda <- function(andromeda) {
   dir.create(path)
   andromeda <- new("Andromeda", path = path, env = rlang::new_environment(list(path = path)))
   
-  # is.environment(andromeda) is TRUE so why does the next line return the error "first argument must be environment"?
   reg.finalizer(andromeda@env, function(a) {
     r <- unlink(a$path, recursive = TRUE) 
-    if(r == 1) rlang::inform("Problem with andromeda cleanup. Possible lock on Andromeda files.")
+    if (r == 1) {
+      gc() # call gc to remove file locks on windows
+      r2 <- unlink(a$path, recursive = TRUE) 
+      if(r2 == 1) rlang::inform("Problem with andromeda cleanup. Possible lock on Andromeda files.")
+    }
+    
   }, onexit = TRUE)
-  attr(class(andromeda), "package") <- "Andromeda" # Why is this necessary?
+  attr(class(andromeda), "package") <- "Andromeda" 
   .checkAvailableSpace(andromeda)
   return(andromeda)
 }
