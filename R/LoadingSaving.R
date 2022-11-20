@@ -102,21 +102,25 @@ loadAndromeda <- function(fileName) {
   
   fileNamesInZip <- utils::unzip(fileName, list = TRUE)$Name
   
-  andromeda <- .newAndromeda()
-  path <- andromeda@path
+  andr <- .newAndromeda()
+  path <- andr@path
   zip::unzip(fileName, exdir = path)
   tableNames <- list.dirs(path, full.names = FALSE, recursive = FALSE)
   
+  andrClass <- class(andr)
+  andr <- unclass(andr)
   for (nm in tableNames) {
-    andromeda[[nm]] <- arrow::open_dataset(file.path(path, nm), format = "feather")
+    # We want to use normal list assignment here instead of the Andromeda assignment. Thus remove the class. 
+    andr[[nm]] <- arrow::open_dataset(file.path(path, nm), format = "feather")
   }
+  class(andr) <- andrClass
   
   attributes <- jsonlite::read_json(file.path(path, "user-defined-attributes.json"), simplifyVector = TRUE)
   on.exit(unlink(file.path(path, "user-defined-attributes.json")))
   for (nm in names(attributes)) {
-    attr(andromeda, nm) <- attributes[[nm]]
+    attr(andr, nm) <- attributes[[nm]]
   }
-  return(andromeda)
+  return(andr)
 }
 
 .checkAvailableSpace <- function(andromeda = NULL) {
