@@ -22,6 +22,7 @@ this by specifying a folder using \code{options(andromedaTempFolder = "c:/androm
 Valid objects are data frames, \code{Andromeda} tables, or any other \code{\link{dplyr}} table.
 }
 \examples{
+\dontrun{
 andr <- andromeda(cars = cars, iris = iris)
 
 names(andr)
@@ -35,5 +36,5 @@ andr$cars \%>\% filter(speed > 10) \%>\% collect()
 # ...
 
 close(andr)
-
+}
 }

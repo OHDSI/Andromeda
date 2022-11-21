@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -64,7 +64,7 @@
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="Andromeda-class.html">show(<i>&lt;Andromeda&gt;</i>)</a></code> <code><a href="Andromeda-class.html">`$`(<i>&lt;Andromeda&gt;</i>)</a></code> <code><a href="Andromeda-class.html">`$&lt;-`(<i>&lt;Andromeda&gt;</i>)</a></code> <code><a href="Andromeda-class.html">`[[&lt;-`(<i>&lt;Andromeda&gt;</i>)</a></code> <code><a href="Andromeda-class.html">`[[`(<i>&lt;Andromeda&gt;</i>)</a></code> <code><a href="Andromeda-class.html">names(<i>&lt;Andromeda&gt;</i>)</a></code> <code><a href="Andromeda-class.html">length(<i>&lt;Andromeda&gt;</i>)</a></code> <code><a href="Andromeda-class.html">close(<i>&lt;Andromeda&gt;</i>)</a></code> </p>
+          <p><code><a href="Andromeda-class.html">show(<i>&lt;Andromeda&gt;</i>)</a></code> <code><a href="Andromeda-class.html">`$&lt;-`(<i>&lt;Andromeda&gt;</i>)</a></code> <code><a href="Andromeda-class.html">`[[&lt;-`(<i>&lt;Andromeda&gt;</i>)</a></code> <code><a href="Andromeda-class.html">names(<i>&lt;Andromeda&gt;</i>)</a></code> <code><a href="Andromeda-class.html">close(<i>&lt;Andromeda&gt;</i>)</a></code> </p>
         </td>
         <td><p>The Andromeda class</p></td>
       </tr><tr><td>
@@ -84,6 +84,10 @@
         </td>
         <td><p>Apply a boolean test to batches of data in an Andromeda table and terminate early</p></td>
       </tr><tr><td>
+          <p><code><a href="cash-Andromeda-method.html">`$`(<i>&lt;Andromeda&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract table reference from Andromeda</p></td>
+      </tr><tr><td>
           <p><code><a href="checkAndromedaTempFolder.html">checkAndromedaTempFolder()</a></code> </p>
         </td>
         <td><p>Check that Andromeda temp folder</p></td>
@@ -91,10 +95,6 @@
           <p><code><a href="copyAndromeda.html">copyAndromeda()</a></code> </p>
         </td>
         <td><p>Copy Andromeda</p></td>
-      </tr><tr><td>
-          <p><code><a href="createIndex.html">createIndex()</a></code> </p>
-        </td>
-        <td><p>Create an index on one or more columns in an Andromeda table</p></td>
       </tr><tr><td>
           <p><code><a href="getAndromedaTempDiskSpace.html">getAndromedaTempDiskSpace()</a></code> </p>
         </td>
@@ -108,45 +108,29 @@
         </td>
         <td><p>Check whether an object is an Andromeda object</p></td>
       </tr><tr><td>
+          <p><code><a href="isAndromedaTable.html">isAndromedaTable()</a></code> </p>
+        </td>
+        <td><p>Is the object an Andromeda table?</p></td>
+      </tr><tr><td>
           <p><code><a href="isValidAndromeda.html">isValidAndromeda()</a></code> </p>
         </td>
-        <td><p>Check whether an Andromeda object is still valid</p></td>
+        <td><p>Checks whether an Andromeda object is valid</p></td>
       </tr><tr><td>
-          <p><code><a href="listIndices.html">listIndices()</a></code> </p>
+          <p><code><a href="length-Andromeda-method.html">length(<i>&lt;Andromeda&gt;</i>)</a></code> </p>
         </td>
-        <td><p>List all indices on an Andromeda table</p></td>
+        <td><p>Number of tables in an Andromeda object</p></td>
       </tr><tr><td>
           <p><code><a href="loadAndromeda.html">loadAndromeda()</a></code> </p>
         </td>
         <td><p>Load Andromeda from file</p></td>
       </tr><tr><td>
-          <p><code><a href="names-set-.tbl_Andromeda.html">`names&lt;-`(<i>&lt;tbl_Andromeda&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Set column names of an Andromeda table</p></td>
-      </tr><tr><td>
-          <p><code><a href="names-set-Andromeda-method.html">`names&lt;-`(<i>&lt;Andromeda&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Set table names in an Andromeda object</p></td>
-      </tr><tr><td>
-          <p><code><a href="names.tbl_Andromeda.html">names(<i>&lt;tbl_Andromeda&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Get the column names of an Andromeda table</p></td>
-      </tr><tr><td>
-          <p><code><a href="removeIndex.html">removeIndex()</a></code> </p>
-        </td>
-        <td><p>Removes an index from an Andromeda table</p></td>
-      </tr><tr><td>
-          <p><code><a href="restoreDate.html">restoreDate()</a></code> </p>
-        </td>
-        <td><p>Restore dates</p></td>
-      </tr><tr><td>
-          <p><code><a href="restorePosixct.html">restorePosixct()</a></code> </p>
-        </td>
-        <td><p>Restore timestamps</p></td>
-      </tr><tr><td>
           <p><code><a href="saveAndromeda.html">saveAndromeda()</a></code> </p>
         </td>
         <td><p>Save Andromeda to file</p></td>
+      </tr><tr><td>
+          <p><code><a href="sub-sub-Andromeda-method.html">`[[`(<i>&lt;Andromeda&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract Andromeda table</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

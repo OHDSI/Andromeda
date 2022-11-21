@@ -26,8 +26,9 @@ can be altered using \code{options(andromedaTempFolder = "c:/andromedaTemp")}, w
 \code{"c:/andromedaTemp"} is the folder to create the Andromeda objects in.
 }
 \examples{
+\dontrun{
 # Get the number of available gigabytes:
 getAndromedaTempDiskSpace()
 #123.456
-
+}
 }

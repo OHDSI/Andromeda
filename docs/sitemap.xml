@@ -22,9 +22,6 @@
     <loc>/reference/Andromeda-class.html</loc>
   </url>
   <url>
-    <loc>/reference/Andromeda-package.html</loc>
-  </url>
-  <url>
     <loc>/reference/andromeda_constructor.html</loc>
   </url>
   <url>
@@ -37,13 +34,13 @@
     <loc>/reference/batchTest.html</loc>
   </url>
   <url>
+    <loc>/reference/cash-Andromeda-method.html</loc>
+  </url>
+  <url>
     <loc>/reference/checkAndromedaTempFolder.html</loc>
   </url>
   <url>
     <loc>/reference/copyAndromeda.html</loc>
-  </url>
-  <url>
-    <loc>/reference/createIndex.html</loc>
   </url>
   <url>
     <loc>/reference/getAndromedaTempDiskSpace.html</loc>
@@ -58,33 +55,21 @@
     <loc>/reference/isAndromeda.html</loc>
   </url>
   <url>
+    <loc>/reference/isAndromedaTable.html</loc>
+  </url>
+  <url>
     <loc>/reference/isValidAndromeda.html</loc>
   </url>
   <url>
-    <loc>/reference/listIndices.html</loc>
+    <loc>/reference/length-Andromeda-method.html</loc>
   </url>
   <url>
     <loc>/reference/loadAndromeda.html</loc>
   </url>
   <url>
-    <loc>/reference/names-set-.tbl_Andromeda.html</loc>
-  </url>
-  <url>
-    <loc>/reference/names-set-Andromeda-method.html</loc>
-  </url>
-  <url>
-    <loc>/reference/names.tbl_Andromeda.html</loc>
-  </url>
-  <url>
-    <loc>/reference/removeIndex.html</loc>
-  </url>
-  <url>
-    <loc>/reference/restoreDate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/restorePosixct.html</loc>
-  </url>
-  <url>
     <loc>/reference/saveAndromeda.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sub-sub-Andromeda-method.html</loc>
   </url>
 </urlset>

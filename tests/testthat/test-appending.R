@@ -3,12 +3,27 @@ library(testthat)
 test_that("Append from same andromeda", {
   andromeda <- andromeda()
   andromeda$cars <- cars
+  q <- andromeda$cars %>% filter(speed > 10)
+
   appendToTable(andromeda$cars, andromeda$cars %>% filter(speed > 10))
 
   carsPlus2 <- andromeda$cars %>% collect()
 
   carsPlus <- rbind(cars, cars[cars$speed > 10, ])
-  expect_equivalent(carsPlus2, carsPlus)
+  expect_true(dplyr::all_equal(carsPlus2, carsPlus, ignore_row_order = TRUE))
+  close(andromeda)
+})
+
+test_that("Append from same andromeda", {
+  andromeda <- andromeda()
+  andromeda$cars <- cars
+  andromeda$carsFiltered <- andromeda$cars %>% filter(speed > 10)
+  appendToTable(andromeda$cars, andromeda$carsFiltered)
+
+  carsPlus2 <- andromeda$cars %>% collect()
+
+  carsPlus <- rbind(cars, cars[cars$speed > 10, ])
+  expect_true(dplyr::all_equal(carsPlus2, carsPlus, ignore_row_order = TRUE))
   close(andromeda)
 })
 
@@ -17,13 +32,13 @@ test_that("Append from other andromeda", {
   andromeda$cars <- cars
 
   andromeda2 <- andromeda()
-  andromeda2$cars <- cars
-  appendToTable(andromeda$cars, andromeda2$cars %>% filter(speed > 10))
+  andromeda2$cars <- cars %>% filter(speed > 10)
+  appendToTable(andromeda$cars, andromeda2$cars )
 
   carsPlus2 <- andromeda$cars %>% collect()
-
   carsPlus <- rbind(cars, cars[cars$speed > 10, ])
-  expect_equivalent(carsPlus2, carsPlus)
+  
+  expect_true(dplyr::all_equal(carsPlus2, carsPlus, ignore_row_order = TRUE))
   close(andromeda)
   close(andromeda2)
 })
@@ -37,7 +52,7 @@ test_that("Append from data frame", {
   carsPlus2 <- andromeda$cars %>% collect()
 
   carsPlus <- rbind(cars, cars[cars$speed > 10, ])
-  expect_equivalent(carsPlus2, carsPlus)
+  expect_true(dplyr::all_equal(carsPlus2, carsPlus, ignore_row_order = TRUE))
   close(andromeda)
 })
 
@@ -45,26 +60,26 @@ test_that("Append from same andromeda with switched column order", {
   andromeda <- andromeda()
   andromeda$cars <- cars
   appendToTable(andromeda$cars, andromeda$cars %>% filter(speed > 10) %>% select(dist, speed))
-  
+
   carsPlus2 <- andromeda$cars %>% collect()
-  
+
   carsPlus <- rbind(cars, cars[cars$speed > 10, ])
-  expect_equivalent(carsPlus2, carsPlus)
+  expect_true(dplyr::all_equal(carsPlus2, carsPlus, ignore_row_order = TRUE))
   close(andromeda)
 })
 
 test_that("Append from other andromeda with switched column order", {
   andromeda <- andromeda()
   andromeda$cars <- cars
-  
+
   andromeda2 <- andromeda()
   andromeda2$cars <- cars
   appendToTable(andromeda$cars, andromeda2$cars %>% filter(speed > 10) %>% select(dist, speed))
-  
+
   carsPlus2 <- andromeda$cars %>% collect()
-  
+
   carsPlus <- rbind(cars, cars[cars$speed > 10, ])
-  expect_equivalent(carsPlus2, carsPlus)
+  expect_true(dplyr::all_equal(carsPlus2, carsPlus, ignore_row_order = TRUE))
   close(andromeda)
   close(andromeda2)
 })
@@ -72,13 +87,13 @@ test_that("Append from other andromeda with switched column order", {
 test_that("Append from data frame with switched column order", {
   andromeda <- andromeda()
   andromeda$cars <- cars
-  
+
   appendToTable(andromeda$cars, cars[cars$speed > 10, c("dist", "speed")])
-  
-  carsPlus2 <- andromeda$cars %>% collect()
-  
-  carsPlus <- rbind(cars, cars[cars$speed > 10, ])
-  expect_equivalent(carsPlus2, carsPlus)
+
+  carsPlus2 <- andromeda$cars %>% collect() %>% arrange(speed, dist)
+
+  carsPlus <- rbind(cars, cars[cars$speed > 10, ]) %>% arrange(speed, dist)
+  expect_true(dplyr::all_equal(carsPlus2, carsPlus, ignore_row_order = TRUE))
   close(andromeda)
 })
 

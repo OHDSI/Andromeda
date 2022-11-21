@@ -5,56 +5,52 @@
 \alias{Andromeda-class}
 \alias{Andromeda}
 \alias{show,Andromeda-method}
-\alias{$,Andromeda-method}
 \alias{$<-,Andromeda-method}
 \alias{[[<-,Andromeda-method}
-\alias{[[,Andromeda-method}
 \alias{names,Andromeda-method}
-\alias{length,Andromeda-method}
 \alias{close,Andromeda-method}
 \title{The Andromeda class}
 \usage{
 \S4method{show}{Andromeda}(object)
 
-\S4method{$}{Andromeda}(x, name)
-
 \S4method{$}{Andromeda}(x, name) <- value
 
 \S4method{[[}{Andromeda}(x, i) <- value
 
-\S4method{[[}{Andromeda}(x, i)
-
 \S4method{names}{Andromeda}(x)
 
-\S4method{length}{Andromeda}(x)
-
-\S4method{close}{Andromeda}(con, ...)
+\S4method{close}{Andromeda}(con, ..., verbose = TRUE)
 }
 \arguments{
 \item{object}{An \code{\link{Andromeda}} object.}
 
-\item{x}{An \code{\link{Andromeda}} object.}
+\item{x}{An andromeda object}
 
 \item{name}{The name of a table in the \code{\link{Andromeda}} object.}
 
-\item{value}{A data frame, \code{\link{Andromeda}} table, or other 'DBI' table.}
+\item{value}{A dataframe, \code{\link{Andromeda}} table, or dplyr query that uses an \code{\link{Andromeda}} table.}
 
 \item{i}{The name of a table in the \code{\link{Andromeda}} object.}
 
 \item{con}{An \code{\link{Andromeda}} object.}
 
 \item{...}{Included for compatibility with generic \code{close()} method.}
+
+\item{verbose}{Should a message be printed if the attempt to remove the andromeda directory was unsuccessful (TRUE or FALSE). .}
 }
 \value{
-A vector of names.
+A character vector with table names
+
+0 for success, 1 for failure, invisibly. If the andromeda object is already closed (file does not exist) 0 is returned.
 }
 \description{
-The \code{Andromeda} class is an S4 object.
+The \code{Andromeda} class is an S3 object.
 
-This class provides the ability to work with data objects in R that are too large to fit in memory. Instead,
+This class is provides the ability to work with data objects in R that are too large to fit in memory. Instead,
 these objects are stored on disk. This is slower than working from memory, but may be the only viable option.
+It is essentially a list of arrow datasets that are stored on disk in the feather format.
 
-Show the names of the tables in an Andromeda object.
+Attempts to delete an andromeda object.
 }
 \section{Tables}{
 
@@ -72,23 +68,6 @@ to a permanent location. Later this data can be loaded to a temporary location a
 while keeping the saved data as is.
 }
 
-\section{Inheritance}{
-
-
-The \code{Andromeda} inherits directly from \code{SQLiteConnection.} As such, it can be used as if it is a \code{SQLiteConnection}.
-\code{\link{RSQLite}} is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run
-from a single file on the local file system.
-}
-
-\examples{
-andr <- andromeda(cars = cars, iris = iris)
-
-names(andr)
-# [1] 'cars' 'iris'
-
-close(andr)
-
-}
 \seealso{
 \code{\link[=andromeda]{andromeda()}}
 }

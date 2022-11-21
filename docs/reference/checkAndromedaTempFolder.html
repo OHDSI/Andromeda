@@ -18,7 +18,7 @@ The Andromeda temp folder is the location where Andromeda objects are stored."><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -86,9 +86,10 @@ The Andromeda temp folder is the location where Andromeda objects are stored.</p
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Check that the Andromeda temp folder has at least 10GB. </span></span></span>
-<span class="r-in"><span><span class="fu">checkTempFolder</span><span class="op">(</span>minimumSize <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in checkTempFolder(minimumSize = 10):</span> could not find function "checkTempFolder"</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Check that the Andromeda temp folder has at least 10GB. </span></span></span>
+<span class="r-in"><span><span class="fu">checkAndromedaTempFolder</span><span class="op">(</span>minimumSize <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>

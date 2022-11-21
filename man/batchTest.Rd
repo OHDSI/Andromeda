@@ -26,17 +26,18 @@ This function applies a boolean test function to sets of
 data and terminates at the first \code{FALSE}.
 }
 \examples{
+\dontrun{
 andr <- andromeda(cars = cars)
 
 fun <- function(x) {
-  is.unsorted(x \%>\% select(speed) \%>\% collect())   
+  is.unsorted(x \%>\% select(speed) \%>\% collect())
 }
 
 result <- batchTest(andr$cars, fun, batchSize = 25)
 
 result
-# [1] FALSE 
+# [1] FALSE
 
 close(andr)
-
+}
 }

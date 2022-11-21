@@ -16,6 +16,7 @@ The copied \code{\link{Andromeda}} object.
 Creates a complete copy of an \code{\link{Andromeda}} object. Object attributes are not copied.
 }
 \examples{
+\dontrun{
 andr <- andromeda(cars = cars, iris = iris)
 
 andr2 <- copyAndromeda(andr)
@@ -25,5 +26,5 @@ names(andr2)
 
 close(andr)
 close(andr2)
-
+}
 }

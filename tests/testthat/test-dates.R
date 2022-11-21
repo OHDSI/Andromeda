@@ -1,5 +1,7 @@
 library(testthat)
 
+withr::local_options(list("andromedaTempFolder" = "~/andromedaTempFolder"))
+
 test_that("Dates are preserved", {
   andromeda <- andromeda()
 
@@ -51,39 +53,36 @@ test_that("Times are preserved", {
   close(andromeda)
 })
 
-test_that("restore Dates works", {
+test_that("Date manipulations work", {
+  andr <- andromeda()
   
-  df <- dplyr::tibble(todayDate = Sys.Date(),
-                      anotherDate = Sys.Date())
-  a <- andromeda(df = df)
+  df <- data.frame(person_id = c(1, 2, 3),
+                   startDate = as.Date(c("2000-01-01", "2001-01-31", "2004-12-31")),
+                   endDate   = as.Date(c("2000-01-02", "2001-02-01", "2005-01-01")),
+                   someText  = c("asdf", "asdf", "asdf"))
+  
+  andr$df <- df
+  
+  # add days to a date
+  andr$df %>% 
+    mutate(newEndDate = startDate + lubridate::ddays(1)) %>% 
+    mutate(match = (endDate == newEndDate)) %>% 
+    pull(match) %>% 
+    all() %>% 
+    expect_true()
 
-  # creating a new table in the sqlite database will convert dates to numbers
-  a$df2 <- a$df %>% 
-    select(todayDate, anotherDate)
-  
-  df2 <- a$df2 %>% 
+  # conversion of date to integer
+  andr$df %>% 
+    mutate(endDateInteger = as.integer(endDate)) %>% 
     collect() %>% 
-    mutate_all(restoreDate)
+    pull(endDateInteger) %>% 
+    expect_is("integer")
   
-  expect_equal(df2, df)  
-})
-
-
-
-test_that("restorePosixct  works", {
-  
-  df <- dplyr::tibble(now = Sys.time())
-  a <- andromeda(df = df)
-
-  # creating a new table in the sqlite database will convert datetimes to numbers
-  a$df2 <- a$df %>% 
-    select(now)
-  
-  df2 <- a$df2 %>% 
+  # difference of dates in days
+  andr$df %>% 
+    mutate(diff = as.integer(endDate) - as.integer(startDate)) %>% 
     collect() %>% 
-    mutate_all(restorePosixct)
-  
-  expect_equal(df2, df)  
+    pull(diff) %>% 
+    expect_equal(c(1, 1, 1))
 })
-
 

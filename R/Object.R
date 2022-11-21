@@ -17,10 +17,11 @@
 #' The Andromeda class
 #' 
 #' @description 
-#' The `Andromeda` class is an S4 object.
+#' The `Andromeda` class is an S3 object.
 #' 
-#' This class provides the ability to work with data objects in R that are too large to fit in memory. Instead, 
+#' This class is provides the ability to work with data objects in R that are too large to fit in memory. Instead, 
 #' these objects are stored on disk. This is slower than working from memory, but may be the only viable option. 
+#' It is essentially a list of arrow datasets that are stored on disk in the feather format.
 #' 
 #' @section Tables:
 #' An `Andromeda` object has zero, one or more tables. The list of table names can be retrieved using the [`names()`] 
@@ -35,19 +36,10 @@
 #' to a permanent location. Later this data can be loaded to a temporary location again and be read and modified, 
 #' while keeping the saved data as is.
 #' 
-#' @section Inheritance:
-#' 
-#' The `Andromeda` inherits directly from `SQLiteConnection.` As such, it can be used as if it is a `SQLiteConnection`. 
-#' [`RSQLite`] is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run 
-#' from a single file on the local file system.
-#' 
 #' @name Andromeda-class
 #' @aliases Andromeda
 #' @seealso [`andromeda()`]
-#' @import RSQLite
-#' @importClassesFrom DBI DBIObject DBIConnection
-#' @export
-setClass("Andromeda", contains = "SQLiteConnection")
+setClass("Andromeda", slots = c(path = "character", env = "environment"), contains = "list")
 
 #' Create an Andromeda object
 #'
@@ -66,6 +58,7 @@ setClass("Andromeda", contains = "SQLiteConnection")
 #' Returns an [`Andromeda`] object.
 #'
 #' @examples
+#' \dontrun{
 #' andr <- andromeda(cars = cars, iris = iris)
 #'
 #' names(andr)
@@ -79,17 +72,16 @@ setClass("Andromeda", contains = "SQLiteConnection")
 #' # ...
 #'
 #' close(andr)
-#' 
+#' }
 #' @rdname andromeda_constructor
 #'
 #' @export
 andromeda <- function(...) {
   arguments <- list(...)
-  if (length(arguments) > 0) {
-    if (is.null(names(arguments)) || any(names(arguments) == ""))
-      abort("All arguments must be named")
-  }
-  andromeda <- .createAndromeda()
+  if (length(arguments) > 0 && (is.null(names(arguments)) || any(names(arguments) == "")))
+    abort("All arguments must be named")
+  
+  andromeda <- .newAndromeda()
   if (length(arguments) > 0) {
     for (name in names(arguments)) {
       andromeda[[name]] <- arguments[[name]]
@@ -109,6 +101,7 @@ andromeda <- function(...) {
 #' The copied [`Andromeda`] object.
 #'
 #' @examples
+#' \dontrun{
 #' andr <- andromeda(cars = cars, iris = iris)
 #'
 #' andr2 <- copyAndromeda(andr)
@@ -118,32 +111,41 @@ andromeda <- function(...) {
 #'
 #' close(andr)
 #' close(andr2)
-#'
+#' }
 #' @export
 copyAndromeda <- function(andromeda) {
   checkIfValid(andromeda)
-  newAndromeda <- .createAndromeda()
-  RSQLite::sqliteCopyDatabase(andromeda, newAndromeda)
+  newAndromeda <- .newAndromeda()
+  arrow::copy_files(attr(andromeda, "path"), attr(newAndromeda, "path"))
+  if(!dplyr::setequal(names(andromeda), names(newAndromeda))) {
+    abort(glue::glue("copyAndromeda failed.\n 
+                     names(andromeda): {paste(names(andromeda), collapse = ',')} \n
+                     names(newAndromeda): {paste(names(newAndromeda), collapse = ',')}"))
+  }
   return(newAndromeda)
 }
 
-.createAndromeda <- function() {
-  tempFolder <- .getAndromedaTempFolder()
-  andromeda <- RSQLite::dbConnect(RSQLite::SQLite(),
-                                  tempfile(tmpdir = tempFolder, fileext = ".sqlite"),
-                                  extended_types = TRUE)
-  class(andromeda) <- "Andromeda"
-  attr(class(andromeda),"package") <- "Andromeda"
-  finalizer <- function(ptr) {
-    # Suppress R Check note:
-    missing(ptr)
-    close(andromeda)
-  }
-  reg.finalizer(andromeda@ptr, finalizer, onexit = TRUE)
-  RSQLite::dbExecute(andromeda, "PRAGMA journal_mode = OFF") 
-  RSQLite::dbExecute(andromeda, sprintf("PRAGMA temp_store_directory = '%s'", tempFolder)) 
+#' @importFrom methods new
+.newAndromeda <- function() {
+  path <- tempfile(tmpdir = .getAndromedaTempFolder())
+  dir.create(path)
+  andromeda <- new("Andromeda", path = path, env = rlang::new_environment(list(path = path)))
+  
+  reg.finalizer(andromeda@env, function(a) {
+    r <- unlink(a$path, recursive = TRUE) 
+    if (r == 1) {
+      gc() # call gc to remove file locks on windows
+      r2 <- unlink(a$path, recursive = TRUE) 
+      if(r2 == 1) rlang::inform("Problem with andromeda cleanup. Possible lock on Andromeda files.")
+    }
+    
+  }, onexit = TRUE)
+  attr(class(andromeda), "package") <- "Andromeda" 
+  .checkAvailableSpace(andromeda)
   return(andromeda)
 }
+
+dirs <- function(x) list.dirs(x@path, recursive = FALSE, full.names = FALSE)
 
 .getAndromedaTempFolder <- function() {
   tempFolder <- getOption("andromedaTempFolder")
@@ -151,50 +153,71 @@ copyAndromeda <- function(andromeda) {
     tempFolder <- tempdir()
   } else {
     tempFolder <- path.expand(tempFolder)
-    if (!file.exists(tempFolder)) {
-      dir.create(tempFolder, recursive = TRUE)
-    }
+    if (!file.exists(tempFolder)) dir.create(tempFolder, recursive = TRUE)
   }
   return(tempFolder)
 }
 
 #' @param object  An [`Andromeda`] object.
+#' @importFrom methods show
 #' @export
-#' @rdname
-#' Andromeda-class
+#' @rdname Andromeda-class
 setMethod("show", "Andromeda", function(object) {
-  cli::cat_line(pillar::style_subtle("# Andromeda object"))
-
-  if (RSQLite::dbIsValid(object)) {
-    cli::cat_line(pillar::style_subtle(paste("# Physical location: ", object@dbname)))
+  
+  if(isValidAndromeda(object)) {
+    
+    cli::cat_line(pillar::style_subtle("# Andromeda object"))
+    cli::cat_line(pillar::style_subtle(paste("# Physical location: ", object@path)))
     cli::cat_line("")
     cli::cat_line("Tables:")
-    for (name in RSQLite::dbListTables(object)) {
-      cli::cat_line(paste0("$",
-                           name,
-                           " (",
-                           paste(RSQLite::dbListFields(object, name), collapse = ", "),
-                           ")"))
+    for (tableName in names(object)) {
+      # columns <- purrr::map_chr(object[[tableName]]$schema$fields, "name")
+      columns <- paste0(names(object[[tableName]]), collapse = ", ")
+      cli::cat_line(paste0("$", tableName," (", columns, ")"))
     }
   } else {
-    cli::cli_alert_danger("Connection closed")
+    cli::cat_line(pillar::style_subtle("# Andromeda object is no longer valid. "))
   }
   invisible(NULL)
 })
 
-#' @param x     An [`Andromeda`] object.
-#' @param name  The name of a table in the [`Andromeda`] object.
+#' Extract Andromeda table
+#'
+#' @param x An [`Andromeda`] object
+#' @param i A character string containing the name of an Andromeda table
+#'
+#' @return An [`Andromeda`] table
 #' @export
-#' @rdname
-#' Andromeda-class
-setMethod("$", "Andromeda", function(x, name) {
-  return(x[[name]])
-
+setMethod("[[", "Andromeda", function(x, i) {
+  checkIfValid(x)
+  if(!(i %in% names(x))) return(NULL)
+  arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
 })
 
-#' @param x     An [`Andromeda`] object.
+#' Number of tables in an Andromeda object
+#'
+#' @param x An [`Andromeda`] object
+#'
+#' @return The number of tables in the andromeda object
+#' @export
+setMethod("length", "Andromeda", function(x) {
+  length(names(x))
+})
+
+#' Extract table reference from Andromeda
+#'
+#' @param x An [`Andromeda`] object
+#' @param name The name of a table in the andromeda object
+#'
+#' @return An andromeda table
+#' @export
+setMethod("$", "Andromeda", function(x, name) {
+  x[[name]]
+})
+
+#' @param x An [`Andromeda`] object.
 #' @param name  The name of a table in the [`Andromeda`] object.
-#' @param value A data frame, [`Andromeda`] table, or other 'DBI' table.
+#' @param value A data frame, [`Andromeda`] table.
 #' @export
 #' @rdname
 #' Andromeda-class
@@ -203,191 +226,113 @@ setMethod("$<-", "Andromeda", function(x, name, value) {
   return(x)
 })
 
-#' @param x    An [`Andromeda`] object.
-#' @param i    The name of a table in the [`Andromeda`] object.
-#' @param value A data frame, [`Andromeda`] table, or other 'DBI' table.
+#' @param x An [`Andromeda`] object.
+#' @param i The name of a table in the [`Andromeda`] object.
+#' @param value A dataframe, [`Andromeda`] table, or dplyr query that uses an [`Andromeda`] table.
 #' @export
+#' @importFrom methods callNextMethod
 #' @rdname
 #' Andromeda-class
 setMethod("[[<-", "Andromeda", function(x, i, value) {
-  checkIfValid(x)
+  if(!is.null(value) && !inherits(value, c("data.frame", "arrow_dplyr_query", "FileSystemDataset"))) {
+    abort("value must be null, a dataframe, an Andromeda table, or a dplyr query using an Andromeda table")
+  }
+  
+  removeTableIfExists <- function(x, i) {
+    if (i %in% dirs(x)) {
+      # on windows sometimes there is a file lock possibly added by dplyr::collect that is removed by calling gc
+      gc(verbose = FALSE, full = TRUE)
+      r <- unlink(file.path(attr(x, "path"), i), recursive = TRUE)
+      if (r == 1) abort(paste("Removal of Andromeda dataset", i, "failed."))
+    }
+  }
+  
+  .checkAvailableSpace(x)
+  
   if (is.null(value)) {
-    if (i %in% names(x)) {
-      RSQLite::dbRemoveTable(x, i)
-    }
+    removeTableIfExists(x, i)
   } else if (inherits(value, "data.frame")) {
-    .checkAvailableSpace(x)
-    RSQLite::dbWriteTable(conn = x, name = i, value = value, overwrite = TRUE, append = FALSE)
-  } else if (inherits(value, "tbl_dbi")) {
-    .checkAvailableSpace(x)
-    if (isTRUE(all.equal(x, dbplyr::remote_con(value)))) {
-      sql <- dbplyr::sql_render(value, x)
-      if (RSQLite::dbExistsTable(x, i)) {
-        # Maybe we're copying data from a table into the same table. So write to temp
-        # table first, then drop old table, and rename temp to old name:
-        tempName <- paste(sample(letters, 16), collapse = "")
-        sql <- sprintf("CREATE TABLE %s AS %s", tempName, sql)
-        RSQLite::dbExecute(x, sql)
-        RSQLite::dbRemoveTable(x, i)
-        sql <- sprintf("ALTER TABLE %s RENAME TO %s;", tempName, i)
-        RSQLite::dbExecute(x, sql)
-      } else {
-        sql <- sprintf("CREATE TABLE %s AS %s", i, sql)
-        RSQLite::dbExecute(x, sql)
-      }
+    removeTableIfExists(x, i)
+    dir.create(file.path(attr(x, "path"), i))
+    
+    if (nrow(value) == 0) {
+      # write_dataset will do nothing if given a dataframe with zero rows so use write_feather instead
+      arrow::write_feather(value, file.path(attr(x, "path"), i, "part-0.feather"))
     } else {
-      if (RSQLite::dbExistsTable(x, i)) {
-        RSQLite::dbRemoveTable(x, i)
-      }
-      doBatchedAppend <- function(batch) {
-        RSQLite::dbWriteTable(conn = x, name = i, value = batch, overwrite = FALSE, append = TRUE)
-        return(TRUE)
-      }
-      dummy <- batchApply(value, doBatchedAppend)
-      if (length(dummy) == 0) {
-        RSQLite::dbWriteTable(conn = x, name = i, value = dplyr::collect(value), overwrite = FALSE, append = TRUE)
-      }
+      arrow::write_dataset(value, file.path(attr(x, "path"), i), format = "feather")
     }
-  } else {
-    abort("Table must be a data frame or dplyr table")
+    value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
+    
+  } else if (inherits(value, "FileSystemDataset")) {
+    valueDirname <- unique(dirname(value$files))
+    if(length(valueDirname) != 1) abort("Only FileSystemDatasets with one or more files in a single enclosing directory are supported by Andromeda.")
+    
+    normalizeWinslash <- function(x) gsub("\\\\", "/", x)
+    
+    if (normalizeWinslash(valueDirname) == normalizeWinslash(file.path(attr(x, "path"), i))) {
+      # No need to write the FileSystemDataset since it already exists in the correct location
+      value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
+    } else {
+      removeTableIfExists(x, i)
+      arrow::write_dataset(value, file.path(attr(x, "path"), i), format = "feather")
+      
+      # If the dataset has zero rows it will not get written by arrow::write_dataset so bring into R and call assignment using dataframe
+      if (!dir.exists(file.path(attr(x, "path"), i))) return(`[[<-`(x = x, i = i, value = dplyr::collect(value)))
+  
+      value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
+    }
+  } else if (inherits(value, c("arrow_dplyr_query"))) {
+    if (i %in% dirs(x)) {
+      tempDir <- tempfile("temp", tmpdir = .getAndromedaTempFolder())
+      arrow::write_dataset(value, tempDir, format = "feather")
+      removeTableIfExists(x, i)
+      dir.create(file.path(attr(x, "path"), i))
+      arrow::copy_files(tempDir, file.path(attr(x, "path"), i))
+      unlink(tempDir, recursive = TRUE)
+    } else {
+      arrow::write_dataset(value, file.path(attr(x, "path"), i), format = "feather")
+    }
+    
+    # A dplyr query that results in zero rows will not be written so we need to handle that case
+    if (!dir.exists(file.path(attr(x, "path"), i))) return(`[[<-`(x = x, i = i, value = dplyr::collect(value)))
+    
+    value <- arrow::open_dataset(file.path(attr(x, "path"), i), format = "feather")
   }
-  x
+  callNextMethod()
 })
 
-#' @param x    An [`Andromeda`] object.
-#' @param i    The name of a table in the [`Andromeda`] object.
+#' The Andromeda table names
+#'
+#' @param x An andromeda object
+#'
+#' @return A character vector with table names
 #' @export
 #' @rdname
 #' Andromeda-class
-setMethod("[[", "Andromeda", function(x, i) {
-  checkIfValid(x)
-  if (RSQLite::dbExistsTable(x, i)) {
-    return(dplyr::tbl(x, i))
-  } else {
-    return(NULL)
-  }
-})
-
-#' names
-#'
-#' @description
-#' Show the names of the tables in an Andromeda object.
-#'
-#' @param x    An [`Andromeda`] object.
-#' 
-#' @return 
-#' A vector of names.
-#'
-#' @examples
-#' andr <- andromeda(cars = cars, iris = iris)
-#'
-#' names(andr)
-#' # [1] 'cars' 'iris'
-#'
-#' close(andr)
-#'
-#' @rdname
-#' Andromeda-class
-#' 
-#' @export
 setMethod("names", "Andromeda", function(x) {
   checkIfValid(x)
-  RSQLite::dbListTables(x)
+  list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
 })
 
-#' Set table names in an Andromeda object
+#' Remove an andromeda object
 #' 
-#' names(andromedaObject) must be set to a character vector with length equal to the number of
-#' tables in the andromeda object (i.e. length(andromedaObject)). The user is 
-#' responsible for setting valid table names (e.g. not using SQL keywords or numbers as names)
-#' This function treats Andromeda table names as case insensitive so if the only difference 
-#' between the new names and old names is the case then the names will not be changed.
-#'
-#' @param x An Andromeda object
-#' @param value A character vector with the same length as the number of tables in x
-#'
-#' @export
-#'
-#' @examples
-#' andr <- andromeda(cars = cars, iris = iris)
-#' names(andr) <- c("CARS", "IRIS")
-#' names(andr)
-#' # [1] "CARS" "IRIS"
-#' close(andr)
+#' Attempts to delete an andromeda object. 
 #' 
-setMethod("names<-", "Andromeda", function(x, value) {
-  checkIfValid(x)
-  nm <- names(x)
-  if(!is.character(value) || !(length(nm) == length(value))) {
-    rlang::abort("New names must be a character vector with the same length as names(x).")
-  }
-  
-  for(i in seq_along(nm)) {
-    if((nm[i] != value[i]) & (tolower(nm[i]) == tolower(value[i]))) {
-      # Handle case when names differ only by case
-      DBI::dbExecute(x, sprintf("ALTER TABLE %s RENAME TO %s;", nm[i], paste0(nm[i], "0")))
-      DBI::dbExecute(x, sprintf("ALTER TABLE %s RENAME TO %s;", paste0(nm[i], "0"), value[i]))
-    } else if(nm[i] != value[i]) {
-      DBI::dbExecute(x, sprintf("ALTER TABLE %s RENAME TO %s;", nm[i], value[i]))
-    }
-  }
-  
-  invisible(x)
-})
-
-
-#' Get the column names of an Andromeda table
-#'
-#' @param x An table in an Andromeda object
-#'
-#' @return A character vector of column names
+#' @param con    An [`Andromeda`] object.
+#' @param ...	   Included for compatibility with generic `close()` method.
+#' @param verbose Should a message be printed if the attempt to remove the andromeda directory was unsuccessful (TRUE or FALSE). .
+#' @return 0 for success, 1 for failure, invisibly. If the andromeda object is already closed (file does not exist) 0 is returned.
 #' @export
-#'
-#' @examples
-#' andr <- andromeda(cars = cars)
-#' names(andr$cars)
-#' # [1] "speed" "dist"
-#' close(andr)
-names.tbl_Andromeda <- function(x) {
-  colnames(x)
-}
-
-#' Set column names of an Andromeda table
-#'
-#' @param x A reference to a table in an andromeda object. (see examples)
-#' @param value A character vector of new names that must have length equal to the number of columns in the table.
-#'
-#' @export
-#'
-#' @examples
-#' andr <- andromeda(cars = cars)
-#' names(andr$cars) <- toupper(names(andr$cars))
-#' names(andr$cars)
-#' # [1] "SPEED" "DIST" 
-#' close(andr)
-"names<-.tbl_Andromeda" <- function(x, value) {
-  tableName <- dbplyr::remote_name(x)
-  connection <- dbplyr::remote_con(x)
-  nm <- names(x)
-  if(!is.character(value) || !(length(nm) == length(value))) {
-    rlang::abort("New names must be a character vector with the same length as names(x).")
+#' @rdname Andromeda-class
+setMethod("close", "Andromeda", function(con, ..., verbose = TRUE) { 
+  if (!isAndromeda(con)) abort("First argument must be an Andromeda object.")
+  path <- attr(con, "path")
+  rc <- 0
+  if (file.exists(path)) {
+    rc <- unlink(path, recursive = TRUE)
+    if (rc == 1 && verbose) message("Attempt to remove andromeda file unsuccessful.")
   }
-  
-  idx <- nm != value
-  if (any(idx)) {
-    sql <- sprintf("ALTER TABLE %s RENAME COLUMN %s TO %s;", tableName, nm[idx], value[idx])
-    lapply(sql, function(statement) DBI::dbExecute(connection, statement))
-  }
-  invisible(x)
-}
-
-
-#' @param x    An [`Andromeda`] object.
-#' @export
-#' @rdname
-#' Andromeda-class
-setMethod("length", "Andromeda", function(x) {
-  length(names(x))
+  invisible(rc)
 })
 
 #' Check whether an object is an Andromeda object
@@ -401,53 +346,45 @@ setMethod("length", "Andromeda", function(x) {
 #' A logical value.
 #'
 #' @export
-isAndromeda <- function(x) {
-  return(inherits(x, "Andromeda"))
-}
+isAndromeda <- function(x) inherits(x, "Andromeda")
 
-#' Check whether an Andromeda object is still valid
+checkIfAndromeda <- function(x) if (!isAndromeda(x)) rlang::abort("Andromeda argument must be of type 'Andromeda'")
+
+#' Checks whether an Andromeda object is valid
+#' 
+#' @param x an Andromeda object
 #'
-#' @param x   The Andromeda object to check.
-#'
-#' @details
-#' Checks whether an Andromeda object is still valid, or whether it has been closed.
-#'
-#' @return
-#' A logical value.
-#'
-#' @examples
-#' andr <- andromeda(cars = cars, iris = iris)
-#'
-#' isValidAndromeda(andr)
-#' # TRUE
-#'
-#' close(andr)
-#'
-#' isValidAndromeda(andr)
-#' # FALSE
-#'
+#' @return TRUE if the Andromeda object is in a valid state. FALSE otherwise.
 #' @export
 isValidAndromeda <- function(x) {
-  if(!isAndromeda(x)) rlang::abort(paste(deparse(substitute(x)), "is not an Andromeda object."))
-  return(RSQLite::dbIsValid(x))
+  checkIfAndromeda(x)
+  # if (!dir.exists(attr(x, "path"))) return(FALSE) 
+  
+  # syncNames(x)
+  # nms <- attr(x, "names") %||% character(0L)
+  # dirs <- list.dirs(attr(x, "path"), recursive = FALSE, full.names = FALSE)
+  # isValid <- dplyr::setequal(nms, dirs)
+  # return(isValid)
+  dir.exists(attr(x, "path"))
 }
 
-#' @param con    An [`Andromeda`] object.
-#' @param ...	   Included for compatibility with generic `close()` method.
-#' @export
-#' @rdname
-#' Andromeda-class
-setMethod("close", "Andromeda", function(con, ...) {
-  fileName <- con@dbname
-  if (RSQLite::dbIsValid(con)) {
-    RSQLite::dbDisconnect(con)
-  }
-  if (file.exists(fileName)) {
-    unlink(fileName)
-  }
-})
-
 checkIfValid <- function(x) {
-  if (!isValidAndromeda(x))
-    abort("Andromeda object is no longer valid. Perhaps it was saved without maintainConnection = TRUE, or R has been restarted?")
+  if (!isValidAndromeda(x)) abort("Andromeda object is not valid.")
+}
+
+#' Is the object an Andromeda table?
+#'
+#' @param tbl A reference to an Andromeda table
+#'
+#' @return TRUE or FALSE
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' andr <- andromeda(cars = cars)
+#' isAndromedaTable(andr$cars)
+#' close(andr)
+#' }
+isAndromedaTable <- function(tbl) {
+  inherits(tbl, "FileSystemDataset")
 }
