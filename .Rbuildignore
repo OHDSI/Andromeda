@@ -22,3 +22,5 @@ work/*
 revdep/*
 ^doc$
 ^Meta$
+^CRAN-SUBMISSION$
+^\.github$

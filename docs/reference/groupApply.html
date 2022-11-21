@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -35,9 +35,6 @@
       <a href="../articles/UsingAndromeda.html">Using Andromeda</a>
     </li>
   </ul></li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://ohdsi.github.io/Hades" class="external-link">hadesLogo</a>
 </li>
@@ -66,40 +63,55 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">groupApply</span><span class="op">(</span>
-  <span class="va">tbl</span>,
-  <span class="va">groupVariable</span>,
-  <span class="va">fun</span>,
-  <span class="va">...</span>,
-  batchSize <span class="op">=</span> <span class="fl">1e+05</span>,
-  progressBar <span class="op">=</span> <span class="cn">FALSE</span>,
-  safe <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">groupApply</span><span class="op">(</span></span>
+<span>  <span class="va">tbl</span>,</span>
+<span>  <span class="va">groupVariable</span>,</span>
+<span>  <span class="va">fun</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  batchSize <span class="op">=</span> <span class="fl">1e+05</span>,</span>
+<span>  progressBar <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  safe <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>tbl</dt>
 <dd><p>An <code><a href="Andromeda-class.html">Andromeda</a></code> table (or any other 'DBI' table).</p></dd>
+
+
 <dt>groupVariable</dt>
 <dd><p>The variable to group by</p></dd>
+
+
 <dt>fun</dt>
 <dd><p>A function where the first argument is a data frame.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional parameters passed to fun.</p></dd>
+
+
 <dt>batchSize</dt>
 <dd><p>Number of rows fetched from the table at a time. This is not the number of
 rows to which the function will be applied. Included mostly for testing
 purposes.</p></dd>
+
+
 <dt>progressBar</dt>
 <dd><p>Show a progress bar?</p></dd>
+
+
 <dt>safe</dt>
 <dd><p>Create a copy of <code>tbl</code> first? Allows writing to the same Andromeda as being
 read from.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Invisibly returns a list of objects, where each object is the output of the user-supplied function
+    
+
+<p>Invisibly returns a list of objects, where each object is the output of the user-supplied function
 applied to a group.</p>
     </div>
     <div id="details">
@@ -114,15 +126,15 @@ the <code>groupVariable</code>, which must be a variable in the table.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu"><a href="andromeda_constructor.html">andromeda</a></span><span class="op">(</span>cars <span class="op">=</span> <span class="va">cars</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>speed <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">speed</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, meanDist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">dist</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">groupApply</span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span>, <span class="st">"speed"</span>, <span class="va">fun</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">result</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu"><a href="andromeda_constructor.html">andromeda</a></span><span class="op">(</span>cars <span class="op">=</span> <span class="va">cars</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>speed <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">speed</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, meanDist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">dist</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">groupApply</span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span>, <span class="st">"speed"</span>, <span class="va">fun</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 19 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    speed meanDist</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -145,16 +157,16 @@ the <code>groupVariable</code>, which must be a variable in the table.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span>    23     54  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span>    24     93.8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span>    25     85  </span>
-<span class="r-in"><span class="co"># # A tibble: 19 x 2 </span></span>
-<span class="r-in"><span class="co"># speed meanDist </span></span>
-<span class="r-in"><span class="co"># &lt;dbl&gt; &lt;dbl&gt; </span></span>
-<span class="r-in"><span class="co"># 1 4 6 </span></span>
-<span class="r-in"><span class="co"># 2 7 13 </span></span>
-<span class="r-in"><span class="co"># 3 8 16 </span></span>
-<span class="r-in"><span class="co"># ...</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">andr</span><span class="op">)</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span><span class="co"># # A tibble: 19 x 2</span></span></span>
+<span class="r-in"><span><span class="co"># speed meanDist</span></span></span>
+<span class="r-in"><span><span class="co"># &lt;dbl&gt; &lt;dbl&gt;</span></span></span>
+<span class="r-in"><span><span class="co"># 1 4 6</span></span></span>
+<span class="r-in"><span><span class="co"># 2 7 13</span></span></span>
+<span class="r-in"><span><span class="co"># 3 8 16</span></span></span>
+<span class="r-in"><span><span class="co"># ...</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">andr</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -169,7 +181,7 @@ the <code>groupVariable</code>, which must be a variable in the table.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

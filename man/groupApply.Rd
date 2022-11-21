@@ -44,6 +44,7 @@ This function applies a function to groups of data. The groups are identified by
 the \code{groupVariable}, which must be a variable in the table.
 }
 \examples{
+\dontrun{
 andr <- andromeda(cars = cars)
 
 fun <- function(x) {
@@ -53,16 +54,16 @@ fun <- function(x) {
 result <- groupApply(andr$cars, "speed", fun)
 result <- bind_rows(result)
 result
-# # A tibble: 19 x 2 
-# speed meanDist 
-# <dbl> <dbl> 
-# 1 4 6 
-# 2 7 13 
-# 3 8 16 
+# # A tibble: 19 x 2
+# speed meanDist
+# <dbl> <dbl>
+# 1 4 6
+# 2 7 13
+# 3 8 16
 # ...
 
 close(andr)
-
+}
 }
 \seealso{
 \code{\link[=batchApply]{batchApply()}}

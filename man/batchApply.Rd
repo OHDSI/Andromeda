@@ -33,6 +33,7 @@ data. In this case, the data is batches of data from an \code{\link{Andromeda}} 
 presented to the function as a data frame.
 }
 \examples{
+\dontrun{
 andr <- andromeda(cars = cars)
 
 fun <- function(x) {
@@ -42,15 +43,12 @@ fun <- function(x) {
 result <- batchApply(andr$cars, fun, batchSize = 25)
 
 result
-# [[1]] 
-# [1] 25 
-# 
-# [[2]] 
+# [[1]]
+# [1] 25
+#
+# [[2]]
 # [1] 25
 
 close(andr)
-
 }
-\seealso{
-\code{\link[=groupApply]{groupApply()}}
 }

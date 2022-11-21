@@ -4,12 +4,12 @@
 \alias{appendToTable}
 \title{Append to an Andromeda table}
 \usage{
-appendToTable(tbl, data)
+appendToTable(tbl, .data)
 }
 \arguments{
 \item{tbl}{An \code{\link{Andromeda}} table. This must be a base table (i.e. it cannot be a query result).}
 
-\item{data}{The data to append. This can be either a data.frame or another Andromeda table.}
+\item{.data}{The data to append. This can be either a data.frame or another Andromeda table.}
 }
 \value{
 Returns no value. Executed for the side-effect of appending the data to the table.
@@ -25,6 +25,7 @@ than when appending data from within the same \code{\link{Andromeda}} object.
 therefore be identical (but not necessarily in the same order).
 }
 \examples{
+\dontrun{
 andr <- andromeda(cars = cars)
 nrow(andr$cars)
 # [1] 50
@@ -38,5 +39,5 @@ nrow(andr$cars)
 # [1] 182
 
 close(andr)
-
+}
 }

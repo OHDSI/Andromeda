@@ -2,31 +2,16 @@
 % Please edit documentation in R/Object.R
 \name{isValidAndromeda}
 \alias{isValidAndromeda}
-\title{Check whether an Andromeda object is still valid}
+\title{Checks whether an Andromeda object is valid}
 \usage{
 isValidAndromeda(x)
 }
 \arguments{
-\item{x}{The Andromeda object to check.}
+\item{x}{an Andromeda object}
 }
 \value{
-A logical value.
+TRUE if the Andromeda object is in a valid state. FALSE otherwise.
 }
 \description{
-Check whether an Andromeda object is still valid
-}
-\details{
-Checks whether an Andromeda object is still valid, or whether it has been closed.
-}
-\examples{
-andr <- andromeda(cars = cars, iris = iris)
-
-isValidAndromeda(andr)
-# TRUE
-
-close(andr)
-
-isValidAndromeda(andr)
-# FALSE
-
+Checks whether an Andromeda object is valid
 }

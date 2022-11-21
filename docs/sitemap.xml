@@ -40,6 +40,12 @@
     <loc>/reference/batchTest.html</loc>
   </url>
   <url>
+    <loc>/reference/cash-.Andromeda.html</loc>
+  </url>
+  <url>
+    <loc>/reference/checkAndromedaTempFolder.html</loc>
+  </url>
+  <url>
     <loc>/reference/copyAndromeda.html</loc>
   </url>
   <url>
@@ -65,6 +71,9 @@
   </url>
   <url>
     <loc>/reference/isValidAndromeda.html</loc>
+  </url>
+  <url>
+    <loc>/reference/length.Andromeda.html</loc>
   </url>
   <url>
     <loc>/reference/listIndices.html</loc>
@@ -95,5 +104,8 @@
   </url>
   <url>
     <loc>/reference/saveAndromeda.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sub-sub-.Andromeda.html</loc>
   </url>
 </urlset>

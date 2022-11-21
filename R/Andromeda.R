@@ -17,13 +17,9 @@
 #' @keywords internal
 #' @aliases
 #' NULL Andromeda-package
-#' @importFrom methods slotNames
 #' @importFrom utils head setTxtProgressBar txtProgressBar
 #' @importFrom tidyselect all_of
-#' @importFrom rlang abort warn inform
+#' @importFrom rlang abort warn inform %||%
 #' @import dplyr
 #' 
-"_PACKAGE"
-
-# Used to remember when a warning has already been thrown for a temp file location:
-andromedaGlobalEnv <- new.env(parent = emptyenv())
+NULL
