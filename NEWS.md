@@ -1,3 +1,10 @@
+
+Andromeda 0.6.1
+===============
+
+- Fix compatibility with dbplyr.
+
+
 Andromeda 0.6.0
 ===============
 

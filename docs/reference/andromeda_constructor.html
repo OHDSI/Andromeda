@@ -19,7 +19,7 @@ this by specifying a folder using options(andromedaTempFolder = "c:/andromedaTem
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
       </span>
     </div>
 
@@ -28,7 +28,7 @@ this by specifying a folder using options(andromedaTempFolder = "c:/andromedaTem
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -70,7 +70,7 @@ this by specifying a folder using <code>options(andromedaTempFolder = "c:/androm
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">andromeda</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">andromeda</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,10 +78,13 @@ this by specifying a folder using <code>options(andromedaTempFolder = "c:/androm
     <dl><dt>...</dt>
 <dd><p>Named objects. See details for what objects are valid. If no objects are provided, an
 empty Andromeda is returned.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns an <code><a href="Andromeda-class.html">Andromeda</a></code> object.</p>
+    
+
+<p>Returns an <code><a href="Andromeda-class.html">Andromeda</a></code> object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -90,13 +93,13 @@ empty Andromeda is returned.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu">andromeda</span><span class="op">(</span>cars <span class="op">=</span> <span class="va">cars</span>, iris <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">andr</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu">andromeda</span><span class="op">(</span>cars <span class="op">=</span> <span class="va">cars</span>, iris <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">andr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cars" "iris"</span>
-<span class="r-in"><span class="co"># [1] 'cars' 'iris'</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># [1] 'cars' 'iris'</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 41 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    speed  dist</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -111,14 +114,14 @@ empty Andromeda is returned.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    13    34</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    13    46</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 31 more rows</span></span>
-<span class="r-in"><span class="co"># # A tibble: 41 x 2 </span></span>
-<span class="r-in"><span class="co"># speed dist </span></span>
-<span class="r-in"><span class="co"># &lt;dbl&gt; &lt;dbl&gt; </span></span>
-<span class="r-in"><span class="co"># 1 11 17 </span></span>
-<span class="r-in"><span class="co"># ...</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">andr</span><span class="op">)</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span><span class="co"># # A tibble: 41 x 2 </span></span></span>
+<span class="r-in"><span><span class="co"># speed dist </span></span></span>
+<span class="r-in"><span><span class="co"># &lt;dbl&gt; &lt;dbl&gt; </span></span></span>
+<span class="r-in"><span><span class="co"># 1 11 17 </span></span></span>
+<span class="r-in"><span><span class="co"># ...</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">andr</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -133,7 +136,7 @@ empty Andromeda is returned.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

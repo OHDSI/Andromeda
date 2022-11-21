@@ -25,9 +25,6 @@
     <loc>/reference/Andromeda-package.html</loc>
   </url>
   <url>
-    <loc>/reference/andromeda.html</loc>
-  </url>
-  <url>
     <loc>/reference/andromeda_constructor.html</loc>
   </url>
   <url>
@@ -38,6 +35,9 @@
   </url>
   <url>
     <loc>/reference/batchTest.html</loc>
+  </url>
+  <url>
+    <loc>/reference/checkAndromedaTempFolder.html</loc>
   </url>
   <url>
     <loc>/reference/copyAndromeda.html</loc>
@@ -55,13 +55,7 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/isAndomeda.html</loc>
-  </url>
-  <url>
     <loc>/reference/isAndromeda.html</loc>
-  </url>
-  <url>
-    <loc>/reference/isSorted.html</loc>
   </url>
   <url>
     <loc>/reference/isValidAndromeda.html</loc>
@@ -71,9 +65,6 @@
   </url>
   <url>
     <loc>/reference/loadAndromeda.html</loc>
-  </url>
-  <url>
-    <loc>/reference/names-Andromeda-method.html</loc>
   </url>
   <url>
     <loc>/reference/names-set-.tbl_Andromeda.html</loc>
