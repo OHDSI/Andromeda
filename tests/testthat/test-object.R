@@ -202,11 +202,18 @@ test_that("Andromeda assignment overwrites existing table with the same name", {
   close(andr)
 })
 
-test_that("isAndromedaTable works", {
+test_that("isAndromedaTable works with both old and new tables", {
   andr <- andromeda(cars = cars)
   expect_true(isAndromedaTable(andr$cars))
   expect_false(isAndromedaTable(cars))
   close(andr)
+  
+  # test with old andromeda table type
+  con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+  DBI::dbWriteTable(con, "cars", cars)
+  cars_db <- dplyr::tbl(con, "cars")
+  expect_true(isAndromedaTable(cars_db))
+  DBI::dbDisconnect(con)
 })
 
 # test_that("Get/set Andromeda table/column names works.", {
@@ -230,5 +237,24 @@ test_that("isAndromedaTable works", {
 #   
 #   close(andr)
 # })
+
+
+test_that("nrow and colnames work on new and old andromeda tables", {
+  
+  # old andromeda tables are dplyr table references to sqlite
+  con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+  DBI::dbWriteTable(con, "cars", cars)
+  
+  cars_db <- dplyr::tbl(con, "cars")
+  expect_equal(nrow(cars_db), nrow(cars))
+  
+  andr <- andromeda(cars = cars)
+  expect_equal(nrow(andr$cars), nrow(cars))
+  
+  expect_equal(colnames(cars_db), colnames(cars))
+  expect_equal(colnames(andr$cars), colnames(cars))
+  
+  DBI::dbDisconnect(con)
+})
 
 

@@ -23,3 +23,8 @@
 #' @import dplyr
 #' 
 NULL
+
+# This global environment is used to work around file deletion issues on Windows.
+# If we cannot delete an Andromeda object at the time the user makes the request
+# then we save the path and try again later (whenever `close` is called.)
+pathsToDeleteLater <- rlang::new_environment()

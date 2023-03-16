@@ -327,11 +327,27 @@ setMethod("names", "Andromeda", function(x) {
 setMethod("close", "Andromeda", function(con, ..., verbose = TRUE) { 
   if (!isAndromeda(con)) abort("First argument must be an Andromeda object.")
   path <- attr(con, "path")
-  rc <- 0
-  if (file.exists(path)) {
-    rc <- unlink(path, recursive = TRUE)
-    if (rc == 1 && verbose) message("Attempt to remove andromeda file unsuccessful.")
+  
+  if (!file.exists(path)) { return(0) }
+  
+  # try to cleanup paths that were previously locked
+  for(i in seq_along(pathsToDeleteLater)) {
+    if(unlink(pathsToDeleteLater[[i]], recursive = TRUE) == 0) {
+      # Success!
+      pathsToDeleteLater[[i]] <- NULL
+    }
   }
+  
+  rc <- unlink(path, recursive = TRUE)
+  if (rc == 1) {
+      if(verbose) {
+        message(paste0("Attempt to remove andromeda file unsuccessful.\n",
+                       "Will try again next time `close()` runs."))
+      }
+      
+      pathsToDeleteLater <- c(pathsToDeleteLater, path)
+  }
+  
   invisible(rc)
 })
 
@@ -386,5 +402,6 @@ checkIfValid <- function(x) {
 #' close(andr)
 #' }
 isAndromedaTable <- function(tbl) {
-  inherits(tbl, "FileSystemDataset")
+  `||`(inherits(tbl, "FileSystemDataset"),
+       inherits(tbl, "tbl_SQLiteConnection"))
 }

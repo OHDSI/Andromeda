@@ -26,7 +26,8 @@ Imports:
   pillar,
   glue,
   tidyselect,
-  jsonlite
+  jsonlite,
+  dbplyr
 Suggests:
   testthat,
   withr,
@@ -36,8 +37,9 @@ Suggests:
   lubridate,
   tibble,
   rJava,
-  rcmdcheck
+  rcmdcheck,
+  RSQLite
 LazyData: false
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Encoding: UTF-8

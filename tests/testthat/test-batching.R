@@ -100,3 +100,14 @@ test_that("batchTest", {
   expect_true(batchTest(andromeda$cars, isSpeedNotSorted, batchSize = 5) == FALSE)
   expect_true(batchTest(andromeda$cars, isSpeedSorted, batchSize = 100) == TRUE)
 })
+
+
+test_that("apply functions do not leak files", {
+  skip_on_os("windows")
+  a <- andromeda(cars = cars)
+  # On windows we get "Attempt to remove andromeda file unsuccessful" due to file locks.
+  expect_message(groupApply(a$cars %>% filter(dist > 10), "speed", nrow), NA)
+  expect_message(batchApply(a$cars %>% filter(dist > 10), nrow, batchSize = 2), NA)
+  expect_message(close(a), NA)
+})
+

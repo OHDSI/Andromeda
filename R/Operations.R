@@ -294,3 +294,23 @@ batchTest <- function(tbl, fun, ..., batchSize = 100000) {
   }, error = function(e) e)
   output
 }
+
+
+# These methods are needed to get nrow and colnames working on both
+# old and new andromeda tables
+
+#' @exportS3Method dim tbl_sql
+dim.tbl_sql <- function(x) {
+  rows <- dplyr::ungroup(x) %>% 
+    dplyr::tally(name = "n") %>% 
+    dplyr::pull("n")
+  
+  columns <- length(colnames(x))
+  return(c(rows, columns))
+}
+
+#' @exportS3Method dimnames FileSystemDataset
+dimnames.FileSystemDataset <- function(x) {
+  return(list(NULL, names(x)))
+}
+
