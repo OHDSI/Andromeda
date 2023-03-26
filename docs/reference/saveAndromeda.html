@@ -20,7 +20,7 @@ create a temporary copy of the Andromeda object. Note that this can be substanti
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
       </span>
     </div>
 
@@ -72,31 +72,40 @@ create a temporary copy of the <code><a href="Andromeda-class.html">Andromeda</a
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">saveAndromeda</span><span class="op">(</span>
-  <span class="va">andromeda</span>,
-  <span class="va">fileName</span>,
-  maintainConnection <span class="op">=</span> <span class="cn">FALSE</span>,
-  overwrite <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">saveAndromeda</span><span class="op">(</span></span>
+<span>  <span class="va">andromeda</span>,</span>
+<span>  <span class="va">fileName</span>,</span>
+<span>  maintainConnection <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>andromeda</dt>
 <dd><p>An object of class <code><a href="Andromeda-class.html">Andromeda</a></code>.</p></dd>
+
+
 <dt>fileName</dt>
 <dd><p>The path where the object will be written.</p></dd>
+
+
 <dt>maintainConnection</dt>
 <dd><p>Should the connection be maintained after saving? If <code>FALSE</code>, the
 Andromeda object will be invalid after this operation, but saving will
 be faster.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>If the file exists, should it be overwritten? If <code>FALSE</code> and the file
 exists, an error will be thrown.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns no value. Executed for the side-effect of saving the object to disk.</p>
+    
+
+<p>Returns no value. Executed for the side-effect of saving the object to disk.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -106,17 +115,17 @@ exists, an error will be thrown.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu"><a href="andromeda_constructor.html">andromeda</a></span><span class="op">(</span>cars <span class="op">=</span> <span class="va">cars</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># For this example we'll use a temporary file location:</span></span>
-<span class="r-in"><span class="va">fileName</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">saveAndromeda</span><span class="op">(</span><span class="va">andr</span>, <span class="va">fileName</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu"><a href="andromeda_constructor.html">andromeda</a></span><span class="op">(</span>cars <span class="op">=</span> <span class="va">cars</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># For this example we'll use a temporary file location:</span></span></span>
+<span class="r-in"><span><span class="va">fileName</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">saveAndromeda</span><span class="op">(</span><span class="va">andr</span>, <span class="va">fileName</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Disconnected Andromeda. This data object can no longer be used</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Cleaning up the file used in this example:</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">fileName</span><span class="op">)</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Cleaning up the file used in this example:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">fileName</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -131,7 +140,7 @@ exists, an error will be thrown.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
