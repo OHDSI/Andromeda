@@ -466,6 +466,10 @@ checkIfValid <- function(x) {
 #' close(andr)
 #' }
 isAndromedaTable <- function(tbl) {
-  `||`(inherits(tbl, "FileSystemDataset"),
-       inherits(tbl, "tbl_SQLiteConnection"))
+  return(
+    inherits(tbl, "FileSystemDataset") ||
+    inherits(tbl, "arrow_dplyr_query") ||
+    inherits(tbl, "tbl_Andromeda") ||
+    inherits(tbl, "tbl_SQLiteConnection")
+  )
 }

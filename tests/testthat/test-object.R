@@ -186,3 +186,24 @@ test_that("Get/set Andromeda table/column names works.", {
   close(andr)
 })
 
+test_that("isAndromedaTable", {
+  # sqlite version
+  con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+  DBI::dbWriteTable(con, "cars", cars)
+  db <- dplyr::tbl(con, "cars")
+  expect_true(isAndromedaTable(db))
+  expect_true(isAndromedaTable(dplyr::mutate(db, a = 1)))
+  
+  a <- andromeda(cars = cars)
+  class(a$cars)
+  expect_true(isAndromedaTable(a$cars))
+  expect_true(isAndromedaTable(dplyr::mutate(a$cars, a = 1)))
+  
+  # arrow version
+  path <- tempfile()
+  arrow::write_feather(cars, path)
+  ds <- arrow::open_dataset(path, format = "feather")
+  class(ds)
+  expect_true(isAndromedaTable(ds))
+  expect_true(isAndromedaTable(dplyr::mutate(ds, a = 1)))
+})
