@@ -22,3 +22,4 @@ work/*
 revdep/*
 ^doc$
 ^Meta$
+.github/
