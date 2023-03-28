@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
       </span>
     </div>
 
@@ -66,17 +66,20 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">listIndices</span><span class="op">(</span><span class="va">tbl</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">listIndices</span><span class="op">(</span><span class="va">tbl</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>tbl</dt>
 <dd><p>An <code><a href="Andromeda-class.html">Andromeda</a></code> table (or any other 'DBI' table).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns a tibble listing the indices, indexed columns, and whether the index is unique.</p>
+    
+
+<p>Returns a tibble listing the indices, indexed columns, and whether the index is unique.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -89,22 +92,22 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu"><a href="andromeda_constructor.html">andromeda</a></span><span class="op">(</span>cars <span class="op">=</span> <span class="va">cars</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="createIndex.html">createIndex</a></span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span>, <span class="st">"speed"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">listIndices</span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">andr</span> <span class="op">&lt;-</span> <span class="fu"><a href="andromeda_constructor.html">andromeda</a></span><span class="op">(</span>cars <span class="op">=</span> <span class="va">cars</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="createIndex.html">createIndex</a></span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span>, <span class="st">"speed"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">listIndices</span><span class="op">(</span><span class="va">andr</span><span class="op">$</span><span class="va">cars</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   indexSequenceId indexName                unique columnSequenceId columnName</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>               0 idx_kodg3fz8xqp6uthnv9c7 FALSE                 0 speed     </span>
-<span class="r-in"><span class="co"># # A tibble: 1 x 5</span></span>
-<span class="r-in"><span class="co"># indexSequenceId indexName                unique columnSequenceId columnName</span></span>
-<span class="r-in"><span class="co">#           &lt;int&gt; &lt;chr&gt;                    &lt;lgl&gt;             &lt;int&gt; &lt;chr&gt;     </span></span>
-<span class="r-in"><span class="co">#1              0 idx_ocy8we9j2i7ld0rshgb4 FALSE                 0 speed           </span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">andr</span><span class="op">)</span></span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>               0 idx_fsbhjk0cug72z83odx6v FALSE                 0 speed     </span>
+<span class="r-in"><span><span class="co"># # A tibble: 1 x 5</span></span></span>
+<span class="r-in"><span><span class="co"># indexSequenceId indexName                unique columnSequenceId columnName</span></span></span>
+<span class="r-in"><span><span class="co">#           &lt;int&gt; &lt;chr&gt;                    &lt;lgl&gt;             &lt;int&gt; &lt;chr&gt;     </span></span></span>
+<span class="r-in"><span><span class="co">#1              0 idx_ocy8we9j2i7ld0rshgb4 FALSE                 0 speed           </span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">andr</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -119,7 +122,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
