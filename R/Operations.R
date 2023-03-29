@@ -19,7 +19,7 @@
 #' @param tbl             An [`Andromeda`] table (or any other 'DBI' table).
 #' @param fun             A function where the first argument is a data frame.
 #' @param ...             Additional parameters passed to fun.
-#' @param batchSize       Number of rows to fetch at a time.
+#' @param batchSize       DEPRECATED: Number of rows to fetch at a time.
 #' @param progressBar     Show a progress bar?
 #' @param safe            Create a copy of tbl first? Allows writing to the same Andromeda as being
 #'                        read from.
@@ -43,7 +43,7 @@
 #'   return(nrow(x))
 #' }
 #'
-#' result <- batchApply(andr$cars, fun, batchSize = 25)
+#' result <- batchApply(andr$cars, fun)
 #'
 #' result
 #' # [[1]]
@@ -55,13 +55,18 @@
 #' close(andr)
 #' }
 #' @export
-batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, safe = FALSE) {
+batchApply <- function(tbl, fun, ..., batchSize, progressBar = FALSE, safe = FALSE) {
   if (!inherits(tbl, c("FileSystemDataset", "arrow_dplyr_query"))) {
     abort("First argument must be an Andromeda table or a dplyr query of an Andromeda table")
   }
   if (!is.function(fun)) abort("Second argument must be a function")
-  
-  if (safe || inherits(tbl, "arrow_dplyr_query")) {
+  if (!missing(batchSize)) {
+    rlang::warn("The `batchSize` argument is deprecated.",
+         .frequency = "regularly",
+         .frequency_id = "batchSize"
+    )
+  }
+  if (safe) {
     tempAndromeda <- andromeda()
     on.exit(close(tempAndromeda))
     tempAndromeda$tbl <- tbl
@@ -71,10 +76,7 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
   if(nrow(tbl) == 0) {
     return(list())
   } 
-  
-  scanner <- arrow::ScannerBuilder$create(tbl)$BatchSize(batch_size = batchSize)$Finish()
-  reader <- scanner$ToRecordBatchReader()
-  
+  reader <- arrow::as_record_batch_reader(tbl)
   output <- list()
   if (progressBar) {
     pb <- txtProgressBar(style = 3)
@@ -115,7 +117,7 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
 #' @param groupVariable   The variable to group by
 #' @param fun             A function where the first argument is a data frame.
 #' @param ...             Additional parameters passed to fun.
-#' @param batchSize       Number of rows fetched from the table at a time. This is not the number of
+#' @param batchSize       DEPRECATED: Number of rows fetched from the table at a time. This is not the number of
 #'                        rows to which the function will be applied. Included mostly for testing
 #'                        purposes.
 #' @param progressBar     Show a progress bar?
@@ -154,7 +156,7 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
 #' close(andr)
 #' }
 #' @export
-groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, progressBar = FALSE, safe = FALSE) {
+groupApply <- function(tbl, groupVariable, fun, ..., batchSize, progressBar = FALSE, safe = FALSE) {
   if (!groupVariable %in% names(tbl))
     abort(sprintf("'%s' is not a variable in the table", groupVariable))
 

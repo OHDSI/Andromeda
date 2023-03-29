@@ -9,7 +9,7 @@ groupApply(
   groupVariable,
   fun,
   ...,
-  batchSize = 1e+05,
+  batchSize,
   progressBar = FALSE,
   safe = FALSE
 )
@@ -23,7 +23,7 @@ groupApply(
 
 \item{...}{Additional parameters passed to fun.}
 
-\item{batchSize}{Number of rows fetched from the table at a time. This is not the number of
+\item{batchSize}{DEPRECATED: Number of rows fetched from the table at a time. This is not the number of
 rows to which the function will be applied. Included mostly for testing
 purposes.}
 

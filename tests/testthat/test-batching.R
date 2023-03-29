@@ -8,19 +8,19 @@ test_that("batchApply", {
     return(nrow(batch) * multiplier)
   }
   
-  result <- batchApply(andromeda$cars, doSomething, multiplier = 2, batchSize = 10)
+  result <- batchApply(andromeda$cars, doSomething, multiplier = 2)
   result <- unlist(result)
   expect_true(sum(result) == nrow(cars) * 2)
-  expect_true(length(result) == ceiling(nrow(cars)/10))
+  # expect_true(length(result) == ceiling(nrow(cars)/10))
   rm(result)
   
   # batchApply can also accept an arrow_dplyr_query
   query <- dplyr::mutate(andromeda$cars, new_column = speed*dist)
   expect_s3_class(query, "arrow_dplyr_query")
-  result <- query %>% batchApply(doSomething, multiplier = 2, batchSize = 10)
+  result <- query %>% batchApply(doSomething, multiplier = 2)
   result <- unlist(result)
   expect_true(sum(result) == nrow(cars) * 2)
-  expect_true(length(result) == ceiling(nrow(cars)/10))
+  # expect_true(length(result) == ceiling(nrow(cars)/10))
   
   close(andromeda)
 })
@@ -37,7 +37,7 @@ test_that("batchApply safe mode", {
       appendToTable(andromeda$cars2, batch)
     }
   }
-  batchApply(andromeda$cars, doSomething, multiplier = 2, batchSize = 10, safe = TRUE)
+  batchApply(andromeda$cars, doSomething, multiplier = 2, safe = TRUE)
 
   cars2 <- andromeda$cars2 %>% collect() %>% arrange(speed, dist)
   cars1 <- cars %>% arrange(speed, dist)
@@ -54,8 +54,8 @@ test_that("batchApply progress bar", {
   doSomething <- function(batch, multiplier) {
     return(nrow(batch) * multiplier)
   }
-  result <- capture_output(batchApply(andromeda$cars, doSomething, multiplier = 2, batchSize = 10, progressBar = TRUE))
-  expect_true(stringr::str_count(result, "=") > 100)
+  result <- capture_output(batchApply(andromeda$cars, doSomething, multiplier = 2, progressBar = TRUE))
+  expect_true(grepl("100%", result))
   close(andromeda)
 })
 
@@ -81,8 +81,8 @@ test_that("groupApply progress bar", {
   doSomething <- function(batch, multiplier) {
     return(nrow(batch) * multiplier)
   }
-  result <- capture_output(groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10, progressBar = TRUE))
-  expect_true(stringr::str_count(result, "=") > 100)
+  result <- capture_output(groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, progressBar = TRUE))
+  expect_true(grepl("100%", result))
   close(andromeda)
 })
 

@@ -4,7 +4,7 @@
 \alias{batchApply}
 \title{Apply a function to batches of data in an Andromeda table}
 \usage{
-batchApply(tbl, fun, ..., batchSize = 1e+05, progressBar = FALSE, safe = FALSE)
+batchApply(tbl, fun, ..., batchSize, progressBar = FALSE, safe = FALSE)
 }
 \arguments{
 \item{tbl}{An \code{\link{Andromeda}} table (or any other 'DBI' table).}
@@ -13,7 +13,7 @@ batchApply(tbl, fun, ..., batchSize = 1e+05, progressBar = FALSE, safe = FALSE)
 
 \item{...}{Additional parameters passed to fun.}
 
-\item{batchSize}{Number of rows to fetch at a time.}
+\item{batchSize}{DEPRECATED: Number of rows to fetch at a time.}
 
 \item{progressBar}{Show a progress bar?}
 
@@ -40,7 +40,7 @@ fun <- function(x) {
   return(nrow(x))
 }
 
-result <- batchApply(andr$cars, fun, batchSize = 25)
+result <- batchApply(andr$cars, fun)
 
 result
 # [[1]]
