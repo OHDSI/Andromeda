@@ -26,7 +26,8 @@ Imports:
   pillar,
   glue,
   tidyselect,
-  jsonlite
+  jsonlite,
+  ParallelLogger
 Suggests:
   testthat,
   dbplyr,

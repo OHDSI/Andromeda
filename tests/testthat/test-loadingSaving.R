@@ -8,7 +8,9 @@ test_that("Saving and loading", {
   expect_true("table" %in% names(andromeda))
   iris1 <- andromeda$table %>% collect()
 
-  attr(andromeda, "metaData") <- list(x = 1)
+  s3Object <- list(a = 1)
+  class(s3Object) <- "MyClass"
+  attr(andromeda, "metaData") <- list(x = 1, y = list(s3Object))
 
   fileName <- tempfile(fileext = ".zip")
   fileName <- file.path(.getAndromedaTempFolder(), "asdf.zip")
@@ -27,6 +29,7 @@ test_that("Saving and loading", {
   expect_equivalent(iris1, iris2)
   expect_false(is.null(attr(andromeda2, "metaData")))
   expect_equal(attr(andromeda2, "metaData")$x, 1)
+  expect_equal(class(attr(andromeda2, "metaData")$y[[1]]), "MyClass")
 
   expect_error(capture.output(saveAndromeda(andromeda2, fileName, overwrite = TRUE)), NA)
 

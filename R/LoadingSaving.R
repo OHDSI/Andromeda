@@ -63,7 +63,8 @@ saveAndromeda <- function(andromeda, fileName, overwrite = TRUE) {
   attribs <- attributes(andromeda)
   attribs[["class"]] <- attribs[["path"]] <- attribs[["names"]] <- attribs[["env"]] <- attribs[[".xData"]] <- NULL
   attributesFileName <- file.path(tempdir(), "user-defined-attributes.json")
-  jsonlite::write_json(attribs, attributesFileName)
+  ParallelLogger::saveSettingsToJson(attribs, attributesFileName)
+  # jsonlite::write_json(attribs, attributesFileName, pretty = TRUE, force = TRUE, null = "null", auto_unbox = TRUE)
   
   tableDirs <- list.dirs(attr(andromeda, "path"), recursive = FALSE)
   zip::zipr(fileName, c(attributesFileName, tableDirs), compression_level = 2)
@@ -115,7 +116,8 @@ loadAndromeda <- function(fileName) {
   }
   class(andr) <- andrClass
   
-  attributes <- jsonlite::read_json(file.path(path, "user-defined-attributes.json"), simplifyVector = TRUE)
+  attributes <- ParallelLogger::loadSettingsFromJson(file.path(path, "user-defined-attributes.json"))
+  # attributes <- jsonlite::read_json(file.path(path, "user-defined-attributes.json"), simplifyVector = TRUE)
   on.exit(unlink(file.path(path, "user-defined-attributes.json")))
   for (nm in names(attributes)) {
     attr(andr, nm) <- attributes[[nm]]
