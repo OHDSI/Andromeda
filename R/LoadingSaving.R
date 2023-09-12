@@ -65,6 +65,9 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
     abort(sprintf("The directory '%s' does not exist. Andromeda object cannot be saved", dirname(fileName)))
   }  
   
+  andromedaTempFolder <- .getAndromedaTempFolder()
+  .checkAvailableSpace()
+  
   # Need to save any user-defined attributes as well:
   attribs <- attributes(andromeda)
   for (name in slotNames(andromeda)) {
@@ -72,12 +75,12 @@ saveAndromeda <- function(andromeda, fileName, maintainConnection = FALSE, overw
   }
   attribs[["class"]] <- NULL
   
-  attributesFileName <- tempfile(fileext = ".rds")
+  attributesFileName <- tempfile(tmpdir = andromedaTempFolder, fileext = ".rds")
   saveRDS(attribs, attributesFileName)
   
   if (maintainConnection) {
     # Can't zip while connected, so make copy:
-    tempFileName <- tempfile(fileext = ".sqlite")
+    tempFileName <- tempfile(tmpdir = andromedaTempFolder, fileext = ".sqlite")
     RSQLite::sqliteCopyDatabase(andromeda, tempFileName)
     zip::zipr(fileName, c(attributesFileName, tempFileName), compression_level = 2)
     unlink(tempFileName)
