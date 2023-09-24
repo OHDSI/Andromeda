@@ -1,3 +1,17 @@
+Andromeda 0.6.4
+===============
+- Fix a bug causing Andromeda saving not to respect andromeda temp folder
+
+Andromeda 0.6.3
+===============
+- Fix workflow
+
+Andromeda 0.6.2
+===============
+- add isAndromedaTable
+- update docs
+- add weekly r check yaml
+
 Andromeda 0.6.1
 ===============
 
