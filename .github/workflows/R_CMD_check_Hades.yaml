@@ -99,6 +99,9 @@ jobs:
         if: runner.os == 'macOS'
         run: unlink("check", recursive = TRUE)
         shell: Rscript {0}
+        
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
 
       - name: Check
         env:
