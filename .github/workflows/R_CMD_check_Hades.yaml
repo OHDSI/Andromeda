@@ -99,10 +99,12 @@ jobs:
         if: runner.os == 'macOS'
         run: unlink("check", recursive = TRUE)
         shell: Rscript {0}
-        
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-
+      
+      - name: fix arrow openssl issue
+        if: runner.os == 'macOS'
+        run: |
+          brew unlink openssl
+    
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
