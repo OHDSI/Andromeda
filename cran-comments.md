@@ -1,4 +1,4 @@
-Andromeda v0.6.3
+Andromeda v0.6.4
 ---
 
 This is a patch release.
