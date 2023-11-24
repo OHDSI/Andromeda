@@ -70,6 +70,7 @@ test_that("groupApply progress bar", {
   doSomething <- function(batch, multiplier) {
     return(nrow(batch) * multiplier)
   }
+  # debugonce(groupApply)
   result <- capture_output(groupApply(andromeda$cars, "speed", doSomething, multiplier = 2, batchSize = 10, progressBar = TRUE))
   expect_true(stringr::str_count(result, "=") > 100)
   close(andromeda)

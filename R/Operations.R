@@ -74,7 +74,10 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
   output <- list()
   if (progressBar) {
     pb <- txtProgressBar(style = 3)
-    totalRows <- tbl %>% count() %>% pull()
+    suppressWarnings({
+      # suppress warning message: ORDER BY is ignored in subqueries without LIMIT
+      totalRows <- tbl %>% count() %>% pull()
+    })
     completedRows <- 0
   }
   result <- DBI::dbSendQuery(connection, sql)

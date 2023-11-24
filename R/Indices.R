@@ -111,15 +111,15 @@ listIndices <- function(tbl) {
   }
   indexInfo <- lapply(indices$name, getIndexInfo)
   indexInfo <- bind_rows(indexInfo) %>% 
-    select(indexName = .data$indexName,
-           columnSequenceId = .data$seqno,
-           columnName = .data$name) 
+    select(indexName = "indexName",
+           columnSequenceId = "seqno",
+           columnName = "name") 
   
   result <- indices %>%
       mutate(unique = case_when(.data$unique == 1 ~ TRUE, TRUE ~ FALSE)) %>%
-      select(indexSequenceId = .data$seq,       
-             indexName = .data$name,
-             unique = .data$unique) %>%
+      select(indexSequenceId = "seq",       
+             indexName = "name",
+             unique = "unique") %>%
     inner_join(indexInfo, by = "indexName")
   
   return(result)
