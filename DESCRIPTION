@@ -14,7 +14,7 @@ Maintainer: Adam Black <black@ohdsi.org>
 Description: Storing very large data objects on a local drive, while still making it possible to manipulate the data in an efficient manner.
 License: Apache License 2.0
 VignetteBuilder: knitr
-URL: https://github.com/OHDSI/Andromeda
+URL: https://github.com/OHDSI/Andromeda, https://ohdsi.github.io/Andromeda/
 BugReports: https://github.com/OHDSI/Andromeda/issues
 Depends:
   dplyr
