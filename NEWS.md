@@ -1,3 +1,8 @@
+Andromeda 0.6.5
+===============
+
+- Ensuring package passes R check even when `arrow` is not installed. Required to stay in CRAN.
+
 Andromeda 0.6.4
 ===============
 - Fix a bug causing Andromeda saving not to respect andromeda temp folder

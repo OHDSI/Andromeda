@@ -1,7 +1,7 @@
-Andromeda v0.6.4
+Andromeda v0.6.5
 ---
 
-This is a patch release.
+This is a patch release that fixes the error observed on r-devel-linux-x86_64-fedora-clang.
 
 ## Test environments
 * Windows-latest, R-release (Github Actions)

@@ -20,6 +20,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Egill Fridgeirsson \email{e.fridgeirsson@erasmusmc.nl}
   \item Martijn Schuemie \email{schuemie@ohdsi.org}
   \item Marc A. Suchard \email{msuchard@ucla.edu}
 }
