@@ -1,4 +1,4 @@
-# Copyright 2020 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of Andromeda
 #
@@ -22,7 +22,7 @@ devtools::spell_check()
 
 # Create manual and vignette
 unlink("extras/Andromeda.pdf")
-shell("R CMD Rd2pdf ./ --output=extras/Andromeda.pdf")
+system("R CMD Rd2pdf ./ --output=extras/Andromeda.pdf")
 
 dir.create("inst/doc", recursive = TRUE)
 rmarkdown::render("vignettes/UsingAndromeda.Rmd",
