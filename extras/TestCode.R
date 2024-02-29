@@ -9,4 +9,4 @@ andr$cars <- cars
 andr[["cars"]]
 
 
-cars %>% filter(rlang::sym("speed") > 10) %>% collect()
+cars %>% filter(speed > 10) %>% collect()
