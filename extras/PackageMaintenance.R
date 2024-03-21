@@ -30,7 +30,6 @@ rmarkdown::render("vignettes/UsingAndromeda.Rmd",
                   rmarkdown::pdf_document(latex_engine = "pdflatex",
                                           toc = TRUE,
                                           number_sections = TRUE))
-unlink("inst/doc/UsingAndromeda.tex")
 
 pkgdown::build_site()
 OhdsiRTools::fixHadesLogo()

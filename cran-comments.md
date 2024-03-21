@@ -1,7 +1,7 @@
-Andromeda v0.6.5
+Andromeda v0.6.6
 ---
 
-This is a patch release that fixes the error observed on r-devel-linux-x86_64-fedora-clang.
+This is a patch release that fixes the error observed on various CRAN testing instances following the release of dbplyr 2.5.0.
 
 ## Test environments
 * Windows-latest, R-release (Github Actions)
@@ -15,4 +15,6 @@ This is a patch release that fixes the error observed on r-devel-linux-x86_64-fe
 
 There were no ERRORs or WARNINGs on any platform.
 
+## Downstream dependencies
 
+DatabaseConnector is used by Cyclops, TreatmentPatterns, CohortAlgebra, DatabaseConnector, which were tested with this new version. No issues were found.
