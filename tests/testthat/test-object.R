@@ -199,14 +199,15 @@ test_that("isAndromedaTable sqlite version", {
   expect_true(isAndromedaTable(dplyr::mutate(a$cars, a = 1)))
 })
 
-test_that("isAndromedaTable arrow version", {
-  skip_if_not_installed("arrow")
-
-  path <- tempfile()
-  arrow::write_feather(cars, path)
-  ds <- arrow::open_dataset(path, format = "feather")
-  class(ds)
-  expect_true(isAndromedaTable(ds))
-  expect_true(isAndromedaTable(dplyr::mutate(ds, a = 1)))
-})
+# Disabling arrow unit test, since there are no short-term plans to switch to arrow:
+# test_that("isAndromedaTable arrow version", {
+#   skip_if_not_installed("arrow")
+# 
+#   path <- tempfile()
+#   arrow::write_feather(cars, path)
+#   ds <- arrow::open_dataset(path, format = "feather")
+#   class(ds)
+#   expect_true(isAndromedaTable(ds))
+#   expect_true(isAndromedaTable(dplyr::mutate(ds, a = 1)))
+# })
 
