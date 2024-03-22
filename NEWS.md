@@ -1,19 +1,42 @@
+Andromeda 0.6.6
+===============
+
+Bugfixes
+
+- Fix error when calling `groupApply()` with `dbplyr` >= 2.5.0.
+
+Andromeda 0.6.5
+===============
+
+Bugfixes
+
+- Ensuring package passes R check even when `arrow` is not installed. Required to stay in CRAN.
+
 Andromeda 0.6.4
 ===============
+
+Bugfixes
+
 - Fix a bug causing Andromeda saving not to respect andromeda temp folder
 
 Andromeda 0.6.3
 ===============
+
+Bugfixes
+
 - Fix workflow
 
 Andromeda 0.6.2
 ===============
-- add isAndromedaTable
-- update docs
-- add weekly r check yaml
+
+Changes
+
+- Added  `isAndromedaTable()` function.
 
 Andromeda 0.6.1
 ===============
+
+Bugfixes
 
 - Fix compatibility with dbplyr.
 

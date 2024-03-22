@@ -1,16 +1,16 @@
 Package: Andromeda
 Type: Package
 Title: Asynchronous Disk-Based Representation of Massive Data
-Version: 0.6.4
-Date: 2023-11-24
+Version: 0.6.6
+Date: 2024-03-21
 Authors@R: c(
-  person("Adam", "Black", , "black@ohdsi.org", role = c("aut", "cre")),
+  person("Adam", "Black", , "black@ohdsi.org", role = c("aut")),
   person("Egill", "Fridgeirsson", , "e.fridgeirsson@erasmusmc.nl", role = c("aut")),
-  person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut")),
+  person("Martijn", "Schuemie", , "schuemie@ohdsi.org", role = c("aut", "cre")),
   person("Marc A.", "Suchard", , "msuchard@ucla.edu", role = c("aut")),
   person("Observational Health Data Science and Informatics", role = c("cph"))
   )
-Maintainer: Adam Black <black@ohdsi.org>
+Maintainer: Martijn Schuemie <schuemie@ohdsi.org>
 Description: Storing very large data objects on a local drive, while still making it possible to manipulate the data in an efficient manner.
 License: Apache License 2.0
 VignetteBuilder: knitr

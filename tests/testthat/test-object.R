@@ -186,8 +186,7 @@ test_that("Get/set Andromeda table/column names works.", {
   close(andr)
 })
 
-test_that("isAndromedaTable", {
-  # sqlite version
+test_that("isAndromedaTable sqlite version", {
   con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
   DBI::dbWriteTable(con, "cars", cars)
   db <- dplyr::tbl(con, "cars")
@@ -198,12 +197,17 @@ test_that("isAndromedaTable", {
   class(a$cars)
   expect_true(isAndromedaTable(a$cars))
   expect_true(isAndromedaTable(dplyr::mutate(a$cars, a = 1)))
-  
-  # arrow version
-  path <- tempfile()
-  arrow::write_feather(cars, path)
-  ds <- arrow::open_dataset(path, format = "feather")
-  class(ds)
-  expect_true(isAndromedaTable(ds))
-  expect_true(isAndromedaTable(dplyr::mutate(ds, a = 1)))
 })
+
+# Disabling arrow unit test, since there are no short-term plans to switch to arrow:
+# test_that("isAndromedaTable arrow version", {
+#   skip_if_not_installed("arrow")
+# 
+#   path <- tempfile()
+#   arrow::write_feather(cars, path)
+#   ds <- arrow::open_dataset(path, format = "feather")
+#   class(ds)
+#   expect_true(isAndromedaTable(ds))
+#   expect_true(isAndromedaTable(dplyr::mutate(ds, a = 1)))
+# })
+

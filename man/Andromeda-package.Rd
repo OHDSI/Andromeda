@@ -16,11 +16,12 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Adam Black \email{black@ohdsi.org}
+\strong{Maintainer}: Martijn Schuemie \email{schuemie@ohdsi.org}
 
 Authors:
 \itemize{
-  \item Martijn Schuemie \email{schuemie@ohdsi.org}
+  \item Adam Black \email{black@ohdsi.org}
+  \item Egill Fridgeirsson \email{e.fridgeirsson@erasmusmc.nl}
   \item Marc A. Suchard \email{msuchard@ucla.edu}
 }
 

@@ -90,3 +90,4 @@ test_that("batchTest", {
   expect_true(batchTest(andromeda$cars, isSpeedNotSorted, batchSize = 5) == FALSE)
   expect_true(batchTest(andromeda$cars, isSpeedSorted, batchSize = 100) == TRUE)
 })
+
