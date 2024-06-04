@@ -187,12 +187,6 @@ test_that("Get/set Andromeda table/column names works.", {
 })
 
 test_that("isAndromedaTable sqlite version", {
-  con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
-  DBI::dbWriteTable(con, "cars", cars)
-  db <- dplyr::tbl(con, "cars")
-  expect_true(isAndromedaTable(db))
-  expect_true(isAndromedaTable(dplyr::mutate(db, a = 1)))
-  
   a <- andromeda(cars = cars)
   class(a$cars)
   expect_true(isAndromedaTable(a$cars))

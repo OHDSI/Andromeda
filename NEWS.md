@@ -1,3 +1,11 @@
+Andromeda 0.6.7
+===============
+
+Bugfixes
+
+- Fix `isAndromedaTable()` when table belongs to descendant of Andromda.
+
+
 Andromeda 0.6.6
 ===============
 
