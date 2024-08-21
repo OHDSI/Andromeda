@@ -2,7 +2,7 @@ Package: Andromeda
 Type: Package
 Title: Asynchronous Disk-Based Representation of Massive Data
 Version: 0.6.7
-Date: 2024-03-21
+Date: 2024-08-21
 Authors@R: c(
   person("Adam", "Black", , "black@ohdsi.org", role = c("aut")),
   person("Egill", "Fridgeirsson", , "e.fridgeirsson@erasmusmc.nl", role = c("aut")),
