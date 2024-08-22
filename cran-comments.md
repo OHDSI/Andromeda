@@ -1,7 +1,7 @@
-Andromeda v0.6.6
+Andromeda v0.6.7
 ---
 
-This is a patch release that fixes the error observed on various CRAN testing instances following the release of dbplyr 2.5.0.
+This update contains 1 minor bug fix (see NEWS.md).
 
 ## Test environments
 * Windows-latest, R-release (Github Actions)

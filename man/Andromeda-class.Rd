@@ -76,7 +76,7 @@ while keeping the saved data as is.
 
 
 The \code{Andromeda} inherits directly from \code{SQLiteConnection.} As such, it can be used as if it is a \code{SQLiteConnection}.
-\code{\link{RSQLite}} is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run
+\code{RSQLite} is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run
 from a single file on the local file system.
 }
 

@@ -38,7 +38,7 @@
 #' @section Inheritance:
 #' 
 #' The `Andromeda` inherits directly from `SQLiteConnection.` As such, it can be used as if it is a `SQLiteConnection`. 
-#' [`RSQLite`] is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run 
+#' `RSQLite` is an R wrapper around 'SQLite', a low-weight but very powerful single-user SQL database that can run 
 #' from a single file on the local file system.
 #' 
 #' @name Andromeda-class
@@ -60,7 +60,7 @@ setClass("Andromeda", contains = "SQLiteConnection")
 #'              empty Andromeda is returned.
 #'
 #' @details
-#' Valid objects are data frames, `Andromeda` tables, or any other [`dplyr`] table.
+#' Valid objects are data frames, `Andromeda` tables, or any other `dplyr` table.
 #' 
 #' @return 
 #' Returns an [`Andromeda`] object.

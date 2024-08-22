@@ -19,7 +19,7 @@ this by specifying a folder using \code{options(andromedaTempFolder = "c:/androm
 \code{"c:/andromedaTemp"} is the folder to create the Andromeda objects in.
 }
 \details{
-Valid objects are data frames, \code{Andromeda} tables, or any other \code{\link{dplyr}} table.
+Valid objects are data frames, \code{Andromeda} tables, or any other \code{dplyr} table.
 }
 \examples{
 andr <- andromeda(cars = cars, iris = iris)
