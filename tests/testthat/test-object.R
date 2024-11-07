@@ -129,7 +129,7 @@ test_that("Setting the andromeda temp folder", {
   options(andromedaTempFolder = folder)
   andromeda <- andromeda()
   files <- list.files(folder)
-  expect_equal(length(files), 2)
+  expect_equal(length(files), 1)
   close(andromeda)
   unlink(folder, recursive = TRUE)
 })

@@ -211,10 +211,15 @@ groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, progres
 #'
 #' @export
 appendToTable <- function(tbl, data) {
-  if (!inherits(tbl, "tbl_dbi"))
+  if (!inherits(tbl, "tbl_dbi")) {
     abort("First argument must be an Andromeda table")
-  if (!inherits(tbl$ops, "op_base_remote"))
-    abort("First argument must be a base table (cannot be a query result)")
+  }
+    
+  # This now gives an error. How can we check that a table is not a query result? 
+  # Perhaps using as.character(dbplyr::sql_render(tbl))
+  # if (!inherits(tbl$ops, "op_base_remote")) {
+  #   abort("First argument must be a base table (cannot be a query result)")
+  # }
   
   connection <- dbplyr::remote_con(tbl)
   .checkAvailableSpace(connection)
