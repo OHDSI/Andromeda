@@ -10,18 +10,18 @@ Storing very large data objects on a local drive, while still making it possible
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://ohdsi.github.io/Andromeda/}
   \item \url{https://github.com/OHDSI/Andromeda}
   \item Report bugs at \url{https://github.com/OHDSI/Andromeda/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Adam Black \email{black@ohdsi.org}
+\strong{Maintainer}: Martijn Schuemie \email{schuemie@ohdsi.org}
 
 Authors:
 \itemize{
-  \item Martijn Schuemie \email{schuemie@ohdsi.org}
+  \item Adam Black \email{black@ohdsi.org}
+  \item Egill Fridgeirsson \email{e.fridgeirsson@erasmusmc.nl}
   \item Marc A. Suchard \email{msuchard@ucla.edu}
 }
 

@@ -6,7 +6,7 @@ test_that("Object creation", {
   expect_true(isValidAndromeda(andromeda))
 
   close(andromeda)
-  expect_null(names(andromeda))
+  expect_error(names(andromeda), "no longer valid")
   expect_true(isAndromeda(andromeda))
   expect_false(isValidAndromeda(andromeda))
 
@@ -163,3 +163,45 @@ test_that("Warning when disk space low", {
 test_that("The only cached class is Andromeda", {
   expect_true(setequal(getClasses(asNamespace("Andromeda"), inherits = F), "Andromeda"))
 })
+
+test_that("Get/set Andromeda table/column names works.", {
+  andr <- andromeda()
+  expect_length(names(andr), 0L)
+  
+  andr$cars <- cars
+  andr[["iris"]] <- iris
+  expect_equal(names(andr), c("cars", "iris"))
+  
+  names(andr) <- c("cars", "table2")
+  expect_equal(names(andr), c("cars", "table2"))
+  
+  names(andr) <- toupper(names(andr))
+  expect_equal(names(andr), c("CARS", "TABLE2"))
+  
+  expect_equal(colnames(andr$CARS), names(cars))
+  
+  names(andr$CARS) <- c("col1", "col2")
+  expect_equal(names(andr$CARS), c("col1", "col2"))
+  
+  close(andr)
+})
+
+test_that("isAndromedaTable sqlite version", {
+  a <- andromeda(cars = cars)
+  class(a$cars)
+  expect_true(isAndromedaTable(a$cars))
+  expect_true(isAndromedaTable(dplyr::mutate(a$cars, a = 1)))
+})
+
+# Disabling arrow unit test, since there are no short-term plans to switch to arrow:
+# test_that("isAndromedaTable arrow version", {
+#   skip_if_not_installed("arrow")
+# 
+#   path <- tempfile()
+#   arrow::write_feather(cars, path)
+#   ds <- arrow::open_dataset(path, format = "feather")
+#   class(ds)
+#   expect_true(isAndromedaTable(ds))
+#   expect_true(isAndromedaTable(dplyr::mutate(ds, a = 1)))
+# })
+

@@ -10,7 +10,6 @@
 \alias{[[<-,Andromeda-method}
 \alias{[[,Andromeda-method}
 \alias{names,Andromeda-method}
-\alias{names<-,Andromeda-method}
 \alias{length,Andromeda-method}
 \alias{close,Andromeda-method}
 \title{The Andromeda class}
@@ -26,8 +25,6 @@
 \S4method{[[}{Andromeda}(x, i)
 
 \S4method{names}{Andromeda}(x)
-
-\S4method{names}{Andromeda}(x) <- value
 
 \S4method{length}{Andromeda}(x)
 

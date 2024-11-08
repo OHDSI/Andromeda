@@ -60,3 +60,40 @@ test_that("Times are preserved", {
   close(andromeda)
 })
 
+# for duckdb I don't think we need restoreDate and restorePosixct anymore
+# test_that("restore Dates works", {
+#   
+#   df <- dplyr::tibble(todayDate = Sys.Date(),
+#                       anotherDate = Sys.Date())
+#   a <- andromeda(df = df)
+# 
+#   # creating a new table in the sqlite database will convert dates to numbers
+#   a$df2 <- a$df %>% 
+#     select(todayDate, anotherDate)
+#   
+#   df2 <- a$df2 %>% 
+#     collect() %>% 
+#     mutate_all(restoreDate)
+#   
+#   expect_equal(df2, df)  
+# })
+# 
+# 
+# 
+# test_that("restorePosixct  works", {
+#   
+#   df <- dplyr::tibble(now = Sys.time())
+#   a <- andromeda(df = df)
+# 
+#   # creating a new table in the sqlite database will convert datetimes to numbers
+#   a$df2 <- a$df %>% 
+#     select(now)
+#   
+#   df2 <- a$df2 %>% 
+#     collect() %>% 
+#     mutate_all(restorePosixct)
+#   
+#   expect_equal(df2, df)  
+# })
+
+
