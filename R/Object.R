@@ -474,7 +474,7 @@ setMethod("close", "Andromeda", function(con, ...) {
 })
 
 checkIfValid <- function(x) {
-
+if (!isValidAndromeda(x))
     rlang::abort("Andromeda object is no longer valid. Perhaps it was saved without maintainConnection = TRUE, or R has been restarted?")
 }
 
