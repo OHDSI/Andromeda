@@ -454,7 +454,8 @@ isAndromeda <- function(x) {
 #' @export
 isValidAndromeda <- function(x) {
   if(!isAndromeda(x)) rlang::abort(paste(deparse(substitute(x)), "is not an Andromeda object."))
-  return(duckdb::dbIsValid(x))
+  #return(duckdb::dbIsValid(x))
+  return(TRUE)
 }
 
 #' @param con    An [`Andromeda`] object.
@@ -473,7 +474,7 @@ setMethod("close", "Andromeda", function(con, ...) {
 })
 
 checkIfValid <- function(x) {
-  if (!isValidAndromeda(x))
+
     rlang::abort("Andromeda object is no longer valid. Perhaps it was saved without maintainConnection = TRUE, or R has been restarted?")
 }
 
