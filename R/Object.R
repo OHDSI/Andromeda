@@ -454,8 +454,7 @@ isAndromeda <- function(x) {
 #' @export
 isValidAndromeda <- function(x) {
   if(!isAndromeda(x)) rlang::abort(paste(deparse(substitute(x)), "is not an Andromeda object."))
-  #return(duckdb::dbIsValid(x))
-  return(TRUE)
+  return(duckdb::dbIsValid(x))
 }
 
 #' @param con    An [`Andromeda`] object.
@@ -491,6 +490,7 @@ if (!isValidAndromeda(x))
 #' isAndromedaTable(andr$cars)
 #' close(andr)
 #' }
+#' @export
 isAndromedaTable <- function(tbl) {
   return(inherits(tbl, "tbl") && inherits(dbplyr::remote_con(tbl), "Andromeda"))
 }
