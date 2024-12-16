@@ -453,7 +453,9 @@ isAndromeda <- function(x) {
 #'
 #' @export
 isValidAndromeda <- function(x) {
-  if(!isAndromeda(x)) rlang::abort(paste(deparse(substitute(x)), "is not an Andromeda object."))
+  if (!isAndromeda(x)) {
+    rlang::abort(paste(deparse(substitute(x)), "is not an Andromeda object."))
+  }
   return(duckdb::dbIsValid(x))
 }
 
