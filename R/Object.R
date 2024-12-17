@@ -475,8 +475,9 @@ setMethod("close", "Andromeda", function(con, ...) {
 })
 
 checkIfValid <- function(x) {
-  if (!isValidAndromeda(x))
+  if (!isValidAndromeda(x)) {
     rlang::abort("Andromeda object is no longer valid. Perhaps it was saved without maintainConnection = TRUE, or R has been restarted?")
+  }
 }
 
 #' Is the object an Andromeda table?
@@ -492,6 +493,7 @@ checkIfValid <- function(x) {
 #' isAndromedaTable(andr$cars)
 #' close(andr)
 #' }
+#' @export
 isAndromedaTable <- function(tbl) {
   return(inherits(tbl, "tbl") && inherits(dbplyr::remote_con(tbl), "Andromeda"))
 }
