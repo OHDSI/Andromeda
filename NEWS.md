@@ -1,3 +1,11 @@
+Andromeda 0.6.8
+===============
+
+Bugfixes
+
+- Fix 'src' not found warning when using `isAndromedaTable()` with latest version of `dbplyr`.
+
+
 Andromeda 0.6.7
 ===============
 

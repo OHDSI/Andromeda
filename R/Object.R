@@ -466,5 +466,5 @@ checkIfValid <- function(x) {
 #' close(andr)
 #' }
 isAndromedaTable <- function(tbl) {
-  return(inherits(tbl, "tbl") && inherits(dbplyr::remote_con(tbl), "Andromeda"))
+  return(inherits(tbl, "tbl_dbi") && inherits(dbplyr::remote_con(tbl), "Andromeda"))
 }
