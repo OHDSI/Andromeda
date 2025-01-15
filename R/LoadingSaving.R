@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of Andromeda
 # 
@@ -145,13 +145,13 @@ loadAndromeda <- function(fileName, options = list()) {
   # Rename unzipped files:
   newFileName <- tempfile(tmpdir = andromedaTempFolder, fileext = ".duckdb")
   file.rename(file.path(tempDir, duckdbFilenameInZip), newFileName)
-  attributes <- readRDS(file.path(tempDir, rdsFilenameInZip))
+  attribs <- readRDS(file.path(tempDir, rdsFilenameInZip))
   
   andromeda <- .createAndromeda(dbdir = newFileName, options = options)
   
   # Restore user defined attributes that don't overwrite Andromeda's reserved attributes
-  for (name in dplyr::setdiff(names(attributes), names(attributes(andromeda)))) {
-    attr(andromeda, name) <- attributes[[name]]
+  for (name in dplyr::setdiff(names(attribs), names(attributes(andromeda)))) {
+    attr(andromeda, name) <- attribs[[name]]
   }
   return(andromeda)
 }

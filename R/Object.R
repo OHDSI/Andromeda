@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of Andromeda
 # 
@@ -131,7 +131,6 @@ andromeda <- function(..., options = list()) {
 #' @export
 copyAndromeda <- function(andromeda, options = list()) {
   checkIfValid(andromeda)
-  dbname <- andromeda@dbname
   newAndromeda <- .createAndromeda(options = options)
   
   invisible(lapply(names(andromeda), function(nm) {
