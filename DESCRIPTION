@@ -19,16 +19,15 @@ BugReports: https://github.com/OHDSI/Andromeda/issues
 Depends:
   dplyr
 Imports:
-    RSQLite,
-    DBI,
-    zip,
-    methods,
-    dbplyr,
-    tidyselect,
-    cli,
-    rlang,
-    pillar,
-    hms
+  DBI,
+  zip,
+  methods,
+  dbplyr,
+  tidyselect,
+  cli,
+  rlang,
+  pillar,
+  duckdb
 Suggests:
   testthat,
   stringr,

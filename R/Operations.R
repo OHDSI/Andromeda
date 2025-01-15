@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2020 Observational Health Data Sciences and Informatics
 #
 # This file is part of Andromeda
 # 
@@ -74,10 +74,7 @@ batchApply <- function(tbl, fun, ..., batchSize = 100000, progressBar = FALSE, s
   output <- list()
   if (progressBar) {
     pb <- txtProgressBar(style = 3)
-    suppressWarnings({
-      # suppress warning message: ORDER BY is ignored in subqueries without LIMIT
-      totalRows <- tbl %>% count() %>% pull()
-    })
+    totalRows <- tbl %>% count() %>% pull()
     completedRows <- 0
   }
   result <- DBI::dbSendQuery(connection, sql)
@@ -161,7 +158,7 @@ groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, progres
     env$groupData <- groups[[length(groups)]]
     env$groupValue <- groups[[length(groups)]][1, groupVariable]
   }
-  batchApply(tbl = tbl %>% arrange(.data[[groupVariable]]),
+  batchApply(tbl = tbl,
              fun = wrapper,
              userFun = fun,
              env = env,
@@ -214,33 +211,38 @@ groupApply <- function(tbl, groupVariable, fun, ..., batchSize = 100000, progres
 #'
 #' @export
 appendToTable <- function(tbl, data) {
-  if (!inherits(tbl, "tbl_dbi"))
+  if (!inherits(tbl, "tbl_dbi")) {
     abort("First argument must be an Andromeda table")
-  tableName <- as.character(dbplyr::remote_name(tbl))
-  if (is.null(tableName))
-    abort("First argument must be a base table (cannot be a query result)")
-
+  }
+    
+  # This now gives an error. How can we check that a table is not a query result? 
+  # Perhaps using as.character(dbplyr::sql_render(tbl))
+  # if (!inherits(tbl$ops, "op_base_remote")) {
+  #   abort("First argument must be a base table (cannot be a query result)")
+  # }
+  
   connection <- dbplyr::remote_con(tbl)
   .checkAvailableSpace(connection)
+  tableName <- as.character(dbplyr::remote_name(tbl))
   if (inherits(data, "data.frame")) {
     
-    RSQLite::dbWriteTable(conn = connection,
-                          name = tableName,
-                          value = data,
-                          overwrite = FALSE,
-                          append = TRUE)
+    duckdb::dbWriteTable(conn = connection,
+                         name = tableName,
+                         value = data,
+                         overwrite = FALSE,
+                         append = TRUE)
   } else if (inherits(data, "tbl_dbi")) {
     if (isTRUE(all.equal(connection, dbplyr::remote_con(data)))) {
       sql <- dbplyr::sql_render(select(data, all_of(colnames(tbl))), connection)
       sql <- sprintf("INSERT INTO %s %s", tableName, sql)
-      RSQLite::dbExecute(connection, sql)
+      DBI::dbExecute(connection, sql)
     } else {
       doBatchedAppend <- function(batch) {
-        RSQLite::dbWriteTable(conn = connection,
-                              name = tableName,
-                              value = batch,
-                              overwrite = FALSE,
-                              append = TRUE)
+        duckdb::dbWriteTable(conn = connection,
+                             name = tableName,
+                             value = batch,
+                             overwrite = FALSE,
+                             append = TRUE)
       }
       batchApply(data, doBatchedAppend)
     }
@@ -303,8 +305,8 @@ batchTest <- function(tbl, fun, ..., batchSize = 100000) {
 #' Restore dates 
 #' 
 #' @description 
-#' Restores dates that were converted by Andromeda to numeric values back to dates.
-#' 
+#' This function has been deprecated since Andromeda v0.5 preserves dates.
+#'
 #' @param x  A numeric vector representing dates.
 #' 
 #' @seealso [restorePosixct()]
@@ -330,6 +332,7 @@ batchTest <- function(tbl, fun, ..., batchSize = 100000) {
 #' 
 #' @export
 restoreDate <- function(x) { 
+  rlang::warn("restoreDate has been deprecated since Andromeda v0.5 preserves dates.\nPlease do not use this function.")
   if(inherits(x, "Date")) {
     rlang::warn("Input to restoreDate is already a Date.")
     return(x)
@@ -341,7 +344,7 @@ restoreDate <- function(x) {
 #' Restore timestamps
 #' 
 #' @description 
-#' Restores datetimes that were converted by Andromeda to numeric values back to datetimes.
+#' This function has been deprecated since Andromeda v0.5 preserves POSIXct datetimes.
 #'
 #' @param x  A numeric vector representing timestamps
 #' 
@@ -370,6 +373,7 @@ restoreDate <- function(x) {
 #' 
 #' @export
 restorePosixct <- function(x) { 
+  rlang::warn("restorePosixct has been deprecated since Andromeda v0.5 preserves datetimes.\nPlease do not use this function.")
   if(inherits(x, "POSIXct")) {
     rlang::warn("Input to restorePosixct is already Posixct")
     return(x)

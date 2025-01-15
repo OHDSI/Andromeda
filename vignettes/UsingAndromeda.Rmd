@@ -3,9 +3,6 @@ title: "Using Andromeda"
 author: "Martijn J. Schuemie"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
-    number_sections: yes
-    toc: yes
   html_document:
     number_sections: yes
     toc: yes
@@ -28,7 +25,7 @@ To mimic the behavior of in-memory objects, when working with data in `Andromeda
 
 ## Technology
 
-`Andromeda` heavily relies on `RSQLite`, an R wrapper around SQLite. SQLite is a low-weight but very powerful single-user SQL database that can run from a single file on the local file system. Although SQLite and therefore `Andromeda` can be queried using SQL, `Andromeda` favors using `dbplyr`, a `dplyr` implementation, to work with the data.
+`Andromeda` heavily relies on `duckdb`, an R wrapper around the duckdb database. duckdb is a low-weight but very powerful single-user SQL database that can run from a single file on the local file system. Although duckdb and therefore `Andromeda` can be queried using SQL, `Andromeda` favors using `dbplyr`, a `dplyr` implementation, to work with the data.
 
 # Creating an Andromeda object
 
@@ -130,17 +127,17 @@ colnames(andr$cars)
 
 ## Using SQL
 
-In the end, an `Andromeda` is still an `RSQLite` database, and can be queried using SQL:
+In the end, an `Andromeda` is still an `duckdb` database, and can be queried using SQL:
 
 ```{r eval=TRUE}
-RSQLite::dbGetQuery(andr, "SELECT * FROM cars LIMIT 5;")
+DBI::dbGetQuery(andr, "SELECT * FROM cars LIMIT 5;")
 ```
 
 However, for consistency it is recommended to use the `dplyr` functions instead.
 
 ## Dates and times
 
-One limitation of SQLite - the technology underlying Andromeda - is that it does not support date and time formats. Dates and times are automatically converted to numeric values when adding them to an Andromeda table. Converting them back needs to be done manually:
+Andromeda supports date and time formats. 
 
 ```{r eval=TRUE}
 myData <- data.frame(someTime = as.POSIXct(c("2000-01-01 10:00", 
@@ -151,9 +148,7 @@ myData <- data.frame(someTime = as.POSIXct(c("2000-01-01 10:00",
                                           "2004-12-31")))
 andr$myData <- myData
 andr$myData %>% 
-  collect() %>%
-  mutate(someTime = restorePosixct(someTime),
-         someDate = restoreDate(someDate))
+  collect() 
 ```
 
 # Batch operations
@@ -191,14 +186,15 @@ For technical reasons it is not possible to write to the same `Andromeda` while 
 
 ```{r eval=TRUE}
 doSomething <- function(batch) {
-    batch$speedSquared <- batch$speed^2
-    if (is.null(andr$cars2)) {
-      andr$cars2 <- batch
-    } else {
-      appendToTable(andr$cars2, batch)
-    }
+  batch$speedSquared <- batch$speed^2
+  if (is.null(andr$cars2)) {
+    andr$cars2 <- batch
+  } else {
+    appendToTable(andr$cars2, batch)
   }
-  batchApply(andr$cars, doSomething, safe = TRUE)
+}
+
+batchApply(andr$cars, doSomething, safe = TRUE)
 ```
 
 Note that this only a restriction of `batchApply` and `groupApply`. We could have achieved the same task as the example above much faster using only `dplyr`:
@@ -216,6 +212,7 @@ To reuse an `Andromeda` at a later point in time, we can save it to a permanent 
 ```{r eval=FALSE}
 saveAndromeda(andr, "c:/temp/andromeda.zip")
 ```
+
 ```{r eval=TRUE, echo=FALSE}
 writeLines("Disconnected Andromeda. This data object can no longer be used")
 ```

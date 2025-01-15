@@ -9,7 +9,7 @@ test_that("Saving and loading", {
   attr(andromeda, "metaData") <- list(x = 1)
 
   fileName <- tempfile(fileext = ".zip")
-  
+
   # saveAndromeda writes to stdout which we want to suppress when testing
   # Note: expect_error(expression, NA) => expect no error
   expect_error(
@@ -17,7 +17,7 @@ test_that("Saving and loading", {
       saveAndromeda(andromeda, fileName, maintainConnection = FALSE)
     ),
   NA)
-  
+
   expect_error(saveAndromeda(andromeda, fileName), "closed")
   expect_error(saveAndromeda(andromeda, fileName, overwrite = FALSE), "already exists")
 
@@ -29,7 +29,7 @@ test_that("Saving and loading", {
   expect_equivalent(iris1, iris2)
   expect_false(is.null(attr(andromeda, "metaData")))
   expect_equal(attr(andromeda, "metaData")$x, 1)
-  
+
   expect_error(
     capture.output(
       saveAndromeda(andromeda2, fileName, maintainConnection = TRUE, overwrite = TRUE)
@@ -68,9 +68,9 @@ test_that("saveAndromeda handles bad file paths and tilde expansion", {
   andromeda <- andromeda(cars = cars)
   expect_error(saveAndromeda(andromeda, "/some/non/exist/ant/path.zip"))
   close(andromeda)
-  
+
   expect_error(loadAndromeda("/some/non/exist/ant/path.zip"), "does not exist")
-  
+
 })
 
 test_that("saveAndromeda perfroms tilde expansion", {
@@ -79,30 +79,30 @@ test_that("saveAndromeda perfroms tilde expansion", {
   expect_error(saveAndromeda(andromeda, "~/andromedatestfile0010101011.zip"), NA)
   unlink("~/andromedatestfile0010101011.zip")
 })
-    
+
 
 test_that("getAndromedaTempDiskSpace works", {
   space <- getAndromedaTempDiskSpace()
   expect_true(is.na(space) || (is.numeric(space) && space > 0))
-  
+
   andromeda <- andromeda(cars = cars)
   space <- getAndromedaTempDiskSpace(andromeda)
   expect_true(is.na(space) || (is.numeric(space) && space > 0))
-  
+
   expect_error(getAndromedaTempDiskSpace(cars), "Andromeda argument must be of type 'Andromeda'")
 })
 
 
-# test_that(".checkAvailableSpace works", {
-#   space <- getAndromedaTempDiskSpace()
-#   if (!is.na(space)) {
-#     # rJava is installed, so we can test:
-#     
-#     oldOption <- getOption("warnDiskSpaceThreshold")
-#     options(warnDiskSpaceThreshold = 1e15)
-#     expect_warning(.checkAvailableSpace(), "Low disk space")
-#     # Checking the same location again should not produce a warning
-#     expect_warning(.checkAvailableSpace(), NA)
-#     options(warnDiskSpaceThreshold = oldOption)
-#   }
-# })
+test_that(".checkAvailableSpace works", {
+  space <- getAndromedaTempDiskSpace()
+  if (!is.na(space)) {
+    # rJava is installed, so we can test:
+
+    oldOption <- getOption("warnDiskSpaceThreshold")
+    options(warnDiskSpaceThreshold = 1e30)
+    expect_warning(.checkAvailableSpace(), "Low disk space")
+    # Checking the same location again should not produce a warning
+    expect_warning(.checkAvailableSpace(), NA)
+    options(warnDiskSpaceThreshold = oldOption)
+  }
+})

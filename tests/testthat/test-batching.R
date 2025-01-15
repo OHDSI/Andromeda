@@ -39,7 +39,7 @@ test_that("batchApply safe mode", {
 test_that("batchApply progress bar", {
   andromeda <- andromeda()
   andromeda$cars <- cars
-  
+
   doSomething <- function(batch, multiplier) {
     return(nrow(batch) * multiplier)
   }
@@ -66,7 +66,7 @@ test_that("groupApply", {
 test_that("groupApply progress bar", {
   andromeda <- andromeda()
   andromeda$cars <- cars
-  
+
   doSomething <- function(batch, multiplier) {
     return(nrow(batch) * multiplier)
   }
@@ -78,15 +78,15 @@ test_that("groupApply progress bar", {
 
 test_that("batchTest", {
   andromeda <- andromeda(cars = cars)
-  
+
   isSpeedNotSorted <- function(batch) {
     return(is.unsorted(batch %>% select("speed") %>% collect()))
   }
-  
+
   isSpeedSorted <- function(batch) {
     return(!is.unsorted(batch %>% select("speed") %>% collect()))
   }
-  
+
   expect_true(batchTest(andromeda$cars, isSpeedNotSorted, batchSize = 5) == FALSE)
   expect_true(batchTest(andromeda$cars, isSpeedSorted, batchSize = 100) == TRUE)
 })

@@ -59,10 +59,10 @@ test_that("Table from same table in same Andromeda", {
   andromeda <- andromeda()
   andromeda$cars <- cars
   andromeda$cars <- andromeda$cars %>% filter(speed > 10)
-  
+
   cars2 <- andromeda$cars %>% collect()
   expect_equivalent(cars2, cars %>% filter(speed > 10))
-  
+
   close(andromeda)
 })
 
@@ -96,10 +96,10 @@ test_that("Zero rows", {
   expect_equal(count2$n, 0)
 
   andromeda2 <- andromeda(iris2 = andromeda$iris2)
-  
+
   count3 <- andromeda2$iris2 %>% count() %>% collect()
   expect_equal(count3$n, 0)
-  
+
   close(andromeda)
   close(andromeda2)
 })
@@ -148,8 +148,8 @@ test_that("Copying andromeda", {
 
 test_that("Warning when disk space low", {
   skip_if(.Platform$OS.type != "windows")
-  
-  availableSpace <- tryCatch(getAndromedaTempDiskSpace(), 
+
+  availableSpace <- tryCatch(getAndromedaTempDiskSpace(),
                              error = function(e) NA)
   skip_if(is.na(availableSpace))
 

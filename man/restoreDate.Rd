@@ -13,7 +13,7 @@ restoreDate(x)
 A vector of type \code{Date}.
 }
 \description{
-Restores dates that were converted by Andromeda to numeric values back to dates.
+This function has been deprecated since Andromeda v0.5 preserves dates.
 }
 \examples{
 myData <- data.frame(startDate = as.Date(c("2000-01-01", "2001-01-31", "2004-12-31")))
