@@ -1,9 +1,17 @@
+Andromeda 1.0.0
+===============
+
+Changes
+
+- Switch backend from SQLite to DuckDb for greater performance in terms of speed and disk space.
+
+
 Andromeda 0.6.7
 ===============
 
 Bugfixes
 
-- Fix `isAndromedaTable()` when table belongs to descendant of Andromda.
+- Fix `isAndromedaTable()` when table belongs to descendant of Andromeda.
 
 
 Andromeda 0.6.6

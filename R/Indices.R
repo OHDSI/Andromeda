@@ -1,4 +1,4 @@
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of Andromeda
 # 
@@ -139,8 +139,6 @@ removeIndex <- function(tbl, columnNames = NULL, indexName = NULL) {
   if (!((is.character(columnNames) && length(columnNames) > 0) || (is.character(indexName) && length(indexName) > 0))) 
       abort("Either columnNames or indexName must be supplied.")
   
-  tableName <- as.character(dbplyr::remote_name(tbl))
-  connection <- dbplyr::remote_con(tbl)
   indices <- listIndices(tbl)
   
   if (is.character(columnNames) && length(columnNames) > 0) {
