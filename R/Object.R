@@ -247,7 +247,7 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
     duckdb::dbWriteTable(conn = x, name = i, value = value, overwrite = TRUE, append = FALSE)
   } else if (inherits(value, "tbl_dbi")) {
     .checkAvailableSpace(x)
-    if (isTRUE(all.equal(x, dbplyr::remote_con(value)))) {
+    if (identical(x, dbplyr::remote_con(value))) {
       # x[[i]] and value are tables are in the same Andromeda object
       sql <- dbplyr::sql_render(value, x)
       if (duckdb::dbExistsTable(x, i)) {

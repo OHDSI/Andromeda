@@ -232,7 +232,7 @@ appendToTable <- function(tbl, data) {
                          overwrite = FALSE,
                          append = TRUE)
   } else if (inherits(data, "tbl_dbi")) {
-    if (isTRUE(all.equal(connection, dbplyr::remote_con(data)))) {
+    if (identical(connection, dbplyr::remote_con(data))) {
       sql <- dbplyr::sql_render(select(data, all_of(colnames(tbl))), connection)
       sql <- sprintf("INSERT INTO %s %s", tableName, sql)
       DBI::dbExecute(connection, sql)
