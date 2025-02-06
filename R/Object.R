@@ -133,10 +133,15 @@ copyAndromeda <- function(andromeda, options = list()) {
   checkIfValid(andromeda)
   newAndromeda <- .createAndromeda(options = options)
   
-  invisible(lapply(names(andromeda), function(nm) {
-    newAndromeda[[nm]] <- andromeda[[nm]]
-  }))
-  
+  oldFile <- andromeda@dbname
+  DBI::dbExecute(andromeda, "CHECKPOINT")
+
+  DBI::dbExecute(newAndromeda, sprintf("ATTACH DATABASE '%s' AS old", oldFile))
+  tables <- DBI::dbListTables(andromeda)
+  for (table in tables) {
+    DBI::dbExecute(newAndromeda, sprintf("CREATE TABLE %s AS SELECT * FROM old.%s", table, table))
+  }
+  DBI::dbExecute(newAndromeda, "DETACH DATABASE old")
   if (!dplyr::setequal(names(andromeda), names(newAndromeda))) {
     succeeded <- paste(dplyr::intersect(names(andromeda), names(newAndromeda)), collapse = ", ")
     failed <- paste(dplyr::setdiff(names(andromeda), names(newAndromeda)), collapse = ", ")
