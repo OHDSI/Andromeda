@@ -139,13 +139,13 @@ copyAndromeda <- function(andromeda, options = list()) {
   for (table in tables) {
     DBI::dbExecute(newAndromeda, sprintf("CREATE TABLE %s AS SELECT * FROM old.%s", table, table))
   }
-  DBI::dbExecute(newAndromeda, "DETACH DATABASE old")
   if (!dplyr::setequal(names(andromeda), names(newAndromeda))) {
     succeeded <- paste(dplyr::intersect(names(andromeda), names(newAndromeda)), collapse = ", ")
     failed <- paste(dplyr::setdiff(names(andromeda), names(newAndromeda)), collapse = ", ")
     msg <- paste("Error copying Andromeda object.\n", succeeded, "copied successfully.\n", failed, "failed to copy.\n")
     rlang::abort(msg)
   } 
+  DBI::dbExecute(newAndromeda, "DETACH DATABASE old")
   return(newAndromeda)
 }
 
@@ -266,7 +266,7 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
       if (duckdb::dbExistsTable(x, i)) {
         duckdb::dbRemoveTable(x, i)
       }
-      valueSourceFile <- dbplyr::remote_con(value)@driver@dbdir
+      valueSourceFile <- dbplyr::remote_con(value)@dbname
       sourceTableName <- dbplyr::remote_name(value)
       if (is.null(sourceTableName)) {
         # value is a lazy_query compute first to a temp parquet file
