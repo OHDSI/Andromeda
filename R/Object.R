@@ -134,8 +134,6 @@ copyAndromeda <- function(andromeda, options = list()) {
   newAndromeda <- .createAndromeda(options = options)
   
   oldFile <- andromeda@dbname
-  DBI::dbExecute(andromeda, "CHECKPOINT")
-
   DBI::dbExecute(newAndromeda, sprintf("ATTACH DATABASE '%s' AS old", oldFile))
   tables <- DBI::dbListTables(andromeda)
   for (table in tables) {
@@ -268,13 +266,37 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
       if (duckdb::dbExistsTable(x, i)) {
         duckdb::dbRemoveTable(x, i)
       }
-      doBatchedAppend <- function(batch) {
-        duckdb::dbWriteTable(conn = x, name = i, value = batch, overwrite = FALSE, append = TRUE)
-        return(TRUE)
-      }
-      dummy <- batchApply(value, doBatchedAppend)
-      if (length(dummy) == 0) {
-        duckdb::dbWriteTable(conn = x, name = i, value = dplyr::collect(value), overwrite = FALSE, append = TRUE)
+      valueSourceFile <- dbplyr::remote_con(value)@driver@dbdir
+      sourceTableName <- dbplyr::remote_name(value)
+      if (is.null(sourceTableName)) {
+        # value is a lazy_query compute first to a temp parquet file
+        tempFile <- tempfile(tmpdir = .getAndromedaTempFolder(),
+                             fileext = ".parquet")
+        DBI::dbExecute(
+          dbplyr::remote_con(value),
+          sprintf(
+            "COPY (%s) TO '%s' (FORMAT 'parquet')",
+            dbplyr::sql_render(value), tempFile
+          )
+        )
+
+        DBI::dbExecute(
+          x,
+          sprintf(
+            "CREATE OR REPLACE TABLE %s AS SELECT * FROM read_parquet('%s')",
+            i,
+            tempFile
+          )
+        )
+        unlink(tempFile)
+      } else {
+          DBI::dbExecute(x, sprintf("ATTACH '%s' as source", valueSourceFile))
+          DBI::dbExecute(x, sprintf(
+            "CREATE OR REPLACE TABLE
+            %s AS SELECT * FROM source.%s", i,
+            sourceTableName
+          ))
+          DBI::dbExecute(x, "DETACH source")
       }
     }
   } else {
