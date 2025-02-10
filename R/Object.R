@@ -152,6 +152,7 @@ copyAndromeda <- function(andromeda, options = list()) {
 # By default .createAndromeda will create a new duckdb instance in a temp folder. However it can also use an existing duckdb file.
 .createAndromeda <- function(dbdir = tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".duckdb"), options = list()) {
   andromeda <- duckdb::dbConnect(duckdb::duckdb(), dbdir = dbdir)
+  DBI::dbExecute(andromeda, "SET wal_autocheckpoint = '0KB'")
   class(andromeda) <- "Andromeda"
   attr(class(andromeda), "package") <- "Andromeda"
   andromeda@dbname <- andromeda@driver@dbdir
