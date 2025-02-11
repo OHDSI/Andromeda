@@ -269,8 +269,9 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
       }
       valueSourceFile <- dbplyr::remote_con(value)@dbname
       sourceTableName <- dbplyr::remote_name(value)
-      if (is.null(sourceTableName)) {
-        # value is a lazy_query compute first to a temp parquet file
+      if (is.null(sourceTableName) || .Platform$OS.type == "windows") {
+        # value is a lazy_query or windows which has strong file locks and can't attach
+        # compute first to a temp parquet file
         tempFile <- tempfile(tmpdir = .getAndromedaTempFolder(),
                              fileext = ".parquet")
         DBI::dbExecute(
