@@ -133,11 +133,27 @@ copyAndromeda <- function(andromeda, options = list()) {
   checkIfValid(andromeda)
   newAndromeda <- .createAndromeda(options = options)
   
-  oldFile <- andromeda@dbname
-  DBI::dbExecute(newAndromeda, sprintf("ATTACH DATABASE '%s' AS old", oldFile))
   tables <- DBI::dbListTables(andromeda)
-  for (table in tables) {
-    DBI::dbExecute(newAndromeda, sprintf("CREATE TABLE %s AS SELECT * FROM old.%s", table, table))
+
+  if (.Platform$OS.type == "windows") {
+    # On windows, avoid attaching to a locked database file
+    for (table in tables) {
+      tempFile <- tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".parquet")
+      DBI::dbExecute(andromeda, 
+        sprintf("COPY %s TO '%s' (FORMAT 'parquet')", table, tempFile))
+
+      DBI::dbExecute(newAndromeda, 
+        sprintf("CREATE TABLE %s AS SELECT * FROM read_parquet('%s')", table, tempFile))
+    }
+    unlink(tempFile)
+  } else {
+    oldFile <- andromeda@dbname
+    DBI::dbExecute(newAndromeda, sprintf("ATTACH DATABASE '%s' AS old", oldFile))
+    for (table in tables) {
+      DBI::dbExecute(newAndromeda, 
+        sprintf("CREATE TABLE %s AS SELECT * FROM old.%s", table, table))
+    }
+    DBI::dbExecute(newAndromeda, "DETACH DATABASE old")
   }
   if (!dplyr::setequal(names(andromeda), names(newAndromeda))) {
     succeeded <- paste(dplyr::intersect(names(andromeda), names(newAndromeda)), collapse = ", ")
@@ -145,7 +161,6 @@ copyAndromeda <- function(andromeda, options = list()) {
     msg <- paste("Error copying Andromeda object.\n", succeeded, "copied successfully.\n", failed, "failed to copy.\n")
     rlang::abort(msg)
   } 
-  DBI::dbExecute(newAndromeda, "DETACH DATABASE old")
   return(newAndromeda)
 }
 
