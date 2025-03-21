@@ -56,6 +56,12 @@ setClass("Andromeda", slots = c("dbname" = "character"), contains = "duckdb_conn
 #' By default the `Andromeda` object is created in the systems temporary file location. You can override
 #' this by specifying a folder using `options(andromedaTempFolder = "c:/andromedaTemp")`, where
 #' `"c:/andromedaTemp"` is the folder to create the Andromeda objects in.
+#' 
+#' Although in general Andromeda is well-behaved in terms of memory usage, it can consume a lot of 
+#' memory for specific operations such as sorting and aggregating. By default the memory usage is 
+#' limited to 75% of the physical memory. However it is possible to set another limit by using
+#' `options(andromedaMemoryLimit = 2.5)`, where `2.5` is the number of GB to use at most. One GB is 
+#' 1,000,000,000 bytes.
 #'
 #' @param ...   Named objects. See details for what objects are valid. If no objects are provided, an
 #'              empty Andromeda is returned.
@@ -163,6 +169,10 @@ copyAndromeda <- function(andromeda, options = list()) {
   # ignore all options except 'threads' for now
   if (is.numeric(options[["threads"]])) {
     DBI::dbExecute(andromeda, paste("PRAGMA threads = ", as.integer(options[["threads"]])))
+  }
+  memoryLimit <- getOption("andromedaMemoryLimit")
+  if (!is.null(memoryLimit)) {
+    DBI::dbExecute(andromeda, sprintf("SET memory_limit = '%0.4fGB';", memoryLimit))
   }
   return(andromeda)
 }

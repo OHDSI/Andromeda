@@ -5,6 +5,8 @@ Changes
 
 - Switch backend from SQLite to DuckDb for greater performance in terms of speed and disk space.
 
+- Added `andromedaMemoryLimit` option to control the maximum amount of memory Andromeda is allowed to use (in GB).
+
 
 Andromeda 0.6.7
 ===============

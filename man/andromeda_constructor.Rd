@@ -20,6 +20,12 @@ Returns an \code{\link{Andromeda}} object.
 By default the \code{Andromeda} object is created in the systems temporary file location. You can override
 this by specifying a folder using \code{options(andromedaTempFolder = "c:/andromedaTemp")}, where
 \code{"c:/andromedaTemp"} is the folder to create the Andromeda objects in.
+
+Although in general Andromeda is well-behaved in terms of memory usage, it can consume a lot of
+memory for specific operations such as sorting and aggregating. By default the memory usage is
+limited to 75\% of the physical memory. However it is possible to set another limit by using
+\code{options(andromedaMemoryLimit = 2.5)}, where \code{2.5} is the number of GB to use at most. One GB is
+1,000,000,000 bytes.
 }
 \details{
 Valid objects are data frames, \code{Andromeda} tables, or any other \code{dplyr} table.
