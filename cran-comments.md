@@ -1,13 +1,12 @@
-Andromeda v0.6.7
+Andromeda v1.0.0
 ---
 
-This update contains 1 minor bug fix (see NEWS.md).
+This is a major release, with 1 major and 1 minor change (see NEWS.md).
 
 ## Test environments
 * Windows-latest, R-release (Github Actions)
 * macOS-latest, R-release (Github Actions)
 * Ubuntu-20.04, R-release (Github Actions)
-* Ubuntu-20.04, R-devel (Github Actions)
 * Winbuilder, R-release
 
 
@@ -17,4 +16,6 @@ There were no ERRORs or WARNINGs on any platform.
 
 ## Downstream dependencies
 
-DatabaseConnector is used by Cyclops, TreatmentPatterns, CohortAlgebra, DatabaseConnector, which were tested with this new version. No issues were found.
+Andromeda is used by Cyclops, FeatureExtraction, PatientLevelPrediction, TreatmentPatterns, CohortAlgebra, DatabaseConnector, and ResultModelManager, which were tested with this new version. 
+
+Issues were found with TreatmentPatterns. The author has been notified and he will create a new release when this version of Andromeda has been released.
