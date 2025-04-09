@@ -76,7 +76,7 @@ while keeping the saved data as is.
 
 
 The \code{Andromeda} inherits directly from \code{duckdb_connection} As such, it can be used as if it is a \code{duckdb_connection}.
-\code{\link{duckdb}} is an R wrapper around 'duckdb', a low-weight but powerful single-user SQL database that can run
+The \code{duckdb}package is an R wrapper around 'duckdb', a low-weight but powerful single-user SQL database that can run
 from a single file on the local file system.
 }
 

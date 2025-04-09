@@ -38,7 +38,7 @@
 #' @section Inheritance:
 #' 
 #' The `Andromeda` inherits directly from `duckdb_connection` As such, it can be used as if it is a `duckdb_connection`. 
-#' [`duckdb`] is an R wrapper around 'duckdb', a low-weight but powerful single-user SQL database that can run 
+#' The `duckdb`package is an R wrapper around 'duckdb', a low-weight but powerful single-user SQL database that can run 
 #' from a single file on the local file system.
 #' 
 #' @name Andromeda-class
