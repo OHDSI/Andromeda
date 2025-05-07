@@ -2,9 +2,9 @@ library(testthat)
 
 test_that("Saving and loading", {
   andromeda <- andromeda()
-  andromeda$table <- iris
-  expect_true("table" %in% names(andromeda))
-  iris1 <- andromeda$table %>% collect()
+  andromeda$iris <- iris
+  expect_true("iris" %in% names(andromeda))
+  iris1 <- andromeda$iris %>% collect()
 
   attr(andromeda, "metaData") <- list(x = 1)
 
@@ -22,9 +22,9 @@ test_that("Saving and loading", {
   expect_error(saveAndromeda(andromeda, fileName, overwrite = FALSE), "already exists")
 
   expect_error(andromeda2 <- loadAndromeda(fileName), NA)
-  expect_true("table" %in% names(andromeda2))
+  expect_true("iris" %in% names(andromeda2))
 
-  iris2 <- andromeda2$table %>% collect()
+  iris2 <- andromeda2$iris %>% collect()
 
   expect_equivalent(iris1, iris2)
   expect_false(is.null(attr(andromeda, "metaData")))

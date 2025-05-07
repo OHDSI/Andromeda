@@ -139,10 +139,28 @@ copyAndromeda <- function(andromeda, options = list()) {
   checkIfValid(andromeda)
   newAndromeda <- .createAndromeda(options = options)
   
-  invisible(lapply(names(andromeda), function(nm) {
-    newAndromeda[[nm]] <- andromeda[[nm]]
-  }))
-  
+  tables <- DBI::dbListTables(andromeda)
+
+  if (.Platform$OS.type == "windows") {
+    # On windows, avoid attaching to a locked database file
+    for (table in tables) {
+      tempFile <- tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".parquet")
+      DBI::dbExecute(andromeda, 
+        sprintf("COPY %s TO '%s' (FORMAT 'parquet')", table, tempFile))
+
+      DBI::dbExecute(newAndromeda, 
+        sprintf("CREATE TABLE %s AS SELECT * FROM read_parquet('%s')", table, tempFile))
+    }
+    unlink(tempFile)
+  } else {
+    oldFile <- andromeda@dbname
+    DBI::dbExecute(newAndromeda, sprintf("ATTACH DATABASE '%s' AS old", oldFile))
+    for (table in tables) {
+      DBI::dbExecute(newAndromeda, 
+        sprintf("CREATE TABLE %s AS SELECT * FROM old.%s", table, table))
+    }
+    DBI::dbExecute(newAndromeda, "DETACH DATABASE old")
+  }
   if (!dplyr::setequal(names(andromeda), names(newAndromeda))) {
     succeeded <- paste(dplyr::intersect(names(andromeda), names(newAndromeda)), collapse = ", ")
     failed <- paste(dplyr::setdiff(names(andromeda), names(newAndromeda)), collapse = ", ")
@@ -155,6 +173,7 @@ copyAndromeda <- function(andromeda, options = list()) {
 # By default .createAndromeda will create a new duckdb instance in a temp folder. However it can also use an existing duckdb file.
 .createAndromeda <- function(dbdir = tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".duckdb"), options = list()) {
   andromeda <- duckdb::dbConnect(duckdb::duckdb(), dbdir = dbdir)
+  DBI::dbExecute(andromeda, "SET wal_autocheckpoint = '0KB'")
   class(andromeda) <- "Andromeda"
   attr(class(andromeda), "package") <- "Andromeda"
   andromeda@dbname <- andromeda@driver@dbdir
@@ -252,7 +271,7 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
     duckdb::dbWriteTable(conn = x, name = i, value = value, overwrite = TRUE, append = FALSE)
   } else if (inherits(value, "tbl_dbi")) {
     .checkAvailableSpace(x)
-    if (isTRUE(all.equal(x, dbplyr::remote_con(value)))) {
+    if (identical(x, dbplyr::remote_con(value))) {
       # x[[i]] and value are tables are in the same Andromeda object
       sql <- dbplyr::sql_render(value, x)
       if (duckdb::dbExistsTable(x, i)) {
@@ -273,13 +292,38 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
       if (duckdb::dbExistsTable(x, i)) {
         duckdb::dbRemoveTable(x, i)
       }
-      doBatchedAppend <- function(batch) {
-        duckdb::dbWriteTable(conn = x, name = i, value = batch, overwrite = FALSE, append = TRUE)
-        return(TRUE)
-      }
-      dummy <- batchApply(value, doBatchedAppend)
-      if (length(dummy) == 0) {
-        duckdb::dbWriteTable(conn = x, name = i, value = dplyr::collect(value), overwrite = FALSE, append = TRUE)
+      valueSourceFile <- dbplyr::remote_con(value)@dbname
+      sourceTableName <- dbplyr::remote_name(value)
+      if (is.null(sourceTableName) || .Platform$OS.type == "windows") {
+        # value is a lazy_query or windows which has strong file locks and can't attach
+        # compute first to a temp parquet file
+        tempFile <- tempfile(tmpdir = .getAndromedaTempFolder(),
+                             fileext = ".parquet")
+        DBI::dbExecute(
+          dbplyr::remote_con(value),
+          sprintf(
+            "COPY (%s) TO '%s' (FORMAT 'parquet')",
+            dbplyr::sql_render(value), tempFile
+          )
+        )
+
+        DBI::dbExecute(
+          x,
+          sprintf(
+            "CREATE OR REPLACE TABLE %s AS SELECT * FROM read_parquet('%s')",
+            i,
+            tempFile
+          )
+        )
+        unlink(tempFile)
+      } else {
+          DBI::dbExecute(x, sprintf("ATTACH '%s' as source", valueSourceFile))
+          DBI::dbExecute(x, sprintf(
+            "CREATE OR REPLACE TABLE
+            %s AS SELECT * FROM source.%s", i,
+            sourceTableName
+          ))
+          DBI::dbExecute(x, "DETACH source")
       }
     }
   } else {
