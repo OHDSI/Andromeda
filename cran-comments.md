@@ -1,12 +1,12 @@
 Andromeda v1.0.0
 ---
 
-This is a major release, with 1 major and 1 minor change (see NEWS.md).
+This is a major release, with 1 major and 1 minor change (see NEWS.md). 
 
 ## Test environments
 * Windows-latest, R-release (Github Actions)
 * macOS-latest, R-release (Github Actions)
-* Ubuntu-20.04, R-release (Github Actions)
+* Ubuntu-24.04, R-release (Github Actions)
 * Winbuilder, R-release
 
 
@@ -18,4 +18,4 @@ There were no ERRORs or WARNINGs on any platform.
 
 Andromeda is used by Cyclops, FeatureExtraction, PatientLevelPrediction, TreatmentPatterns, CohortAlgebra, DatabaseConnector, and ResultModelManager, which were tested with this new version. 
 
-Issues were found with TreatmentPatterns. The author has been notified and he will create a new release when this version of Andromeda has been released.
+The issues earlier found with Cyclops, FeatureExtraction, and TreatmentPatterns have all been addressed by the respective package maintainers in the latest versions.
