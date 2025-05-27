@@ -1,3 +1,11 @@
+Andromeda 1.0.1
+===============
+
+Changes:
+
+- Leveraging DuckDB for faster assigns and copy operations.
+
+
 Andromeda 1.0.0
 ===============
 
