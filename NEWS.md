@@ -5,6 +5,8 @@ Changes:
 
 - Leveraging DuckDB for faster assigns and copy operations.
 
+- Added `flushAndromeda()` function.
+
 
 Andromeda 1.0.0
 ===============

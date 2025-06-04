@@ -381,3 +381,30 @@ restorePosixct <- function(x) {
     return(as.POSIXct(x, origin = "1970-01-01"))
   }
 }
+
+#' Flush changes to disk
+#'
+#' @param andromeda An [`Andromeda`] object.
+#'
+#' @description
+#' Flush all changes to disk. This only affects the data in the Andromeda temp folder. 
+#' 
+#' This function is for advanced users, who wish to share the same underlying object with other 
+#' processes, which is very dangerous if you don't know what you're doing. 
+#'
+#' @returns
+#' This function does not return anything, but is executed for its side-effect.
+#' 
+#' @examples
+#' andr <- andromeda()
+#' andr$cars <- cars
+#' 
+#' flushAndromeda(andr)
+#' # The database in andromeda temp is now fully up-to-date.
+#' 
+#' close(andr)
+#' 
+#' @export
+flushAndromeda <- function(andromeda) {
+  DBI::dbExecute(andromeda, "CHECKPOINT;")
+}
