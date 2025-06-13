@@ -62,7 +62,10 @@ setClass("Andromeda", slots = c("dbname" = "character"), contains = "duckdb_conn
 #' limited to 75% of the physical memory. However it is possible to set another limit by using
 #' `options(andromedaMemoryLimit = 2.5)`, where `2.5` is the number of GB to use at most. One GB is 
 #' 1,000,000,000 bytes.
-#'
+#' 
+#' Similarly, by default Andromeda will use all available CPU cores when needed. The `andromedaThreads` 
+#' option controls the maximum number of threads Andromeda is allowed to use.
+#' 
 #' @param ...   Named objects. See details for what objects are valid. If no objects are provided, an
 #'              empty Andromeda is returned.
 #' @param options A named list of options. Currently the only supported option is 'threads' (see example). 
@@ -173,7 +176,6 @@ copyAndromeda <- function(andromeda, options = list()) {
 # By default .createAndromeda will create a new duckdb instance in a temp folder. However it can also use an existing duckdb file.
 .createAndromeda <- function(dbdir = tempfile(tmpdir = .getAndromedaTempFolder(), fileext = ".duckdb"), options = list()) {
   andromeda <- duckdb::dbConnect(duckdb::duckdb(), dbdir = dbdir)
-  DBI::dbExecute(andromeda, "SET wal_autocheckpoint = '0KB'")
   class(andromeda) <- "Andromeda"
   attr(class(andromeda), "package") <- "Andromeda"
   andromeda@dbname <- andromeda@driver@dbdir
@@ -188,6 +190,11 @@ copyAndromeda <- function(andromeda, options = list()) {
   # ignore all options except 'threads' for now
   if (is.numeric(options[["threads"]])) {
     DBI::dbExecute(andromeda, paste("PRAGMA threads = ", as.integer(options[["threads"]])))
+  } else {
+    threads <- getOption("andromedaThreads")
+    if (!is.null(threads)) {
+      DBI::dbExecute(andromeda, paste("PRAGMA threads = ", as.integer(threads)))
+    }
   }
   memoryLimit <- getOption("andromedaMemoryLimit")
   if (!is.null(memoryLimit)) {

@@ -192,3 +192,11 @@ test_that("isAndromedaTable sqlite version", {
   expect_true(isAndromedaTable(a$cars))
   expect_true(isAndromedaTable(dplyr::mutate(a$cars, a = 1)))
 })
+
+test_that("andromedaThreads works", {
+  options("andromedaThreads" = 2)
+  a <- andromeda(cars = cars)
+  threads <- DBI::dbGetQuery(a, "SELECT current_setting('threads') AS threads;")
+  expect_equal(threads[1, 1], 2)
+  close(a)
+})

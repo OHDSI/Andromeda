@@ -7,6 +7,8 @@ Changes:
 
 - Added `flushAndromeda()` function.
 
+- Added `andromedaThreads` option to control the maximum number of threads Andromeda is allowed to use.
+
 
 Andromeda 1.0.0
 ===============
