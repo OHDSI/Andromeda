@@ -26,6 +26,9 @@ memory for specific operations such as sorting and aggregating. By default the m
 limited to 75\% of the physical memory. However it is possible to set another limit by using
 \code{options(andromedaMemoryLimit = 2.5)}, where \code{2.5} is the number of GB to use at most. One GB is
 1,000,000,000 bytes.
+
+Similarly, by default Andromeda will use all available CPU cores when needed. The \code{andromedaThreads}
+option controls the maximum number of threads Andromeda is allowed to use.
 }
 \details{
 Valid objects are data frames, \code{Andromeda} tables, or any other \code{dplyr} table.

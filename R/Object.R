@@ -140,6 +140,9 @@ andromeda <- function(..., options = list()) {
 #' @export
 copyAndromeda <- function(andromeda, options = list()) {
   checkIfValid(andromeda)
+  # Call flush (checkpoint) to avoid segfault:
+  Andromeda::flushAndromeda(andromeda)
+  
   newAndromeda <- .createAndromeda(options = options)
   
   tables <- DBI::dbListTables(andromeda)
@@ -278,6 +281,8 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
     duckdb::dbWriteTable(conn = x, name = i, value = value, overwrite = TRUE, append = FALSE)
   } else if (inherits(value, "tbl_dbi")) {
     .checkAvailableSpace(x)
+    # Call flush (checkpoint) to avoid segfault:
+    Andromeda::flushAndromeda(dbplyr::remote_con(value))
     if (identical(x, dbplyr::remote_con(value))) {
       # x[[i]] and value are tables are in the same Andromeda object
       sql <- dbplyr::sql_render(value, x)

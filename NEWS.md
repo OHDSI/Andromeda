@@ -9,6 +9,10 @@ Changes:
 
 - Added `andromedaThreads` option to control the maximum number of threads Andromeda is allowed to use.
 
+Bugfixes:
+
+- Calling `flushAndromeda()` before copying entire Andromeda (`copyAndromeda()`) or just a table (`[[]]<-` operator) to avoid segfault.
+
 
 Andromeda 1.0.0
 ===============
