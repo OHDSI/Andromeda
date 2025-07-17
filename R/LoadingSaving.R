@@ -140,7 +140,7 @@ loadAndromeda <- function(fileName, options = list()) {
   tempDir <- tempfile(tmpdir = andromedaTempFolder)
   dir.create(tempDir)
   on.exit(unlink(tempDir, recursive = TRUE))
-  zip::unzip(fileName, exdir = tempDir)
+  utils::unzip(fileName, exdir = tempDir)
   
   # Rename unzipped files:
   newFileName <- tempfile(tmpdir = andromedaTempFolder, fileext = ".duckdb")
