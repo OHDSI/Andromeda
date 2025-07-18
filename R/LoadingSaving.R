@@ -136,7 +136,7 @@ loadAndromeda <- function(fileName) {
   tempDir <- tempfile(tmpdir = andromedaTempFolder)
   dir.create(tempDir)
   on.exit(unlink(tempDir, recursive = TRUE))
-  zip::unzip(fileName, exdir = tempDir)
+  utils::unzip(fileName, exdir = tempDir, setTimes = FALSE)
   
   # Rename unzipped files:
   newFileName <- tempfile(tmpdir = andromedaTempFolder, fileext = ".sqlite")
