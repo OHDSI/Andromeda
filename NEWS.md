@@ -1,4 +1,4 @@
-Andromeda 1.0.1
+Andromeda 1.1.0
 ===============
 
 Changes:
