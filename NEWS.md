@@ -13,6 +13,8 @@ Bugfixes:
 
 - Calling `flushAndromeda()` before copying entire Andromeda (`copyAndromeda()`) or just a table (`[[]]<-` operator) to avoid segfault.
 
+- Switch from `zip::unzip()` to `utils::unzip()` to avoid 'mtimes' errors.
+
 
 Andromeda 1.0.0
 ===============

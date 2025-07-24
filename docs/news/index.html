@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -61,7 +61,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.0.0" id="andromeda-100">Andromeda 1.0.0<a class="anchor" aria-label="anchor" href="#andromeda-100"></a></h2>
+<h2 class="page-header" data-toc-text="1.0.1" id="andromeda-101">Andromeda 1.0.1<a class="anchor" aria-label="anchor" href="#andromeda-101"></a></h2>
+<p>Changes:</p>
+<ul><li><p>Leveraging DuckDB for faster assigns and copy operations.</p></li>
+<li><p>Added <code><a href="../reference/flushAndromeda.html">flushAndromeda()</a></code> function.</p></li>
+<li><p>Added <code>andromedaThreads</code> option to control the maximum number of threads Andromeda is allowed to use.</p></li>
+</ul><p>Bugfixes:</p>
+<ul><li><p>Calling <code><a href="../reference/flushAndromeda.html">flushAndromeda()</a></code> before copying entire Andromeda (<code><a href="../reference/copyAndromeda.html">copyAndromeda()</a></code>) or just a table (<code>[[]]&lt;-</code> operator) to avoid segfault.</p></li>
+<li><p>Switch from <code><a href="https://r-lib.github.io/zip/reference/unzip.html" class="external-link">zip::unzip()</a></code> to <code><a href="https://rdrr.io/r/utils/unzip.html" class="external-link">utils::unzip()</a></code> to avoid ‘mtimes’ errors.</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.0.0" id="andromeda-100">Andromeda 1.0.0<small>2025-05-07</small><a class="anchor" aria-label="anchor" href="#andromeda-100"></a></h2>
 <p>Changes</p>
 <ul><li><p>Switch backend from SQLite to DuckDb for greater performance in terms of speed and disk space.</p></li>
 <li><p>Added <code>andromedaMemoryLimit</code> option to control the maximum amount of memory Andromeda is allowed to use (in GB).</p></li>
@@ -194,7 +204,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer></div>
