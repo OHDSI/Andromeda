@@ -1,3 +1,10 @@
+Andromeda 0.6.7.9999
+====================
+
+Bugfixes
+
+- Switch from zip::unzip() to utils::unzip() to avoid 'mtimes' errors.
+
 Andromeda 0.6.7
 ===============
 
