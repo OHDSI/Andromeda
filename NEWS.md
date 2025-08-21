@@ -1,3 +1,11 @@
+Andromeda 1.1.1
+===============
+
+Bugfixes:
+
+- Disabling DuckDB progress bar to avoid mysterious crashes and hangs.
+
+
 Andromeda 1.1.0
 ===============
 
