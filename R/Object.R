@@ -203,6 +203,7 @@ copyAndromeda <- function(andromeda, options = list()) {
   if (!is.null(memoryLimit)) {
     DBI::dbExecute(andromeda, sprintf("SET memory_limit = '%0.4fGB';", memoryLimit))
   }
+  DBI::dbExecute(andromeda, "PRAGMA enable_progress_bar = false;")
   return(andromeda)
 }
 
