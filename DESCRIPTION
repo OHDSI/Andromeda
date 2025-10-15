@@ -27,7 +27,8 @@ Imports:
   cli,
   rlang,
   pillar,
-  duckdb (>= 1.3.0)
+  duckdb (>= 1.3.0),
+  memuse
 Suggests:
   testthat,
   stringr,

@@ -201,9 +201,11 @@ copyAndromeda <- function(andromeda, options = list()) {
     }
   }
   memoryLimit <- getOption("andromedaMemoryLimit")
-  if (!is.null(memoryLimit)) {
-    DBI::dbExecute(andromeda, sprintf("SET memory_limit = '%0.4fGB';", memoryLimit))
+  if (is.null(memoryLimit)) {
+    # Default limit is 80%, which could cause problems when there are multiple Andromeda instances:
+    memoryLimit <- .getPhysicalMemory() * 0.2
   }
+  DBI::dbExecute(andromeda, sprintf("SET memory_limit = '%0.4fGB';", memoryLimit))
   DBI::dbExecute(andromeda, "PRAGMA enable_progress_bar = false;")
   return(andromeda)
 }
@@ -563,4 +565,10 @@ checkIfValid <- function(x) {
 #' @export
 isAndromedaTable <- function(tbl) {
   return(inherits(tbl, "tbl_dbi") && inherits(dbplyr::remote_con(tbl), "Andromeda"))
+}
+
+.getPhysicalMemory <- function() {
+  memory <- memuse::Sys.meminfo()$totalram
+  memory <- memuse::swap.unit(memory, "GB")
+  return(memory@size)
 }
