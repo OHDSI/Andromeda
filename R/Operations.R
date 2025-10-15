@@ -214,7 +214,7 @@ appendToTable <- function(tbl, data) {
   if (!inherits(tbl, "tbl_dbi")) {
     abort("First argument must be an Andromeda table")
   }
-    
+  
   # This now gives an error. How can we check that a table is not a query result? 
   # Perhaps using as.character(dbplyr::sql_render(tbl))
   # if (!inherits(tbl$ops, "op_base_remote")) {
@@ -245,8 +245,12 @@ appendToTable <- function(tbl, data) {
                              append = TRUE)
       }
       batchApply(data, doBatchedAppend)
+      # Could have lots of data in buffers. We don't want to hog the memory, so free up in source
+      # Andromeda:
+      Andromeda::flushAndromeda(dbplyr::remote_con(data), evictCache = TRUE)      
     }
-    # Could have lots of data in buffers. We don't want to hog the memory, so free up:
+    # Could have lots of data in buffers. We don't want to hog the memory, so free up in target
+    # Andromeda:
     Andromeda::flushAndromeda(connection, evictCache = TRUE)
   }
   invisible(NULL)
@@ -409,16 +413,18 @@ restorePosixct <- function(x) {
 #' 
 #' @export
 flushAndromeda <- function(andromeda, evictCache = TRUE) {
-  DBI::dbExecute(andromeda, "CHECKPOINT;")
-  
-  if (evictCache) {
-    # For debugging: remove before releasing new version:
-    message("Evicting Andromeda cache")
+  if (isAndromeda(andromeda())) {
+    DBI::dbExecute(andromeda, "CHECKPOINT;")
     
-    # DuckDB likes to keep a cache as big as the memory limit. To free this up, we temporarily 
-    # reduce the memory limit, forcing the cache to be dropped:
-    currentLimit <- DBI::dbGetQuery(andromeda, "SELECT current_setting('memory_limit');")
-    DBI::dbExecute(andromeda, "SET memory_limit = '128MB';")
-    DBI::dbExecute(andromeda, sprintf("SET memory_limit = '%s';", currentLimit))
+    if (evictCache) {
+      # For debugging: remove before releasing new version:
+      message("Evicting Andromeda cache of ", andromeda@dbname)
+      
+      # DuckDB likes to keep a cache as big as the memory limit. To free this up, we temporarily 
+      # reduce the memory limit, forcing the cache to be dropped:
+      currentLimit <- DBI::dbGetQuery(andromeda, "SELECT current_setting('memory_limit');")
+      DBI::dbExecute(andromeda, "SET memory_limit = '128MB';")
+      DBI::dbExecute(andromeda, sprintf("SET memory_limit = '%s';", currentLimit))
+    }
   }
 }

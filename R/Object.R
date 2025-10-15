@@ -341,8 +341,12 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
           ))
           DBI::dbExecute(x, "DETACH source")
       }
+      # Could have lots of data in buffers. We don't want to hog the memory, so free up in source
+      # Andromeda:
+      Andromeda::flushAndromeda(dbplyr::remote_con(value), evictCache = TRUE)
     }
-    # Could have lots of data in buffers. We don't want to hog the memory, so free up:
+    # Could have lots of data in buffers. We don't want to hog the memory, so free up in target
+    # Andromeda:
     Andromeda::flushAndromeda(x, evictCache = TRUE)
   } else {
     abort("Table must be a data frame or dplyr table")
