@@ -1,3 +1,11 @@
+Andromeda 1.1.2
+===============
+
+Bugfixes:
+
+- Explicitly settings DuckDB's `temp_directory` to the Andromeda temp folder to avoid running out of space in undefined temp location.
+
+
 Andromeda 1.1.1
 ===============
 
