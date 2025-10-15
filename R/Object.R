@@ -286,7 +286,7 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
   } else if (inherits(value, "tbl_dbi")) {
     .checkAvailableSpace(x)
     # Call flush (checkpoint) to avoid segfault:
-    Andromeda::flushAndromeda(dbplyr::remote_con(value))
+    Andromeda::flushAndromeda(dbplyr::remote_con(value), evictCache = FALSE)
     if (identical(x, dbplyr::remote_con(value))) {
       # x[[i]] and value are tables are in the same Andromeda object
       sql <- dbplyr::sql_render(value, x)
@@ -342,6 +342,8 @@ setMethod("[[<-", "Andromeda", function(x, i, value) {
           DBI::dbExecute(x, "DETACH source")
       }
     }
+    # Could have lots of data in buffers. We don't want to hog the memory, so free up:
+    Andromeda::flushAndromeda(x, evictCache = TRUE)
   } else {
     abort("Table must be a data frame or dplyr table")
   }

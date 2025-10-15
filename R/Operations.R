@@ -246,6 +246,8 @@ appendToTable <- function(tbl, data) {
       }
       batchApply(data, doBatchedAppend)
     }
+    # Could have lots of data in buffers. We don't want to hog the memory, so free up:
+    Andromeda::flushAndromeda(connection, evictCache = TRUE)
   }
   invisible(NULL)
 }
@@ -385,6 +387,7 @@ restorePosixct <- function(x) {
 #' Flush changes to disk
 #'
 #' @param andromeda An [`Andromeda`] object.
+#' @param evictCache If TRUE, will also evict the cache to free up memory.
 #'
 #' @description
 #' Flush all changes to disk. This only affects the data in the Andromeda temp folder. 
@@ -405,6 +408,17 @@ restorePosixct <- function(x) {
 #' close(andr)
 #' 
 #' @export
-flushAndromeda <- function(andromeda) {
+flushAndromeda <- function(andromeda, evictCache = TRUE) {
   DBI::dbExecute(andromeda, "CHECKPOINT;")
+  
+  if (evictCache) {
+    # For debugging: remove before releasing new version:
+    message("Evicting Andromeda cache")
+    
+    # DuckDB likes to keep a cache as big as the memory limit. To free this up, we temporarily 
+    # reduce the memory limit, forcing the cache to be dropped:
+    currentLimit <- DBI::dbGetQuery(andromeda, "SELECT current_setting('memory_limit');")
+    DBI::dbExecute(andromeda, "SET memory_limit = '128MB';")
+    DBI::dbExecute(andromeda, sprintf("SET memory_limit = '%s';", currentLimit))
+  }
 }

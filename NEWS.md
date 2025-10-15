@@ -1,11 +1,13 @@
-Andromeda 1.1.2
+Andromeda 1.2.0
 ===============
 
-Bugfixes:
+Changes:
 
 - Explicitly settings DuckDB's `temp_directory` to the Andromeda temp folder to avoid running out of space in undefined temp location.
 
 - Set default memory limit to 20% instead of 80% of system memory to avoid out-of-memory errors when there are multiple Andromeda objects in memory.
+
+- `flushAndromeda()` now also evicts the cache by default, and is called after appending or creating table from another Andromeda table.
 
 Andromeda 1.1.1
 ===============

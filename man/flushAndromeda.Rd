@@ -4,10 +4,12 @@
 \alias{flushAndromeda}
 \title{Flush changes to disk}
 \usage{
-flushAndromeda(andromeda)
+flushAndromeda(andromeda, evictCache = TRUE)
 }
 \arguments{
 \item{andromeda}{An \code{\link{Andromeda}} object.}
+
+\item{evictCache}{If TRUE, will also evict the cache to free up memory.}
 }
 \value{
 This function does not return anything, but is executed for its side-effect.
