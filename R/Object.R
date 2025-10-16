@@ -190,7 +190,7 @@ copyAndromeda <- function(andromeda, options = list()) {
   }
   reg.finalizer(andromeda@conn_ref, finalizer, onexit = TRUE)
   
-  duckDbTempDirectory <- file.path(.getAndromedaTempFolder(), paste(dbdir, "temp", sep = "."))
+  duckDbTempDirectory <- paste(dbdir, "temp", sep = ".")
   DBI::dbExecute(andromeda, sprintf("PRAGMA temp_directory = '%s'", duckDbTempDirectory))
   
   # ignore all options except 'threads' for now
