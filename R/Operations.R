@@ -417,9 +417,6 @@ flushAndromeda <- function(andromeda, evictCache = TRUE) {
     DBI::dbExecute(andromeda, "CHECKPOINT;")
     
     if (evictCache) {
-      # For debugging: remove before releasing new version:
-      message("Evicting Andromeda cache of ", andromeda@dbname)
-      
       # DuckDB likes to keep a cache as big as the memory limit. To free this up, we temporarily 
       # reduce the memory limit, forcing the cache to be dropped:
       currentLimit <- DBI::dbGetQuery(andromeda, "SELECT current_setting('memory_limit');")
