@@ -393,8 +393,11 @@ setMethod("[[", "Andromeda", function(x, i) {
 #' 
 #' @export
 setMethod("names", "Andromeda", function(x) {
-  checkIfValid(x)
-  DBI::dbListTables(x)
+  if (isValidAndromeda(x)) {
+    DBI::dbListTables(x)
+  } else {
+    return(as.character(c()))
+  }
 })
 
 #' Set table names in an Andromeda object

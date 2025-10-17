@@ -3,11 +3,14 @@ Andromeda 1.2.0
 
 Changes:
 
-- Explicitly settings DuckDB's `temp_directory` to the Andromeda temp folder to avoid running out of space in undefined temp location.
+- Explicitly settings DuckDB's `temp_directory` to the Andromeda temp folder to avoid running out of space in an undefined temp location.
 
 - Set default memory limit to 20% instead of 80% of system memory to avoid out-of-memory errors when there are multiple Andromeda objects in memory.
 
-- `flushAndromeda()` now also evicts the cache by default, and is called after appending or creating table from another Andromeda table.
+- `flushAndromeda()` now also evicts the cache by default, and is called after appending or creating a table from another Andromeda table.
+
+- The `length()` and `names()` method no longer throw an error when the Andromeda object is no longer valid, but just return 0 and an empty vector, respectively. This is to avoid error messages caused by RStudio querying the object.
+
 
 Andromeda 1.1.1
 ===============
