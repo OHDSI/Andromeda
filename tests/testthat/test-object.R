@@ -6,7 +6,7 @@ test_that("Object creation", {
   expect_true(isValidAndromeda(andromeda))
 
   close(andromeda)
-  expect_error(names(andromeda), "no longer valid")
+  expect_equal(names(andromeda), as.character(c()))
   expect_true(isAndromeda(andromeda))
   expect_false(isValidAndromeda(andromeda))
 
