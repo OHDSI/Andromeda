@@ -19,7 +19,7 @@ processes, which is very dangerous if you don't know what you're doing."><!-- ma
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@ processes, which is very dangerous if you don't know what you're doing.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">flushAndromeda</span><span class="op">(</span><span class="va">andromeda</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">flushAndromeda</span><span class="op">(</span><span class="va">andromeda</span>, evictCache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -79,6 +79,10 @@ processes, which is very dangerous if you don't know what you're doing.</p>
 
 <dl><dt id="arg-andromeda">andromeda<a class="anchor" aria-label="anchor" href="#arg-andromeda"></a></dt>
 <dd><p>An <code><a href="Andromeda-class.html">Andromeda</a></code> object.</p></dd>
+
+
+<dt id="arg-evictcache">evictCache<a class="anchor" aria-label="anchor" href="#arg-evictcache"></a></dt>
+<dd><p>If TRUE, will also evict the cache to free up memory.</p></dd>
 
 </dl></div>
     <div id="value">

@@ -1,7 +1,7 @@
-Andromeda v1.1.1
+Andromeda v1.2.0
 ---
 
-This is a minor release, with 1 (important) bugfix (see NEWS.md). 
+This is a minor release, with 4 changes (see NEWS.md). 
 
 ## Test environments
 * Windows-latest, R-release (Github Actions)

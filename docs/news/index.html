@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Andromeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -61,7 +61,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.1.1" id="andromeda-111">Andromeda 1.1.1<a class="anchor" aria-label="anchor" href="#andromeda-111"></a></h2>
+<h2 class="page-header" data-toc-text="1.2.0" id="andromeda-120">Andromeda 1.2.0<a class="anchor" aria-label="anchor" href="#andromeda-120"></a></h2>
+<p>Changes:</p>
+<ul><li><p>Explicitly settings DuckDB’s <code>temp_directory</code> to the Andromeda temp folder to avoid running out of space in an undefined temp location.</p></li>
+<li><p>Set default memory limit to 20% instead of 80% of system memory to avoid out-of-memory errors when there are multiple Andromeda objects in memory.</p></li>
+<li><p><code><a href="../reference/flushAndromeda.html">flushAndromeda()</a></code> now also evicts the cache by default, and is called after appending or creating a table from another Andromeda table.</p></li>
+<li><p>The <code><a href="https://rdrr.io/r/base/length.html" class="external-link">length()</a></code> and <code><a href="https://rdrr.io/r/base/names.html" class="external-link">names()</a></code> method no longer throw an error when the Andromeda object is no longer valid, but just return 0 and an empty vector, respectively. This is to avoid error messages caused by RStudio querying the object.</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.1.1" id="andromeda-111">Andromeda 1.1.1<small>2025-08-22</small><a class="anchor" aria-label="anchor" href="#andromeda-111"></a></h2>
 <p>Bugfixes:</p>
 <ul><li>Disabling DuckDB progress bar to avoid mysterious crashes and hangs.</li>
 </ul></div>
