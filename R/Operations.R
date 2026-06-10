@@ -420,8 +420,15 @@ flushAndromeda <- function(andromeda, evictCache = TRUE) {
       # DuckDB likes to keep a cache as big as the memory limit. To free this up, we temporarily 
       # reduce the memory limit, forcing the cache to be dropped:
       currentLimit <- DBI::dbGetQuery(andromeda, "SELECT current_setting('memory_limit');")
-      DBI::dbExecute(andromeda, "SET memory_limit = '128MB';")
-      DBI::dbExecute(andromeda, sprintf("SET memory_limit = '%s';", currentLimit))
+      tryCatch({
+        DBI::dbExecute(andromeda, "SET memory_limit = '128MB';")
+      },
+       error = function(e) {
+         warning("Unable to flush Andromeda memory")
+       },
+      finally = {
+        DBI::dbExecute(andromeda, sprintf("SET memory_limit = '%s';", currentLimit))
+      })
     }
   }
 }

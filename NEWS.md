@@ -1,3 +1,11 @@
+Andromeda 1.2.1
+===============
+
+Bugfixes:
+
+- Throw warning instead of error when unable to flush Andromeda (DuckDB) memory.
+
+
 Andromeda 1.2.0
 ===============
 
