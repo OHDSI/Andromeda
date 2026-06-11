@@ -2,7 +2,7 @@ Package: Andromeda
 Type: Package
 Title: Asynchronous Disk-Based Representation of Massive Data
 Version: 1.2.1
-Date: 2026-06-10
+Date: 2026-06-11
 Authors@R: c(
   person("Adam", "Black", , "black@ohdsi.org", role = c("aut")),
   person("Egill", "Fridgeirsson", , "e.fridgeirsson@erasmusmc.nl", role = c("aut")),
@@ -41,3 +41,4 @@ LazyData: false
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Config/roxygen2/version: 8.0.0
+RoxygenNote: 8.0.0

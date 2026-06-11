@@ -63,9 +63,21 @@ jobs:
       CDM_BIG_QUERY_KEY_FILE: ${{ secrets.CDM_BIG_QUERY_KEY_FILE }}
       CDM_BIG_QUERY_CDM_SCHEMA: ${{ secrets.CDM_BIG_QUERY_CDM_SCHEMA }}
       CDM_BIG_QUERY_OHDSI_SCHEMA: ${{ secrets.CDM_BIG_QUERY_OHDSI_SCHEMA }}
+      CDM_IRIS_CONNECTION_STRING: ${{ secrets.CDM_IRIS_CONNECTION_STRING }}
+      CDM_IRIS_USER: ${{ secrets.CDM_IRIS_USER }}
+      CDM_IRIS_PASSWORD: ${{ secrets.CDM_IRIS_PASSWORD }}
+      CDM_IRIS_CDM_SCHEMA: ${{ secrets.CDM_IRIS_CDM_SCHEMA }}
+      CDM_IRIS_OHDSI_SCHEMA: ${{ secrets.CDM_IRIS_OHDSI_SCHEMA }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      
+      - name: Setup Java
+        if: runner.os != 'Linux'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '11'
 
       - uses: r-lib/actions/setup-r@v2
         with:
@@ -85,7 +97,7 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "22.04"))')
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - uses: r-lib/actions/setup-r-dependencies@v4
         with:
           extra-packages: any::rcmdcheck
           needs: check
@@ -93,7 +105,6 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           args: 'c("--no-manual", "--as-cran")'
-          build_args: 'c("--compact-vignettes=both")'
           error-on: '"warning"'
           check-dir: '"check"'
 
@@ -110,7 +121,7 @@ jobs:
           remotes::install_cran("covr")
           remotes::install_cran("xml2")
         shell: Rscript {0}
-        
+
       - name: Test coverage
         if: runner.os == 'Linux'
         run: |
@@ -122,11 +133,11 @@ jobs:
           covr::to_cobertura(cov)
         shell: Rscript {0}
 
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v6
         if: runner.os == 'Linux'
         with:
-          file: ./cobertura.xml
-          plugin: noop
+          files: ./cobertura.xml
+          plugins: noop
           disable_search: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -142,7 +153,7 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -197,4 +208,4 @@ jobs:
         if: ${{ env.new_version != '' }}
         run: |
           curl --data "build=true" -X POST https://registry.hub.docker.com/u/ohdsi/broadsea-methodslibrary/trigger/f0b51cec-4027-4781-9383-4b38b42dd4f5/
-
+  
