@@ -1,3 +1,11 @@
+Andromeda 1.2.1.9000
+====================
+
+Bugfixes:
+
+- Fix `flushAndromeda()` creating a new Andromeda object every time it was called (#78).
+
+
 Andromeda 1.2.1
 ===============
 
