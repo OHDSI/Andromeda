@@ -146,6 +146,19 @@ test_that("Copying andromeda", {
   close(andromeda2)
 })
 
+test_that("Flushing does not create a new Andromeda", {
+  folder <- tempfile()
+  options(andromedaTempFolder = folder)
+  andromeda <- andromeda(cars = cars)
+
+  flushAndromeda(andromeda)
+  files <- list.files(folder, pattern = "\\.duckdb$")
+  expect_equal(length(files), 1)
+
+  close(andromeda)
+  unlink(folder, recursive = TRUE)
+})
+
 test_that("Warning when disk space low", {
   skip_if(.Platform$OS.type != "windows")
 
