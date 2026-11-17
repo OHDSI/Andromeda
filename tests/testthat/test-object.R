@@ -200,3 +200,19 @@ test_that("andromedaThreads works", {
   expect_equal(threads[1, 1], 2)
   close(a)
 })
+
+test_that("Flushing does not create another Andromeda object", {
+  a <- andromeda(cars = cars)
+  b <- andromeda()
+  on.exit({
+    close(a)
+    close(b)
+  })
+  local_mocked_bindings(.createAndromeda = function(...) stop("flushAndromeda() created an Andromeda object"),
+                        .package = "Andromeda")
+  expect_no_error(flushAndromeda(a))
+  expect_no_error(flushAndromeda(a, evictCache = FALSE))
+  # Copying a table between Andromeda objects flushes both:
+  expect_no_error(b$cars <- a$cars)
+  expect_equal(b$cars %>% collect(), a$cars %>% collect())
+})

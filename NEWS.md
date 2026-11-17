@@ -1,3 +1,11 @@
+Andromeda 1.2.2
+===============
+
+Bugfixes:
+
+- `flushAndromeda()` no longer creates a new, temporary Andromeda object every time it is called (and so every time a table is assigned or appended from an Andromeda table, or an Andromeda object is copied). Flushing a connection that is not an Andromeda object is now a no-op instead of an error.
+
+
 Andromeda 1.2.1
 ===============
 
