@@ -413,7 +413,7 @@ restorePosixct <- function(x) {
 #' 
 #' @export
 flushAndromeda <- function(andromeda, evictCache = TRUE) {
-  if (isAndromeda(andromeda())) {
+  if (isAndromeda(andromeda)) {
     DBI::dbExecute(andromeda, "CHECKPOINT;")
     
     if (evictCache) {
